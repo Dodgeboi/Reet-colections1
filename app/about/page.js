@@ -13,10 +13,8 @@ export default function AboutPage() {
       <section className="mx-auto max-w-5xl px-6 py-20 sm:px-8">
         <div className="grid items-center gap-12 lg:grid-cols-[0.9fr_1.1fr]">
           <Reveal>
-            {/* MAMA PHOTO — replace with a real portrait of the owner */}
-            <div className="relative mx-auto aspect-[4/5] w-full max-w-sm overflow-hidden rounded-t-[180px] rounded-b-2xl ring-1 ring-gold/40 shadow-card">
+            <div className="relative mx-auto aspect-[4/5] w-full max-w-sm overflow-hidden shadow-card">
               <Image src="/images/hero-anarkali.jpg" alt="The founder of Reet Collections" fill sizes="(max-width:1024px) 90vw, 40vw" className="object-cover object-[center_18%]" />
-              <span className="absolute bottom-3 left-3 rounded-full bg-onyx/70 px-3 py-1 font-sans text-[10px] uppercase tracking-label text-ivory">Photo of Mama — coming soon</span>
             </div>
           </Reveal>
           <Reveal delay={0.1}>
@@ -36,7 +34,6 @@ export default function AboutPage() {
               think you&apos;ll love too.
             </p>
             <p className="mt-4 font-sans text-base italic leading-relaxed text-onyx/65">
-              {/* Placeholder — swap for her own words */}
               &ldquo;I want every woman who shops with me to feel a little more like herself when she
               puts the outfit on.&rdquo;
             </p>
@@ -45,9 +42,8 @@ export default function AboutPage() {
       </section>
 
       {/* The promise (slogan, full) */}
-      <section className="relative overflow-hidden bg-onyx py-20 text-center text-ivory">
-        <div className="pointer-events-none absolute inset-0 bg-henna [background-size:24px_24px] opacity-10" />
-        <div className="relative mx-auto max-w-2xl px-6">
+      <section className="bg-onyx py-20 text-center text-ivory">
+        <div className="mx-auto max-w-2xl px-6">
           <Reveal>
             <p className="eyebrow text-gold-light">Our promise to you</p>
             <p className="mt-6 font-display text-3xl font-light italic leading-relaxed sm:text-4xl">

@@ -63,7 +63,7 @@ export default function Shop({ initialSlug = "all", products = [] }) {
           {PRICE_BUCKETS.map(([id, lbl]) => (
             <li key={id}>
               <label className="flex cursor-pointer items-center gap-2.5 font-sans text-sm text-onyx/70">
-                <input type="checkbox" checked={buckets.has(id)} onChange={() => toggleSet(buckets, setBuckets, id)} className="h-4 w-4 accent-rose" />
+                <input type="checkbox" checked={buckets.has(id)} onChange={() => toggleSet(buckets, setBuckets, id)} className="h-4 w-4 accent-[#1A130D]" />
                 {lbl}
               </label>
             </li>
@@ -74,13 +74,13 @@ export default function Shop({ initialSlug = "all", products = [] }) {
         <div className="flex flex-wrap gap-2">
           {colorOptions.map((c) => (
             <button key={c} onClick={() => toggleSet(colors, setColors, c)}
-              className={`rounded-full border px-3 py-1 font-sans text-xs transition ${colors.has(c) ? "border-rose bg-blush/40 text-rose-deep" : "border-onyx/15 text-onyx/65 hover:border-gold"}`}>{c}</button>
+              className={`border px-3 py-1 font-sans text-xs transition ${colors.has(c) ? "border-onyx bg-onyx text-ivory" : "border-onyx/20 text-onyx/65 hover:border-onyx"}`}>{c}</button>
           ))}
         </div>
       </Group>
       <Group label="Availability">
         <label className="flex cursor-pointer items-center gap-2.5 font-sans text-sm text-onyx/70">
-          <input type="checkbox" checked={inStock} onChange={() => setInStock((v) => !v)} className="h-4 w-4 accent-rose" />
+          <input type="checkbox" checked={inStock} onChange={() => setInStock((v) => !v)} className="h-4 w-4 accent-[#1A130D]" />
           In stock only
         </label>
       </Group>
@@ -92,10 +92,10 @@ export default function Shop({ initialSlug = "all", products = [] }) {
       <div className="lg:grid lg:grid-cols-[230px_1fr] lg:gap-10">
         {/* desktop sidebar */}
         <aside className="hidden lg:block">
-          <div className="sticky top-24">
+          <div className="sticky top-32">
             <div className="flex items-center justify-between">
               <h3 className="font-display text-2xl text-onyx">Filters</h3>
-              {activeCount > 0 && <button onClick={clearAll} className="font-sans text-xs text-rose hover:underline">Clear all</button>}
+              {activeCount > 0 && <button onClick={clearAll} className="font-sans text-xs text-onyx/50 underline hover:text-onyx">Clear all</button>}
             </div>
             <div className="mt-2">{filters}</div>
           </div>
@@ -109,13 +109,13 @@ export default function Shop({ initialSlug = "all", products = [] }) {
               <span className="font-sans text-sm text-onyx/50">{items.length} {items.length === 1 ? "piece" : "pieces"}</span>
             </div>
             <div className="flex items-center gap-3">
-              <button onClick={() => setDrawer(true)} className="flex items-center gap-2 rounded-full border border-onyx/20 px-4 py-2 font-sans text-sm text-onyx/70 lg:hidden">
+              <button onClick={() => setDrawer(true)} className="flex items-center gap-2 border border-onyx/25 px-4 py-2 font-sans text-sm text-onyx/70 lg:hidden">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M3 6h18M6 12h12M10 18h4" /></svg>
                 Filters{activeCount > 0 ? ` (${activeCount})` : ""}
               </button>
               <label className="flex items-center gap-2 font-sans text-sm text-onyx/60">
                 <span className="hidden sm:inline">Sort</span>
-                <select value={sort} onChange={(e) => setSort(e.target.value)} className="rounded-lg border border-onyx/15 bg-white px-3 py-1.5 text-onyx focus:border-gold focus:outline-none">
+                <select value={sort} onChange={(e) => setSort(e.target.value)} className="border border-onyx/20 bg-white px-3 py-1.5 text-onyx focus:border-onyx focus:outline-none">
                   {SORTS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
                 </select>
               </label>
@@ -135,11 +135,11 @@ export default function Shop({ initialSlug = "all", products = [] }) {
 
           {/* grid */}
           {items.length ? (
-            <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="mt-6 grid grid-cols-2 gap-x-2 gap-y-7 sm:gap-x-3 lg:grid-cols-3 xl:grid-cols-4">
               {items.map((p) => <ProductCard key={p.id} product={p} />)}
             </div>
           ) : (
-            <div className="mt-6 rounded-2xl border border-dashed border-onyx/15 bg-white/60 py-24 text-center">
+            <div className="mt-6 border border-dashed border-onyx/20 bg-white/60 py-24 text-center">
               <p className="font-display text-2xl text-onyx/50">No pieces match those filters.</p>
               <button onClick={clearAll} className="btn-rose mt-4 !py-2 text-xs">Clear filters</button>
             </div>
@@ -170,7 +170,7 @@ export default function Shop({ initialSlug = "all", products = [] }) {
 
 function Chip({ children, onClear }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-onyx/5 px-3 py-1 font-sans text-xs text-onyx/70">
+    <span className="inline-flex items-center gap-1.5 border border-onyx/15 bg-white px-3 py-1 font-sans text-xs text-onyx/70">
       {children}
       <button onClick={onClear} aria-label="Remove filter" className="text-onyx/40 hover:text-rose">×</button>
     </span>

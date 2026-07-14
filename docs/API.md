@@ -11,43 +11,68 @@ Used by the storefront, search, and account pages.
 
 ### `POST /api/products` — *admin only*
 Saves the entire catalog. Body: a JSON array of products.
-Requires a valid admin session cookie; returns **401 Unauthorized** otherwise.
+Requires an owner session; returns **401 Unauthorized** otherwise.
 Used by the admin dashboard's "Save changes" button.
 
-## Purchases
+## Orders
 
-### `POST /api/purchase` — *public*
-Body: `[{ "id": "RC-1011", "qty": 1 }, ...]`
-Decrements stock for each item; when an item's quantity hits zero, its status becomes
-`"sold"`. Called automatically at checkout so the admin reflects real sales.
+### `POST /api/orders` — *public (checkout)*
+Body: `{ "customer": { name, email, phone, address, city, zip, country, note }, "items": [{ id, qty, size }] }`.
+Validates the items against the live catalog, computes prices/shipping
+**server-side**, decrements stock (an item hitting zero becomes `"sold"`),
+stores the order, and returns `{ ok, no, total }`. If a requested piece has
+already sold, returns **409** with a friendly message.
+
+### `GET /api/orders`
+- **Owner session:** returns every order.
+- **Signed-in customer (Google):** returns only orders whose email matches
+  their session email.
+- Otherwise **401**.
+
+### `PATCH /api/orders` — *admin only*
+Body: `{ "no": "RC-123456", "status": "confirmed" }`.
+Statuses: `new → confirmed → shipped → delivered`, or `cancelled`.
 
 ## Subscribers (live-notify list)
 
-### `GET /api/subscribers`
-Returns the list of subscriber emails. *(See the note in [Security](./SECURITY.md) —
-this should be locked to admin in Phase 2.)*
+### `GET /api/subscribers` — *admin only*
+Returns the list of subscriber emails. **401** without an owner session.
 
 ### `POST /api/subscribers` — *public*
 Body: `{ "email": "person@example.com" }`. Adds the email (de-duplicated).
 Used by the footer newsletter signup.
 
-## Admin authentication
+## Authentication
 
 ### `POST /api/admin/login`
-Body: `{ "password": "..." }`. If it matches `ADMIN_PASSWORD`, sets a signed httpOnly
-cookie (`reet_admin`) and returns `{ ok: true }`. Wrong password → **401**.
+Body: `{ "email": "...", "password": "..." }`. If they match `ADMIN_EMAIL` /
+`ADMIN_PASSWORD_HASH`, sets a signed, expiring httpOnly cookie (`reet_admin`)
+and returns `{ ok: true }`. Wrong credentials → **401**; five misses from one
+IP → **429** for 15 minutes.
 
 ### `DELETE /api/admin/login`
-Clears the session cookie (sign out).
+Clears the owner session cookie (sign out).
+
+### `GET/POST /api/auth/*` — NextAuth
+Google sign-in endpoints managed by NextAuth (`signIn`, `callback`,
+`session`, `signOut`…). Configured in `lib/auth.js`.
+
+### `GET /api/admin/status` — *admin only*
+Dashboard health check: `{ writable, google, aiImport }` — whether saves
+persist (Blob connected / local disk), whether Google sign-in is configured,
+and whether the AI importer has an API key.
 
 ## AI photo import — *admin only*
 
 ### `POST /api/import/extract`
-Sends an uploaded photo to Claude to extract product details. Requires an Anthropic API key
-configured server-side. Admin-gated.
+Multipart form (`images[]`, `caption`). Saves the photos (Vercel Blob in
+production, `public/images/imports` locally) and asks Claude to extract
+product details. Falls back to editable blanks when no `ANTHROPIC_API_KEY`
+is configured.
 
 ### `POST /api/import/approve`
-Saves an extracted/approved product into the catalog. Admin-gated.
+Body: `{ products: [...] }` from the extract step, cleaned up by the owner.
+Appends them to the catalog.
 
 ---
 
@@ -56,9 +81,13 @@ Saves an extracted/approved product into the catalog. Admin-gated.
 | Endpoint | Method | Who |
 |---|---|---|
 | `/api/products` | GET | Public |
-| `/api/products` | POST | Admin |
-| `/api/purchase` | POST | Public (checkout) |
-| `/api/subscribers` | GET | Public *(harden in Phase 2)* |
+| `/api/products` | POST | Owner |
+| `/api/orders` | POST | Public (checkout) |
+| `/api/orders` | GET | Owner (all) / customer (own) |
+| `/api/orders` | PATCH | Owner |
+| `/api/subscribers` | GET | Owner |
 | `/api/subscribers` | POST | Public |
-| `/api/admin/login` | POST/DELETE | Public (it *is* the login) |
-| `/api/import/*` | POST | Admin |
+| `/api/admin/login` | POST/DELETE | Public endpoint, guarded by credentials |
+| `/api/admin/status` | GET | Owner |
+| `/api/auth/*` | GET/POST | NextAuth (Google) |
+| `/api/import/*` | POST | Owner |

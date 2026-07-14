@@ -37,17 +37,25 @@ revealed live every evening. Premium but personal; rooted in tradition.
 
 ## Motifs & cultural elements
 
-- **Lotus / mandala divider** (`MotifDivider`) — the ornament used between sections.
-- **Henna dot pattern** — a subtle background texture on dark bands.
+Restraint is the rule: photography and type carry the design; ornament is rare
+and deliberate.
+
+- **Gold hairline** (`GoldThread`) — a single fine rule under headings.
+- **Diamond divider** (`MotifDivider`) — two hairlines meeting at a small gold diamond.
 - **Devanagari accents** appear once per section as kickers (not repeated everywhere).
-- **Occasion theming** — jewel tones tied to celebrations: maroon (bridal), gold (festive),
+- **Occasion theming** — flat jewel-tone panels: maroon (bridal), gold (festive),
   rose (everyday), plum (party/sangeet).
+- No gradients-as-decoration, no background patterns, no rounded "cards" —
+  square corners and hairline borders throughout the storefront.
 
 ## Buttons
 
-- `.btn-gold` — primary gold gradient (main calls-to-action).
-- `.btn-rose` — rose gradient (live / secondary CTAs).
-- `.btn-outline` — quiet, bordered.
+Flat, sharp-cornered, uppercase with wide letter-spacing:
+
+- `.btn-gold` — primary: solid onyx, ivory text (hovers to gold).
+- `.btn-rose` — live / secondary CTAs: solid deep rose.
+- `.btn-outline` — quiet, hairline-bordered.
+- `.btn-light` / `.btn-light-outline` — for use on photography and dark bands.
 
 ## Voice principles
 

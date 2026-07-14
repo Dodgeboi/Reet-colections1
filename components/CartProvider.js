@@ -1,10 +1,9 @@
 "use client";
 import { createContext, useContext, useEffect, useState } from "react";
-import { effectivePrice } from "@/lib/products";
+import { effectivePrice, FREE_SHIP, SHIP_FLAT } from "@/lib/products";
 
 const CartContext = createContext(null);
-export const FREE_SHIP = 150;
-const SHIP_FLAT = 9;
+export { FREE_SHIP };
 
 export function CartProvider({ children }) {
   const [items, setItems] = useState([]);

@@ -1,57 +1,59 @@
 # Security
 
-## Admin dashboard protection
+## Owner (admin) login
 
-The owner dashboard (`/admin`) is protected by a password login.
+The dashboard (`/admin`) accepts two ways in — both land on the same pages:
 
-**How it works**
-1. `middleware.js` intercepts every `/admin/*` request. If there's no valid session cookie,
-   it redirects to `/admin/login`.
-2. The login page posts the password to `POST /api/admin/login`, which compares it to the
-   `ADMIN_PASSWORD` environment variable.
-3. On success it sets a signed, **httpOnly** cookie (`reet_admin`) — JavaScript on the page
-   cannot read it, which protects against theft via cross-site scripting.
-4. The cookie value is the secret `ADMIN_TOKEN`. Middleware and the protected API routes
-   compare the cookie to this token on every request.
+1. **Email + password.** The login page posts to `POST /api/admin/login`.
+   The server compares the email to `ADMIN_EMAIL` and the SHA-256 hash of the
+   submitted password to `ADMIN_PASSWORD_HASH` using a constant-time
+   comparison. The plaintext password is never stored anywhere.
+2. **Google.** If the visitor is signed in with Google (NextAuth) and their
+   email equals `ADMIN_EMAIL`, middleware lets them straight in.
+
+**Sessions.** On password login the server sets a signed, expiring token
+(`expiry.HMAC-SHA256(expiry)`, keyed by `ADMIN_SESSION_SECRET`) in an
+**httpOnly** cookie: pages can't read it from JavaScript, it can't be forged
+without the secret, and it expires after 30 days. Sign-out clears it.
+
+**Throttling.** Five wrong password attempts from one IP pause logins from
+that IP for 15 minutes (best-effort, in-memory).
 
 **What's protected**
-- The `/admin` pages (via middleware).
-- `POST /api/products` (saving inventory) — returns **401** without a valid cookie, so the
-  API can't be abused directly.
-- `POST /api/import/*` (AI import) — admin only.
-
-**Sign out** clears the cookie (`DELETE /api/admin/login`).
-
-## Password handling rules
-
-- The password lives only in `.env.local` (never committed to git).
-- **Change the default** (`reet-admin-2026`) before launch; pick something long and unique.
-- Set `ADMIN_PASSWORD` and `ADMIN_TOKEN` in Vercel's environment settings for production.
-- Never paste secrets into code, screenshots, or chat.
+- `/admin/*` pages — `middleware.js` checks every request.
+- `POST /api/products`, `GET /api/subscribers`, `POST /api/import/*`,
+  `GET/PATCH /api/orders` (full list), `GET /api/admin/status` — all return
+  **401** without a valid owner session (or owner Google session).
 
 ## Customer accounts
 
-Customer sign-in is **device-local** (stored in the browser) for now — there is no password,
-just a name + email, kept in `localStorage`. This is intentional for Phase 1. Phase 2
-(Supabase Auth) adds real, cross-device logins with proper credentials.
+Customer sign-in is **real Google OAuth** via NextAuth (JWT sessions, no
+database). We receive only name, email, and profile photo. There are no
+site-managed passwords to leak. A signed-in customer can read **only their
+own** orders (`GET /api/orders` filters by session email).
 
-## Known gaps to close before/at launch
+## Secrets
 
-These are tracked in the [Roadmap](./ROADMAP.md):
+- `.env.local` is git-ignored; nothing secret is committed.
+- Production values live in Vercel's Environment Variables.
+- Rotating a secret (`ADMIN_SESSION_SECRET`, `NEXTAUTH_SECRET`) signs
+  everyone out but breaks nothing else.
+- To change the admin password: hash the new one
+  (`node -e "console.log(require('crypto').createHash('sha256').update('NEW').digest('hex'))"`)
+  and update `ADMIN_PASSWORD_HASH`.
 
-1. **`GET /api/subscribers` is currently public** — it returns the email list to anyone.
-   It should be gated to admin (same `isAdmin()` check as the other protected routes)
-   before real subscribers are collected. *(Priority: high, quick fix.)*
-2. **Payments must use a processor.** When checkout takes real money, card details must be
-   handled by **Stripe** (hosted) — never collected in our own form. The current card
-   fields are a mock and will be replaced. See [Roadmap](./ROADMAP.md).
-3. **Legal pages** (Privacy, Terms) are required once you collect data and take payment —
-   see [`docs/legal`](./legal).
-4. **Rate limiting / abuse protection** on public POST endpoints (subscribe) is worth adding
-   when live.
+## Data storage notes
 
-## Data privacy
+In production, shop data (products, orders, subscribers) is stored in Vercel
+Blob. Blob URLs are public-but-unguessable; order data includes customer
+contact details, so **don't share those URLs**. Moving to a proper database
+(with row-level access) is on the roadmap and recommended as order volume
+grows.
 
-- Collect only what you need (email for notifications; name/email/address at checkout).
-- Don't log or expose customer data. Don't put personal data in URLs.
-- A published **Privacy Policy** is required — a template is provided in `docs/legal`.
+## Known gaps (tracked on the Roadmap)
+
+- No online payments yet — payment is arranged personally, so no card data
+  ever touches the site.
+- Blob storage is last-write-wins; two admins saving at the exact same
+  moment could overwrite each other. Fine for one owner, not for a team.
+- Login throttling is per-server-instance (in-memory), not global.

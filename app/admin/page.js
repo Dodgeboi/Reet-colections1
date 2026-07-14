@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import AdminOrders from "@/components/AdminOrders";
 
 const CATEGORIES = ["kurtis", "lehengas", "sari", "blouses", "pants", "jewelry", "shoes"];
 const STATUSES = ["available", "claimed", "sold"];
@@ -20,10 +21,12 @@ export default function AdminPage() {
   const [draft, setDraft] = useState(blankDraft);
   const [subs, setSubs] = useState([]);
   const [showSubs, setShowSubs] = useState(false);
+  const [health, setHealth] = useState(null);
 
   useEffect(() => {
     fetch("/api/products").then((r) => r.json()).then((d) => { setItems(Array.isArray(d) ? d : []); setLoading(false); }).catch(() => setLoading(false));
     fetch("/api/subscribers").then((r) => r.json()).then((d) => setSubs(Array.isArray(d) ? d : [])).catch(() => {});
+    fetch("/api/admin/status").then((r) => (r.ok ? r.json() : null)).then(setHealth).catch(() => {});
   }, []);
 
   const signOut = async () => { try { await fetch("/api/admin/login", { method: "DELETE" }); } catch {} window.location.href = "/admin/login"; };
@@ -57,7 +60,7 @@ export default function AdminPage() {
       const res = await fetch("/api/products", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(items) });
       if (!res.ok) throw new Error("save failed");
       setDirty(false); setSavedAt(new Date());
-    } catch { alert("Couldn't save. Make sure the dev server is running."); }
+    } catch { alert("Couldn't save your changes. If the site is deployed, make sure a Blob store is connected in Vercel (Storage tab) — see docs/DEPLOYMENT.md."); }
     finally { setSaving(false); }
   };
 
@@ -100,6 +103,17 @@ export default function AdminPage() {
             </div>
           ))}
         </div>
+
+        {health && !health.writable && (
+          <div className="mt-4 rounded-2xl border border-rose/40 bg-rose/5 p-4">
+            <p className="font-sans text-sm font-medium text-rose-deep">Storage isn't connected yet</p>
+            <p className="mt-1 font-sans text-xs leading-relaxed text-onyx/60">
+              The shop works, but changes you save here won't persist. In Vercel open your project &rarr; Storage &rarr; Create a Blob store, then redeploy. Full steps in docs/DEPLOYMENT.md.
+            </p>
+          </div>
+        )}
+
+        <AdminOrders />
 
         {/* live announcements + subscribers */}
         <div className="mt-4 rounded-2xl border border-rose/25 bg-white p-4 shadow-soft">

@@ -3,7 +3,7 @@ import PageBanner from "@/components/PageBanner";
 import LiveCard from "@/components/LiveCard";
 import GoldThread from "@/components/GoldThread";
 import { Reveal, RevealGroup, RevealItem } from "@/components/Reveal";
-import { newestThree, restOfLives, formatLiveDate, FACEBOOK_PAGE } from "@/lib/lives";
+import { newestThree, restOfLives, formatLiveDate, weekLabel, FACEBOOK_PAGE } from "@/lib/lives";
 
 const steps = [
   { n: "01", t: "Join the live", d: "We go live every evening at 8 PM on Facebook. New pieces are revealed one by one." },
@@ -65,7 +65,7 @@ export default function LivePage() {
                 className="group flex items-center justify-between gap-4 py-5 transition-colors hover:bg-blush/20">
                 <div>
                   <p className="font-display text-2xl text-onyx">{live.title}</p>
-                  <p className="font-sans text-sm text-onyx/50">{live.week} · {formatLiveDate(live.date)}</p>
+                  <p className="font-sans text-sm text-onyx/50">{weekLabel(live.date)} · {formatLiveDate(live.date)}</p>
                 </div>
                 <span className="flex items-center gap-2 font-sans text-sm text-rose">
                   Watch <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>

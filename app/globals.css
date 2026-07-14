@@ -2,11 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --font-cormorant: "Cormorant Garamond", serif;
-  --font-jost: "Jost", sans-serif;
-}
-
 @layer base {
   html { scroll-behavior: smooth; }
   body {
@@ -14,44 +9,42 @@
     font-feature-settings: "liga" 1, "calt" 1;
   }
   ::selection { background: #C9A24B; color: #1A130D; }
-  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar { width: 8px; }
   ::-webkit-scrollbar-track { background: #FBF6EF; }
-  ::-webkit-scrollbar-thumb { background: #C9A24B; border-radius: 999px; border: 3px solid #FBF6EF; }
+  ::-webkit-scrollbar-thumb { background: rgba(26,19,13,0.25); }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(26,19,13,0.4); }
 }
 
 @layer components {
   .eyebrow { @apply font-sans uppercase text-[11px] tracking-label text-gold-deep; }
-  .font-deva { font-family: "Noto Serif Devanagari", "Cormorant Garamond", serif; }
+  .font-deva { font-family: var(--font-deva), "Cormorant Garamond", serif; }
   .deva-accent { @apply font-deva text-gold-deep/80; }
 
-  .text-gold-grad {
-    background: linear-gradient(135deg, #9C7320, #E6C66E 45%, #FBF1C5 50%, #E6C66E 55%, #9C7320);
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-  }
-  .text-gold-sheen {
-    background: linear-gradient(110deg, #9C7320 0%, #E6C66E 40%, #FBF1C5 50%, #E6C66E 60%, #9C7320 100%);
-    background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent;
-    @apply animate-sheen;
-  }
-
+  /* Buttons — flat, sharp, quiet. Luxury reads as restraint. */
   .btn-gold {
-    @apply inline-flex items-center justify-center gap-2 rounded-full px-7 py-3 font-sans text-sm tracking-wide text-onyx;
-    background: linear-gradient(135deg, #E6C66E, #C9A24B 55%, #B8860B);
-    transition: transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease;
+    @apply inline-flex items-center justify-center bg-onyx px-8 py-3.5 font-sans text-[12px] font-medium uppercase tracking-[0.18em] text-ivory transition-colors duration-300;
   }
-  .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 14px 30px -12px rgba(184,134,11,.65); }
+  .btn-gold:hover { @apply bg-gold-deep text-onyx; }
 
   .btn-rose {
-    @apply inline-flex items-center justify-center gap-2 rounded-full px-7 py-3 font-sans text-sm tracking-wide text-ivory;
-    background: linear-gradient(135deg, #C9737F, #A85563);
-    transition: transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease;
+    @apply inline-flex items-center justify-center bg-rose-deep px-8 py-3.5 font-sans text-[12px] font-medium uppercase tracking-[0.18em] text-ivory transition-colors duration-300;
   }
-  .btn-rose:hover { transform: translateY(-2px); box-shadow: 0 14px 30px -12px rgba(168,85,99,.6); }
+  .btn-rose:hover { @apply bg-onyx; }
 
   .btn-outline {
-    @apply inline-flex items-center justify-center gap-2 rounded-full border border-onyx/30 px-7 py-3 font-sans text-sm tracking-wide text-onyx transition-colors duration-300;
+    @apply inline-flex items-center justify-center border border-onyx px-8 py-3.5 font-sans text-[12px] font-medium uppercase tracking-[0.18em] text-onyx transition-colors duration-300;
   }
-  .btn-outline:hover { @apply bg-onyx text-ivory border-onyx; }
+  .btn-outline:hover { @apply bg-onyx text-ivory; }
+
+  /* Light variants for use on photography / dark bands */
+  .btn-light {
+    @apply inline-flex items-center justify-center bg-ivory px-8 py-3.5 font-sans text-[12px] font-medium uppercase tracking-[0.18em] text-onyx transition-colors duration-300;
+  }
+  .btn-light:hover { @apply bg-gold-light; }
+  .btn-light-outline {
+    @apply inline-flex items-center justify-center border border-ivory/80 px-8 py-3.5 font-sans text-[12px] font-medium uppercase tracking-[0.18em] text-ivory transition-colors duration-300;
+  }
+  .btn-light-outline:hover { @apply bg-ivory text-onyx border-ivory; }
 
   .rule-gold { height: 1px; background: linear-gradient(90deg, transparent, #C9A24B, transparent); }
 

@@ -1,40 +1,39 @@
 "use client";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext } from "react";
+import { SessionProvider, useSession, signIn, signOut } from "next-auth/react";
+
+// Accounts are real Google sign-ins (NextAuth). This provider bridges the
+// NextAuth session into the small { account, ready } shape the rest of the
+// site already uses.
 const Ctx = createContext(null);
-const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+function Bridge({ children }) {
+  const { data: session, status } = useSession();
+  const user = session?.user;
+  const account = user
+    ? {
+        name: user.name || (user.email ? user.email.split("@")[0] : "Friend"),
+        email: (user.email || "").toLowerCase(),
+        image: user.image || null,
+        since: user.since || null,
+      }
+    : null;
+
+  const value = {
+    account,
+    ready: status !== "loading",
+    signInWithGoogle: (callbackUrl = "/account") => signIn("google", { callbackUrl }),
+    signOut: () => signOut({ callbackUrl: "/" }),
+  };
+  return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
+}
 
 export function AccountProvider({ children }) {
-  const [account, setAccount] = useState(null);
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    try { const a = JSON.parse(localStorage.getItem("reet-account") || "null"); if (a) setAccount(a); } catch {}
-    setReady(true);
-  }, []);
-
-  const accountsMap = () => { try { return JSON.parse(localStorage.getItem("reet-accounts") || "{}"); } catch { return {}; } };
-  const persist = (acc) => { try { localStorage.setItem("reet-account", JSON.stringify(acc)); } catch {} setAccount(acc); };
-
-  const createAccount = (name, email) => {
-    name = (name || "").trim(); email = (email || "").trim().toLowerCase();
-    if (!name) return { error: "Please enter your name." };
-    if (!EMAIL.test(email)) return { error: "Please enter a valid email address." };
-    const map = accountsMap();
-    map[email] = { name, since: map[email]?.since || new Date().toISOString() };
-    try { localStorage.setItem("reet-accounts", JSON.stringify(map)); } catch {}
-    persist({ name, email, since: map[email].since });
-    return { ok: true };
-  };
-  const signIn = (email) => {
-    email = (email || "").trim().toLowerCase();
-    if (!EMAIL.test(email)) return { error: "Please enter a valid email address." };
-    const map = accountsMap();
-    if (!map[email]) return { error: "We couldn't find an account with that email — create one instead." };
-    persist({ name: map[email].name, email, since: map[email].since });
-    return { ok: true };
-  };
-  const signOut = () => { try { localStorage.removeItem("reet-account"); } catch {} setAccount(null); };
-
-  return <Ctx.Provider value={{ account, ready, createAccount, signIn, signOut }}>{children}</Ctx.Provider>;
+  return (
+    <SessionProvider refetchOnWindowFocus={false}>
+      <Bridge>{children}</Bridge>
+    </SessionProvider>
+  );
 }
+
 export const useAccount = () => useContext(Ctx);

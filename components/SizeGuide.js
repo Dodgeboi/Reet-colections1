@@ -8,10 +8,10 @@ export default function SizeGuide() {
   const [open, setOpen] = useState(false);
   return (
     <>
-      <button onClick={() => setOpen(true)} className="font-sans text-xs uppercase tracking-wide text-rose underline-offset-2 hover:underline">Size guide</button>
+      <button onClick={() => setOpen(true)} className="font-sans text-xs uppercase tracking-wide text-onyx/60 underline underline-offset-2 hover:text-onyx">Size guide</button>
       {open && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-onyx/40 p-4 backdrop-blur-sm" onClick={() => setOpen(false)}>
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-card" onClick={(e) => e.stopPropagation()}>
+          <div className="w-full max-w-md bg-white p-6 shadow-card" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between">
               <h3 className="font-display text-2xl text-onyx">Size Guide</h3>
               <button onClick={() => setOpen(false)} className="text-2xl text-onyx/40">×</button>

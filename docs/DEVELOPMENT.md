@@ -11,8 +11,8 @@
 # 1. Install dependencies
 npm install
 
-# 2. Create your secrets file (a default one ships with the project)
-#    Open .env.local and set a strong ADMIN_PASSWORD before launch.
+# 2. Create your secrets file
+#    Copy .env.example to .env.local and fill it in (see the table below).
 
 # 3. Start the dev server
 npm run dev
@@ -27,11 +27,19 @@ A template lives in `.env.example`.
 
 | Variable | Purpose |
 |---|---|
-| `ADMIN_PASSWORD` | The password your mom types to open `/admin` |
-| `ADMIN_TOKEN` | A long random secret used to sign the admin session cookie |
+| `ADMIN_EMAIL` | The owner's email for `/admin` login (also unlocks admin via Google) |
+| `ADMIN_PASSWORD_HASH` | SHA-256 hash of the owner password (never the password itself) |
+| `ADMIN_SESSION_SECRET` | Long random secret that signs the owner session cookie |
+| `NEXTAUTH_SECRET` | Long random secret for NextAuth (Google sign-in) sessions |
+| `NEXTAUTH_URL` | The site's URL — `http://localhost:3000` in dev |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Google OAuth credentials ([Deployment](./DEPLOYMENT.md) Step 4) |
+| `ANTHROPIC_API_KEY` | Optional — enables the admin AI photo importer |
+| `BLOB_READ_WRITE_TOKEN` | Injected by Vercel in production; leave empty locally |
 
-> **Change `ADMIN_PASSWORD` from the default before going live.** Generate a token with:
-> `node -e "console.log(require('crypto').randomBytes(24).toString('hex'))"`
+> Hash a password with
+> `node -e "console.log(require('crypto').createHash('sha256').update('YOUR-PASSWORD').digest('hex'))"`
+> and generate secrets with
+> `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`.
 
 ## Scripts
 

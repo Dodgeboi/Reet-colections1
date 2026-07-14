@@ -2,6 +2,53 @@
 
 A high-level history of what's been built. Newest first.
 
+## Phase 2 — a real, working shop
+
+**Luxury redesign**
+- Editorial, fashion-house look: full-bleed photographic hero, flat sharp-cornered
+  buttons and tags, hairline rules, square imagery, tighter grid gutters.
+- Removed decorative noise: blurred glow blobs, henna dot textures, arch-shaped image
+  frames, gradient pills, animated gold-sheen text, star/sparkle glyphs.
+- New announcement bar (live schedule + free-shipping note) above a slimmer header.
+- Denser product cards (color / name / price) and grids across shop, home, account.
+
+**Real customer accounts (Google)**
+- "Continue with Google" via NextAuth — customers sign in with their actual Google account;
+  the header, wishlist, and account page all follow the real session.
+- Degrades gracefully: without Google credentials configured, the site runs guest-only.
+
+**Owner login v2**
+- Email **and** password (`ADMIN_EMAIL` + SHA-256 `ADMIN_PASSWORD_HASH`, constant-time
+  compare), signed expiring session cookie (HMAC, 30 days), and 15-minute lockout after
+  5 wrong tries.
+- The owner's own Google account opens `/admin` directly — no password needed.
+
+**Real orders**
+- Checkout now places a genuine order (`POST /api/orders`): server-side pricing, stock
+  decrement, sold-out detection — no more mock card form (and no fake "payment" collected).
+- New **Orders** panel on the dashboard: customer details, items, and a status flow
+  (New → Confirmed → Shipped → Delivered / Cancelled).
+- Customers see their real orders (with status) on the account page.
+
+**Production storage**
+- One storage layer (`lib/store.js`): local JSON in dev, **Vercel Blob** in production —
+  admin saves finally persist on the deployed site. The dashboard warns until storage
+  is connected.
+- AI-import photos upload to Blob in production too.
+
+**Honesty & polish pass**
+- Removed fabricated star ratings/review counts, invented fabric "facts", placeholder
+  contact details, and the fake card form.
+- Real legal pages: `/privacy`, `/terms`, `/shipping-returns` (footer links updated).
+- Contact page now lists real channels (Messenger, Facebook, email) and a working
+  mail composer; live-replay labels ("This Week"…) compute from the date so they never
+  go stale; "Sari" → "Sarees" naming.
+- SEO/PWA: `sitemap.xml`, `robots.txt`, web-app manifest (Add to Home Screen),
+  ClothingStore + Product JSON-LD, OpenGraph/Twitter cards, self-hosted fonts
+  (`next/font`), themed viewport.
+- One-size pieces no longer show an empty size picker; the storefront footer no longer
+  renders inside the owner dashboard.
+
 ## Phase 1 — build & polish
 
 **Accounts & wishlist coherence**

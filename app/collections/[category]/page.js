@@ -5,8 +5,8 @@ import { getCatalog } from "@/lib/catalog";
 
 export const dynamic = "force-dynamic";
 
-export default function CategoryPage({ params }) {
-  const products = getCatalog();
+export default async function CategoryPage({ params }) {
+  const products = await getCatalog();
   const cat = categoryBySlug[params.category];
   const title = cat?.name || "Collection";
   return (

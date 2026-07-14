@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { isAdmin } from "@/lib/adminAuth";
-import { readFile, writeFile } from "fs/promises";
-import path from "path";
+import { readJson, writeJson } from "@/lib/store";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -21,17 +20,15 @@ function money(value) {
 }
 
 export async function POST(req) {
-  
-  if (!isAdmin()) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-try {
+  if (!(await isAdmin())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  try {
     const body = await req.json();
     const incoming = Array.isArray(body.products) ? body.products : [];
     if (!incoming.length) {
       return NextResponse.json({ error: "No products selected." }, { status: 400 });
     }
 
-    const productsPath = path.join(process.cwd(), "data", "products.json");
-    const current = JSON.parse(await readFile(productsPath, "utf8"));
+    const current = await readJson("products.json", []);
     const now = new Date();
 
     const additions = incoming.map((p, idx) => {
@@ -61,7 +58,7 @@ try {
       };
     });
 
-    await writeFile(productsPath, JSON.stringify([...additions, ...current], null, 2) + "\n");
+    await writeJson("products.json", [...additions, ...current]);
     return NextResponse.json({ added: additions.length, products: additions });
   } catch (error) {
     return NextResponse.json({ error: error.message || "Approval failed" }, { status: 500 });

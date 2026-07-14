@@ -7,55 +7,48 @@ import LiveBadge from "./LiveBadge";
 
 const easeLux = [0.22, 0.8, 0.2, 1];
 const rise = {
-  hidden: { opacity: 0, y: 24 },
-  show: (i = 0) => ({ opacity: 1, y: 0, transition: { duration: 0.85, ease: easeLux, delay: 0.12 + i * 0.11 } }),
+  hidden: { opacity: 0, y: 20 },
+  show: (i = 0) => ({ opacity: 1, y: 0, transition: { duration: 0.8, ease: easeLux, delay: 0.15 + i * 0.1 } }),
 };
 
+// Full-bleed editorial hero: one photograph, quiet type, two flat actions.
 export default function Hero() {
   return (
-    // Tightened to content (no full-screen empty gap under the title on scroll).
-    <section className="relative overflow-hidden bg-ivory pt-28 pb-12 sm:pt-32">
-      <div className="pointer-events-none absolute inset-0 bg-henna [background-size:24px_24px] opacity-40" />
-      <div className="pointer-events-none absolute -left-32 top-10 h-96 w-96 rounded-full bg-blush/50 blur-[120px]" />
-      <div className="pointer-events-none absolute -right-24 bottom-0 h-96 w-96 rounded-full bg-gold/15 blur-[120px]" />
+    <section className="relative flex min-h-[88svh] items-end overflow-hidden bg-onyx">
+      <Image
+        src="/images/hero-anarkali.jpg"
+        alt="Reet Collections festive wear"
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover object-[center_22%]"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-onyx/85 via-onyx/25 to-onyx/10" />
 
-      <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-6 sm:px-8 lg:grid-cols-[1.05fr_0.95fr]">
-        <div className="text-center lg:text-left">
-          <motion.div variants={rise} initial="hidden" animate="show" custom={0}>
-            <LiveBadge variant="light" />
-          </motion.div>
+      <div className="relative mx-auto w-full max-w-7xl px-6 pb-16 pt-44 sm:px-8 sm:pb-20">
+        <motion.div variants={rise} initial="hidden" animate="show" custom={0}>
+          <LiveBadge variant="onDark" />
+        </motion.div>
 
-          <motion.p variants={rise} initial="hidden" animate="show" custom={0.5} className="mt-5 font-deva text-xl text-gold-deep/85">उत्सव</motion.p>
+        <motion.p variants={rise} initial="hidden" animate="show" custom={1}
+          className="mt-4 font-deva text-lg text-gold-light/90">उत्सव</motion.p>
 
-          <motion.h1 variants={rise} initial="hidden" animate="show" custom={1} className="mt-2 font-display font-light leading-[0.96] text-onyx">
-            <span className="block text-[clamp(2.8rem,8vw,6rem)]">Wear the</span>
-            <span className="block text-[clamp(2.8rem,8vw,6rem)] text-gold-sheen">Celebration</span>
-          </motion.h1>
+        <motion.h1 variants={rise} initial="hidden" animate="show" custom={2}
+          className="mt-1 max-w-3xl font-display font-light leading-[1.02] text-ivory">
+          <span className="block text-[clamp(2.6rem,7vw,5.5rem)]">Wear the Celebration</span>
+        </motion.h1>
 
-          <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 1.3, ease: easeLux, delay: 0.5 }}
-            className="mx-auto mt-5 h-px w-52 origin-left bg-gradient-to-r from-gold via-rose to-transparent lg:mx-0" />
+        <motion.p variants={rise} initial="hidden" animate="show" custom={3}
+          className="mt-4 max-w-lg font-sans text-[15px] leading-relaxed text-ivory/80">
+          Handpicked Indian ethnic &amp; fusion wear, revealed live every evening.
+          Join the live, claim your piece, and we&apos;ll set it aside just for you.
+        </motion.p>
 
-          <motion.p variants={rise} initial="hidden" animate="show" custom={3}
-            className="mx-auto mt-6 max-w-md font-display text-xl font-light leading-relaxed text-onyx/70 lg:mx-0">
-            Handpicked Indian ethnic &amp; fusion wear, revealed live every evening. Join the live,
-            claim your piece, and we&apos;ll set it aside just for you.
-          </motion.p>
-
-          <motion.div variants={rise} initial="hidden" animate="show" custom={4}
-            className="mt-8 flex flex-wrap items-center justify-center gap-4 lg:justify-start">
-            <Link href="/collections" className="btn-gold">Shop the collection</Link>
-            <a href="https://www.facebook.com/Reetcollections068/" target="_blank" rel="noopener noreferrer" className="btn-outline">Watch live →</a>
-          </motion.div>
-        </div>
-
-        <motion.div initial={{ opacity: 0, scale: 0.96, y: 18 }} animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 1.1, ease: easeLux, delay: 0.3 }} className="relative mx-auto w-full max-w-sm">
-          <div className="relative aspect-[3/4.2] overflow-hidden rounded-t-[999px] rounded-b-[26px] ring-1 ring-gold/40 shadow-card">
-            <Image src="/images/hero-anarkali.jpg" alt="Reet Collections festive set" fill
-              sizes="(max-width:1024px) 80vw, 38vw" className="object-cover object-[center_18%]" priority />
-            <span className="absolute left-4 bottom-5 rounded-full bg-rose px-3 py-1 font-sans text-[10px] uppercase tracking-label text-ivory shadow-soft">New drop</span>
-          </div>
-          <div className="pointer-events-none absolute -inset-2 rounded-t-[999px] rounded-b-[30px] border border-gold/35" />
+        <motion.div variants={rise} initial="hidden" animate="show" custom={4}
+          className="mt-8 flex flex-wrap items-center gap-3">
+          <Link href="/collections" className="btn-light">Shop the collection</Link>
+          <a href="https://www.facebook.com/Reetcollections068/" target="_blank" rel="noopener noreferrer"
+            className="btn-light-outline">Watch live</a>
         </motion.div>
       </div>
     </section>

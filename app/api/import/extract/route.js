@@ -3,6 +3,20 @@ import { isAdmin } from "@/lib/adminAuth";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 
+// Uploaded photos go to public/images/imports locally, and to Vercel Blob in
+// production (the deployed filesystem is read-only).
+async function saveUpload(buffer, name, contentType) {
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    const { put } = await import("@vercel/blob");
+    const blob = await put(`images/imports/${name}`, buffer, { access: "public", addRandomSuffix: false, contentType });
+    return blob.url;
+  }
+  const uploadDir = path.join(process.cwd(), "public", "images", "imports");
+  await mkdir(uploadDir, { recursive: true });
+  await writeFile(path.join(uploadDir, name), buffer);
+  return `/images/imports/${name}`;
+}
+
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
@@ -125,15 +139,11 @@ Caption/notes:\n${caption || ""}`;
 }
 
 export async function POST(req) {
-  
-  if (!isAdmin()) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-try {
+  if (!(await isAdmin())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  try {
     const form = await req.formData();
     const caption = String(form.get("caption") || "");
     const files = form.getAll("images").filter((f) => f && typeof f.arrayBuffer === "function");
-
-    const uploadDir = path.join(process.cwd(), "public", "images", "imports");
-    await mkdir(uploadDir, { recursive: true });
 
     const savedImages = [];
     for (let i = 0; i < files.length; i += 1) {
@@ -141,8 +151,7 @@ try {
       const buffer = Buffer.from(await file.arrayBuffer());
       const ext = extFromMime(file.type);
       const name = `import-${Date.now()}-${i}.${ext}`;
-      await writeFile(path.join(uploadDir, name), buffer);
-      savedImages.push(`/images/imports/${name}`);
+      savedImages.push(await saveUpload(buffer, name, file.type || "image/jpeg"));
     }
 
     const products = await callAnthropic({ caption, files, savedImages });

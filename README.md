@@ -5,9 +5,9 @@ revealed live on Facebook every evening.
 
 > *"Selected with love & care, just for you."*
 
-Built with Next.js 14, this is a real e-commerce site with a customer storefront, a
-password-protected owner dashboard, a wishlist & accounts system, and a culturally rich,
-hand-crafted design.
+Built with Next.js 14, this is a real e-commerce site: a customer storefront with
+Google sign-in, real orders with an owner confirmation flow, a protected owner
+dashboard, and a culturally rich, hand-crafted design.
 
 ---
 
@@ -40,16 +40,21 @@ npm install
 npm run dev
 ```
 
-Open <http://localhost:3000>. The owner dashboard is at `/admin`
-(default password is in `.env.local` — **change it**).
+Open <http://localhost:3000>. The owner dashboard is at `/admin` — sign in with
+the owner email + password (configured in `.env.local`; see
+[Development](./docs/DEVELOPMENT.md)), or with the owner's Google account once
+Google sign-in is connected.
 
-See [Development](./docs/DEVELOPMENT.md) for the full setup and the recommended
-"don't-use-localhost-every-time" workflow.
+**Want it on your phone without a computer?** Deploy it once — see
+[Deployment](./docs/DEPLOYMENT.md). You'll get a real `https://` link that works
+anywhere, and it can be added to the home screen like an app.
 
 ---
 
 ## 🏗️ Status
 
 **Phase 1 — complete.** Full storefront, brand, admin tools, accounts & wishlist.
-**Phase 2 — next.** Database (Supabase), real payments (Stripe), transactional email,
-legal pages, and production launch. See the [Roadmap](./docs/ROADMAP.md).
+**Phase 2 — complete.** Google sign-in, real orders + owner order flow, production
+storage (Vercel Blob), hardened owner login, legal pages, SEO/PWA.
+**Phase 3 — next.** Stripe payments, transactional email, database. See the
+[Roadmap](./docs/ROADMAP.md).

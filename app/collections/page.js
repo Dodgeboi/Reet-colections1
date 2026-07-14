@@ -4,8 +4,8 @@ import { getCatalog } from "@/lib/catalog";
 
 export const dynamic = "force-dynamic";
 
-export default function CollectionsPage() {
-  const products = getCatalog();
+export default async function CollectionsPage() {
+  const products = await getCatalog();
   return (
     <>
       <PageBanner eyebrow="Shop" title="The Collection"

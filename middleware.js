@@ -1,14 +1,28 @@
 import { NextResponse } from "next/server";
-export function middleware(req) {
+import { getToken } from "next-auth/jwt";
+import { ADMIN_COOKIE, verifySessionToken } from "@/lib/adminSession";
+
+export async function middleware(req) {
   const { pathname } = req.nextUrl;
   if (pathname === "/admin/login") return NextResponse.next();
-  const token = req.cookies.get("reet_admin")?.value;
-  if (!process.env.ADMIN_TOKEN || token !== process.env.ADMIN_TOKEN) {
-    const url = req.nextUrl.clone();
-    url.pathname = "/admin/login";
-    url.searchParams.set("from", pathname);
-    return NextResponse.redirect(url);
+
+  // Owner password session
+  const token = req.cookies.get(ADMIN_COOKIE)?.value;
+  if (await verifySessionToken(process.env.ADMIN_SESSION_SECRET, token)) return NextResponse.next();
+
+  // Or signed in with Google as the owner
+  const adminEmail = (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
+  if (adminEmail && process.env.NEXTAUTH_SECRET) {
+    try {
+      const jwt = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+      if ((jwt?.email || "").toLowerCase() === adminEmail) return NextResponse.next();
+    } catch {}
   }
-  return NextResponse.next();
+
+  const url = req.nextUrl.clone();
+  url.pathname = "/admin/login";
+  url.searchParams.set("from", pathname);
+  return NextResponse.redirect(url);
 }
+
 export const config = { matcher: ["/admin/:path*"] };

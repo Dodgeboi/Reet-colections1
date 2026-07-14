@@ -4,13 +4,10 @@ import GoldThread from "./GoldThread";
 import Newsletter from "./Newsletter";
 import { FACEBOOK_PAGE } from "@/lib/lives";
 
-const PAY = ["VISA", "MC", "AMEX", "DISC", "UPI"];
-
 export default function Footer() {
   return (
-    <footer className="relative overflow-hidden bg-onyx text-ivory">
-      <div className="pointer-events-none absolute inset-0 bg-henna [background-size:24px_24px] opacity-10" />
-      <div className="relative mx-auto max-w-7xl px-6 pb-10 pt-16 sm:px-8">
+    <footer className="bg-onyx text-ivory">
+      <div className="mx-auto max-w-7xl px-6 pb-10 pt-16 sm:px-8">
         <div className="flex flex-col items-center text-center">
           <Logo variant="light" size={58} />
           <p className="mt-6 max-w-lg font-display text-xl font-light italic leading-relaxed text-ivory/80">
@@ -47,7 +44,7 @@ export default function Footer() {
             <ul className="mt-3 space-y-2 font-sans text-sm text-ivory/65">
               <li><Link href="/faq" className="hover:text-gold-light">FAQ</Link></li>
               <li><Link href="/contact" className="hover:text-gold-light">Contact</Link></li>
-              <li><Link href="/faq" className="hover:text-gold-light">Shipping &amp; Returns</Link></li>
+              <li><Link href="/shipping-returns" className="hover:text-gold-light">Shipping &amp; Returns</Link></li>
               <li><Link href="/account" className="hover:text-gold-light">Account &amp; Wishlist</Link></li>
             </ul>
           </div>
@@ -61,13 +58,13 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* payments + copyright */}
+        {/* legal + copyright */}
         <div className="mt-12 flex flex-col items-center gap-4 border-t border-ivory/10 pt-8 sm:flex-row sm:justify-between">
           <p className="font-sans text-xs text-ivory/45">© {new Date().getFullYear()} Reet Collections. All rights reserved.</p>
-          <div className="flex items-center gap-2">
-            {PAY.map((p) => (
-              <span key={p} className="rounded border border-ivory/20 bg-ivory/5 px-2 py-1 font-sans text-[9px] font-semibold tracking-wide text-ivory/55">{p}</span>
-            ))}
+          <div className="flex items-center gap-5 font-sans text-xs text-ivory/45">
+            <Link href="/privacy" className="hover:text-gold-light">Privacy</Link>
+            <Link href="/terms" className="hover:text-gold-light">Terms</Link>
+            <Link href="/shipping-returns" className="hover:text-gold-light">Shipping &amp; Returns</Link>
           </div>
         </div>
       </div>

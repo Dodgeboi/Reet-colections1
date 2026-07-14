@@ -4,9 +4,11 @@
 
 ## Signing in
 
-1. Go to **your-site.com/admin**.
-2. Enter the shop password and click **Sign in**.
-3. You'll land on the **Inventory** dashboard.
+1. Go to **your-site.com/admin** (works on your phone too).
+2. Enter your **email and password** and click **Sign in** — or, once Google
+   sign-in is set up, just press **Sign in with Google** and pick your own
+   Google account. No password needed that way.
+3. You'll land on the dashboard. You stay signed in for 30 days.
 
 To leave, click **Sign out** (top right).
 
@@ -40,11 +42,20 @@ Right on the list you can change:
 
 Always click **Save changes** when you're done.
 
-## When something sells
+## Orders
 
-When a customer checks out on the website, the item's stock goes down automatically, and it
-flips to **Sold** when it runs out — you'll see it update on this page. You can also mark
-things sold by hand (set status to **Sold**).
+When a customer checks out, their order appears at the top of the dashboard in the
+**Orders** box, marked **New**. Stock goes down automatically, and an item flips to
+**Sold** when it runs out.
+
+For each order you can:
+1. **Tap it** to see the customer's details, address, and the pieces they chose.
+2. **Email them** (their address is a link) to confirm the total and arrange payment —
+   just like on the lives.
+3. Move the status along as you go: **New → Confirmed → Shipped → Delivered**
+   (or **Cancelled**). The customer sees the status on their account page.
+
+You can also mark pieces sold by hand any time (set status to **Sold**).
 
 ## Telling customers you're live (the email blast)
 
@@ -58,8 +69,9 @@ People can sign up on the website to be notified when you go live. On the dashbo
 
 ## Important things to know
 
-- **Always click "Save changes"** — edits don't save on their own.
-- Today, saved changes and the subscriber list are stored on **your computer's browser**
-  while testing. To make them save on the live website for everyone, we add a database
-  (the next project phase). Until then, do your admin edits on the same computer/browser.
-- Keep the **password private**. Change it any time (ask your developer / see the dev docs).
+- **Always click "Save changes"** — inventory edits don't save on their own.
+- On the live website, saving needs the **Blob storage** connected once in Vercel
+  (see the [Deployment guide](./DEPLOYMENT.md), Step 3). The dashboard will remind
+  you with a notice if it isn't connected yet.
+- Keep the **password private**. Changing it takes one minute — see
+  [Security](./SECURITY.md).

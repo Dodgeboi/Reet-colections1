@@ -7,46 +7,38 @@
 - **Owner dashboard**: inventory management, sale pricing, AI photo import.
 - **Password-protected admin** (middleware + signed cookie + guarded APIs).
 - **Live-notify**: email signup + one-click "We're live" blast to subscribers.
-- Standard e-commerce polish: search, size guide, ratings, free-shipping meter, FAQ, 404, SEO.
+- Standard e-commerce polish: search, size guide, free-shipping meter, FAQ, 404, SEO.
 - Culturally rich, hand-crafted design (Devanagari accents, lotus motifs, occasion theming).
 - Clean, brand-forward header (logo in corner) and a single, well-structured footer.
 
-## 🔜 Phase 2 — Make it a real, transacting store (next)
+## ✅ Phase 2 — A real, working shop (complete)
 
-This is the work that turns a beautiful prototype into a live shop that takes money.
+- **Production storage** — one storage layer (`lib/store.js`): JSON files in dev,
+  **Vercel Blob** in production. Products, orders, and subscribers persist when deployed.
+- **Real orders** — checkout reserves pieces through `POST /api/orders` (server-side
+  pricing + stock decrement); the owner confirms, and tracks status from the dashboard;
+  customers see their orders on the account page.
+- **Google sign-in** — real customer accounts via NextAuth + Google OAuth.
+- **Owner login v2** — email + hashed password, signed expiring session, login throttling —
+  or sign in with the owner Google account.
+- **Legal pages live** — Privacy, Terms, Shipping & Returns are real site pages.
+- **SEO & PWA** — sitemap, robots, web-app manifest ("Add to Home Screen"), Product/Store
+  structured data, self-hosted fonts.
+- Removed for honesty: fabricated star ratings, mock card checkout, placeholder contacts.
 
-1. **Database — Supabase**
-   - Move products, orders, and subscribers off JSON files into Supabase.
-   - Wire the admin Save, storefront reads, and subscriber list to the database so they
-     **persist in production**.
-   - *(Unblocks deploying on Vercel for real.)*
+## 🔜 Phase 3 — Growing the shop (next)
 
-2. **Payments — Stripe**
-   - Replace the mock card form with **Stripe Checkout** (hosted, PCI-compliant — we never
-     touch card data).
-   - A webhook records paid orders and decrements stock automatically.
-   - Real order records in the database.
-
-3. **Transactional email**
-   - Order confirmations (Resend, or Stripe's built-in receipts to start).
-
-4. **Customer auth (real)**
-   - Supabase Auth for proper, cross-device logins (replaces the device-local accounts).
-
-5. **Security hardening**
-   - Gate `GET /api/subscribers` to admin.
-   - Rate-limit public POST endpoints.
-
-6. **Legal & compliance**
-   - Publish Privacy Policy, Terms of Service, Shipping & Returns (templates in `docs/legal`).
-   - Decide sales-tax handling (Stripe Tax can automate US sales tax).
-
-7. **Content**
-   - Clean, consistent product photography (see [Content Guide](./CONTENT-GUIDE.md)) — the
-     biggest remaining visual upgrade.
-
-8. **Launch**
-   - Deploy to Vercel, connect the GoDaddy domain, set production env vars, final QA.
+1. **Online payments — Stripe Checkout** (hosted, PCI-compliant) once order volume makes
+   personally-arranged payment slow. A webhook would auto-confirm paid orders.
+2. **Transactional email** — automatic order confirmations (Resend), instead of the owner
+   emailing personally.
+3. **A real database** (Supabase/Postgres) when concurrent admin edits or reporting needs
+   outgrow Blob's last-write-wins model.
+4. **Global rate-limiting** for public POST endpoints (Upstash) — the in-memory login
+   throttle only protects a single server instance.
+5. **Content** — clean, consistent product photography (see
+   [Content Guide](./CONTENT-GUIDE.md)) — the biggest remaining visual upgrade.
+6. **Launch checklist** — domain, final QA on real devices, share the link on the lives.
 
 ## 🌟 Phase 3 — Growth (later)
 

@@ -24,18 +24,18 @@ export default function CartDrawer() {
           </div>
         ) : (
           <>
-            <div className="bg-blush/40 px-6 py-2.5">
-              <p className="text-center font-sans text-xs text-rose-deep">
-                {subtotal < FREE_SHIP ? <>You're <strong>${remaining}</strong> away from free shipping ✦</> : <>✦ You've unlocked <strong>free shipping</strong>!</>}
+            <div className="border-b border-onyx/10 bg-white px-6 py-2.5">
+              <p className="text-center font-sans text-xs text-onyx/70">
+                {subtotal < FREE_SHIP ? <>You're <strong className="text-onyx">${remaining}</strong> away from free shipping</> : <>You've unlocked <strong className="text-onyx">free shipping</strong></>}
               </p>
-              <div className="mx-auto mt-1.5 h-1 w-full max-w-[260px] overflow-hidden rounded-full bg-white/70">
-                <div className="h-full rounded-full bg-gradient-to-r from-gold-light to-gold-deep transition-all duration-500" style={{ width: `${Math.min(100, (subtotal / FREE_SHIP) * 100)}%` }} />
+              <div className="mx-auto mt-1.5 h-px w-full max-w-[260px] bg-onyx/10">
+                <div className="h-px bg-gold-deep transition-all duration-500" style={{ width: `${Math.min(100, (subtotal / FREE_SHIP) * 100)}%` }} />
               </div>
             </div>
             <div className="flex-1 overflow-y-auto px-6 py-4">
               {items.map((i) => (
                 <div key={i.key} className="flex gap-4 border-b border-onyx/8 py-4">
-                  <div className="relative h-24 w-20 shrink-0 overflow-hidden rounded-lg bg-white ring-1 ring-onyx/5">
+                  <div className="relative h-24 w-20 shrink-0 overflow-hidden bg-[#F3EDE4]">
                     <Image src={i.image} alt={i.name} fill sizes="80px" className="object-cover" />
                   </div>
                   <div className="flex flex-1 flex-col">
@@ -45,7 +45,7 @@ export default function CartDrawer() {
                     </div>
                     <p className="mt-0.5 font-sans text-xs text-onyx/50">{i.color}{i.size ? ` · Size ${i.size}` : ""}</p>
                     <div className="mt-auto flex items-center justify-between">
-                      <div className="flex items-center rounded-full border border-onyx/15">
+                      <div className="flex items-center border border-onyx/20">
                         <button onClick={() => updateQty(i.key, i.qty - 1)} className="px-2.5 py-1 text-onyx/60 hover:text-onyx">−</button>
                         <span className="min-w-[20px] text-center font-sans text-sm">{i.qty}</span>
                         <button onClick={() => updateQty(i.key, i.qty + 1)} className="px-2.5 py-1 text-onyx/60 hover:text-onyx">+</button>
