@@ -37,11 +37,15 @@ export async function POST(req) {
     const lines = [];
     for (const item of requested) {
       const p = byId[item.id];
-      if (!p || p.status === "sold") {
+      const available = Number(p?.qty) || 0;
+      if (!p || p.status === "sold" || available <= 0) {
         return NextResponse.json({ error: `Sorry — "${p?.name || item.id}" just sold out. Please remove it from your bag.` }, { status: 409 });
       }
-      const qty = Math.max(1, Math.min(20, Number(item.qty) || 1));
-      lines.push({ id: p.id, name: p.name, image: p.image, color: p.color || "", size: String(item.size || "").slice(0, 20), qty, price: effectivePrice(p) });
+      const wanted = Math.max(1, Math.min(20, Number(item.qty) || 1));
+      if (wanted > available) {
+        return NextResponse.json({ error: `Only ${available} of "${p.name}" ${available === 1 ? "is" : "are"} left — please adjust the quantity in your bag.` }, { status: 409 });
+      }
+      lines.push({ id: p.id, name: p.name, image: p.image, color: p.color || "", size: String(item.size || "").slice(0, 20), qty: wanted, price: effectivePrice(p) });
     }
 
     const subtotal = lines.reduce((a, l) => a + l.price * l.qty, 0);
@@ -74,10 +78,12 @@ export async function POST(req) {
   }
 }
 
-// Owner sees every order; a signed-in customer sees their own.
-export async function GET() {
+// Owner sees every order; a signed-in customer sees their own. ?mine=1
+// forces the personal view even for owners (used by the account page).
+export async function GET(req) {
   const orders = await readJson("orders.json", []);
-  if (await isAdmin()) return NextResponse.json(orders);
+  const mine = new URL(req.url).searchParams.get("mine") === "1";
+  if (!mine && (await isAdmin())) return NextResponse.json(orders);
   try {
     const session = await getServerSession(authOptions);
     const email = (session?.user?.email || "").toLowerCase();

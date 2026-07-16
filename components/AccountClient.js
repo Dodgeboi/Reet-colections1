@@ -29,7 +29,7 @@ export default function AccountClient({ googleEnabled }) {
   // Orders live on the server, tied to the signed-in email.
   useEffect(() => {
     if (!account) { setOrders([]); return; }
-    fetch("/api/orders").then((r) => (r.ok ? r.json() : [])).then((d) => setOrders(Array.isArray(d) ? d : [])).catch(() => {});
+    fetch("/api/orders?mine=1").then((r) => (r.ok ? r.json() : [])).then((d) => setOrders(Array.isArray(d) ? d : [])).catch(() => {});
   }, [account]);
 
   if (!ready) return <div className="min-h-[70vh] pt-28" />;

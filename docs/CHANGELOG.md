@@ -4,6 +4,18 @@ A high-level history of what's been built. Newest first.
 
 ## Phase 2 — a real, working shop
 
+**Identity separation & ordering fixes**
+- Every customer gets their own bag: carts are stored per signed-in account
+  (the guest bag merges in when you sign in, and signing out returns an empty
+  guest bag — nobody sees anyone else's items).
+- Signing out — from the account page or the dashboard — now ends **both**
+  login types (Google session and owner password session), so admin powers
+  never linger on a device.
+- The account page shows only your own orders, even for owners (the full list
+  lives on the dashboard).
+- Overselling blocked: ordering more units than are in stock is rejected with
+  a friendly message instead of silently draining inventory.
+
 **In-place photo editing (owner mode)**
 - Signed-in owners get a floating **Edit photos** button on every page. One
   tap outlines every editable photo — home hero, heritage band, About

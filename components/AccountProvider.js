@@ -24,7 +24,12 @@ function Bridge({ children }) {
     account,
     ready: status !== "loading",
     signInWithGoogle: (callbackUrl = "/account") => signIn("google", { callbackUrl }),
-    signOut: () => signOut({ callbackUrl: "/" }),
+    // End BOTH identities: the Google session and any owner password session,
+    // so no admin powers linger on this device after sign-out.
+    signOut: async () => {
+      try { await fetch("/api/admin/login", { method: "DELETE" }); } catch {}
+      signOut({ callbackUrl: "/" });
+    },
   };
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

@@ -1,23 +1,55 @@
 "use client";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { effectivePrice, FREE_SHIP, SHIP_FLAT } from "@/lib/products";
+import { useAccount } from "./AccountProvider";
 
 const CartContext = createContext(null);
 export { FREE_SHIP };
 
+// Each identity gets its own bag: guests use "reet-cart", signed-in customers
+// use "reet-cart:<email>". Signing in carries the guest bag over (merged);
+// signing out returns you to the (now empty) guest bag — nobody ever sees
+// someone else's items.
+const keyFor = (email) => (email ? `reet-cart:${email}` : "reet-cart");
+const readCart = (key) => {
+  try { return JSON.parse(localStorage.getItem(key) || "[]"); } catch { return []; }
+};
+
 export function CartProvider({ children }) {
+  const { account, ready: accountReady } = useAccount() || {};
+  const email = account?.email || null;
   const [items, setItems] = useState([]);
   const [open, setOpen] = useState(false);
-  const [ready, setReady] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const identityRef = useRef(undefined); // last identity whose bag is loaded
 
-  // load + persist (real app in the browser — localStorage is fine here)
   useEffect(() => {
-    try { const s = localStorage.getItem("reet-cart"); if (s) setItems(JSON.parse(s)); } catch {}
-    setReady(true);
-  }, []);
+    if (!accountReady) return;
+    const prev = identityRef.current;
+    if (prev === email) return;
+    identityRef.current = email;
+
+    const next = readCart(keyFor(email));
+    // Just signed in on this device — bring the guest bag along.
+    if (email && prev === null) {
+      const guest = readCart("reet-cart");
+      if (guest.length) {
+        for (const g of guest) {
+          const i = next.findIndex((x) => x.key === g.key);
+          if (i >= 0) next[i] = { ...next[i], qty: next[i].qty + g.qty };
+          else next.push(g);
+        }
+        try { localStorage.removeItem("reet-cart"); } catch {}
+      }
+    }
+    setItems(next);
+    setLoaded(true);
+  }, [email, accountReady]);
+
   useEffect(() => {
-    if (ready) { try { localStorage.setItem("reet-cart", JSON.stringify(items)); } catch {} }
-  }, [items, ready]);
+    if (!loaded) return;
+    try { localStorage.setItem(keyFor(identityRef.current), JSON.stringify(items)); } catch {}
+  }, [items, loaded]);
 
   const addToCart = (product, size, qty = 1) => {
     setItems((prev) => {

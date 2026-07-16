@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { signOut as googleSignOut } from "next-auth/react";
 import AdminOrders from "@/components/AdminOrders";
 
 const CATEGORIES = ["kurtis", "lehengas", "sari", "blouses", "pants", "jewelry", "shoes"];
@@ -31,7 +32,11 @@ export default function AdminPage() {
     fetch("/api/admin/status").then((r) => (r.ok ? r.json() : null)).then(setHealth).catch(() => {});
   }, []);
 
-  const signOut = async () => { try { await fetch("/api/admin/login", { method: "DELETE" }); } catch {} window.location.href = "/admin/login"; };
+  // Clears both the password session and any Google owner session.
+  const signOut = async () => {
+    try { await fetch("/api/admin/login", { method: "DELETE" }); } catch {}
+    googleSignOut({ callbackUrl: "/admin/login" });
+  };
   const notifyLive = () => {
     if (!subs.length) { alert("No subscribers yet \u2014 share the site so people can sign up!"); return; }
     const bcc = subs.map((x) => x.email).join(",");

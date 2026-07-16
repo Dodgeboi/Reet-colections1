@@ -73,8 +73,8 @@ export default function RootLayout({ children }) {
     <html lang="en" className={`${cormorant.variable} ${jost.variable} ${devanagari.variable}`}>
       <body>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
-        <CartProvider>
-          <AccountProvider>
+        <AccountProvider>
+          <CartProvider>
             <WishlistProvider>
               <Header />
               <main>{children}</main>
@@ -83,8 +83,8 @@ export default function RootLayout({ children }) {
               <BackToTop />
               <HideOnAdmin><PhotoEditMode /></HideOnAdmin>
             </WishlistProvider>
-          </AccountProvider>
-        </CartProvider>
+          </CartProvider>
+        </AccountProvider>
       </body>
     </html>
   );
