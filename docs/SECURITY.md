@@ -5,11 +5,12 @@
 The dashboard (`/admin`) accepts two ways in — both land on the same pages:
 
 1. **Email + password.** The login page posts to `POST /api/admin/login`.
-   The server compares the email to `ADMIN_EMAIL` and the SHA-256 hash of the
-   submitted password to `ADMIN_PASSWORD_HASH` using a constant-time
+   The server checks the email against the `ADMIN_EMAILS` list (comma-
+   separated; `ADMIN_EMAIL` still works) and the SHA-256 hash of the
+   submitted password against `ADMIN_PASSWORD_HASH` using a constant-time
    comparison. The plaintext password is never stored anywhere.
 2. **Google.** If the visitor is signed in with Google (NextAuth) and their
-   email equals `ADMIN_EMAIL`, middleware lets them straight in.
+   email is in `ADMIN_EMAILS`, middleware lets them straight in.
 
 **Sessions.** On password login the server sets a signed, expiring token
 (`expiry.HMAC-SHA256(expiry)`, keyed by `ADMIN_SESSION_SECRET`) in an

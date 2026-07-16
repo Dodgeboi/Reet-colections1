@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 import { ADMIN_COOKIE, verifySessionToken } from "@/lib/adminSession";
+import { adminEmails, isAdminEmail } from "@/lib/adminEmails";
 
 export async function middleware(req) {
   const { pathname } = req.nextUrl;
@@ -10,12 +11,11 @@ export async function middleware(req) {
   const token = req.cookies.get(ADMIN_COOKIE)?.value;
   if (await verifySessionToken(process.env.ADMIN_SESSION_SECRET, token)) return NextResponse.next();
 
-  // Or signed in with Google as the owner
-  const adminEmail = (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
-  if (adminEmail && process.env.NEXTAUTH_SECRET) {
+  // Or signed in with Google as an owner
+  if (adminEmails().length && process.env.NEXTAUTH_SECRET) {
     try {
       const jwt = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-      if ((jwt?.email || "").toLowerCase() === adminEmail) return NextResponse.next();
+      if (isAdminEmail(jwt?.email)) return NextResponse.next();
     } catch {}
   }
 

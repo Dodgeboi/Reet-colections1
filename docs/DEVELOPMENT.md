@@ -27,7 +27,7 @@ A template lives in `.env.example`.
 
 | Variable | Purpose |
 |---|---|
-| `ADMIN_EMAIL` | The owner's email for `/admin` login (also unlocks admin via Google) |
+| `ADMIN_EMAILS` | Owner emails, comma-separated — each works for `/admin` login and unlocks admin via their own Google account |
 | `ADMIN_PASSWORD_HASH` | SHA-256 hash of the owner password (never the password itself) |
 | `ADMIN_SESSION_SECRET` | Long random secret that signs the owner session cookie |
 | `NEXTAUTH_SECRET` | Long random secret for NextAuth (Google sign-in) sessions |

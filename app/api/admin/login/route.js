@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import crypto from "node:crypto";
 import { ADMIN_COOKIE, SESSION_MAX_AGE, createSessionToken } from "@/lib/adminSession";
+import { adminEmails, isAdminEmail } from "@/lib/adminEmails";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -25,10 +26,9 @@ function recordMiss(ip) {
 export async function POST(req) {
   try {
     const { email, password } = await req.json();
-    const expectedEmail = (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
     const expectedHash = (process.env.ADMIN_PASSWORD_HASH || "").trim().toLowerCase();
     const secret = process.env.ADMIN_SESSION_SECRET;
-    if (!expectedEmail || !expectedHash || !secret) {
+    if (!adminEmails().length || !expectedHash || !secret) {
       return NextResponse.json({ error: "Admin login isn't configured on the server yet." }, { status: 500 });
     }
 
@@ -38,7 +38,7 @@ export async function POST(req) {
     }
 
     const hash = crypto.createHash("sha256").update(String(password || ""), "utf8").digest("hex");
-    const emailOk = String(email || "").trim().toLowerCase() === expectedEmail;
+    const emailOk = isAdminEmail(email);
     const passOk = hash.length === expectedHash.length &&
       crypto.timingSafeEqual(Buffer.from(hash), Buffer.from(expectedHash));
     if (!emailOk || !passOk) {

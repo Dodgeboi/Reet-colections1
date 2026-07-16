@@ -27,7 +27,7 @@ In **Vercel → your project → Settings → Environment Variables**, add these
 
 | Name | Value |
 |---|---|
-| `ADMIN_EMAIL` | `reetunaren@gmail.com` |
+| `ADMIN_EMAILS` | `reetunaren@gmail.com,namanupadhyay27@gmail.com` |
 | `ADMIN_PASSWORD_HASH` | `17c031e15b647c4534e0f0bebf2ff793fc035cf88af47d737b9635c714fe2da5` |
 | `ADMIN_SESSION_SECRET` | any long random string — see below |
 | `NEXTAUTH_SECRET` | another long random string — see below |
@@ -59,8 +59,8 @@ site works read-only from the built-in catalog.)
 
 ## Step 4 — Connect Google sign-in (8 min)
 
-This powers **Sign in with Google** for customers — and for you: signing in
-with your own Google account (`reetunaren@gmail.com`) opens the owner
+This powers **Sign in with Google** for customers — and for the owners:
+signing in with any Google account listed in `ADMIN_EMAILS` opens the owner
 dashboard directly, no password needed.
 
 1. Go to <https://console.cloud.google.com> and sign in with the shop's
