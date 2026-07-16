@@ -16,6 +16,7 @@ function Bridge({ children }) {
         email: (user.email || "").toLowerCase(),
         image: user.image || null,
         since: user.since || null,
+        isOwner: !!user.isOwner,
       }
     : null;
 

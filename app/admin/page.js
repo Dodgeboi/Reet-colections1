@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import AdminOrders from "@/components/AdminOrders";
+import AdminPhotos from "@/components/AdminPhotos";
 
 const CATEGORIES = ["kurtis", "lehengas", "sari", "blouses", "pants", "jewelry", "shoes"];
 const STATUSES = ["available", "claimed", "sold"];
@@ -22,6 +23,8 @@ export default function AdminPage() {
   const [subs, setSubs] = useState([]);
   const [showSubs, setShowSubs] = useState(false);
   const [health, setHealth] = useState(null);
+  const [tab, setTab] = useState("inventory");
+  const [uploadingId, setUploadingId] = useState("");
 
   useEffect(() => {
     fetch("/api/products").then((r) => r.json()).then((d) => { setItems(Array.isArray(d) ? d : []); setLoading(false); }).catch(() => setLoading(false));
@@ -42,6 +45,21 @@ export default function AdminPage() {
   const patch = (id, p) => mutate((prev) => prev.map((i) => (i.id === id ? { ...i, ...p } : i)));
   const adjustQty = (id, d) => mutate((prev) => prev.map((i) => (i.id === id ? { ...i, qty: Math.max(0, (Number(i.qty) || 0) + d) } : i)));
   const remove = (id) => { if (confirm("Delete this product?")) mutate((prev) => prev.filter((i) => i.id !== id)); };
+
+  // Upload a photo for one product; remember to press Save afterwards.
+  const uploadPhoto = async (id, file) => {
+    if (!file) return;
+    setUploadingId(id);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const r = await fetch("/api/upload", { method: "POST", body: fd });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(d.error || "Upload failed.");
+      patch(id, { image: d.url });
+    } catch (e) { alert(e.message); }
+    finally { setUploadingId(""); }
+  };
 
   const addItem = () => {
     if (!draft.name.trim()) return;
@@ -81,12 +99,12 @@ export default function AdminPage() {
   const fieldCls = "w-full rounded-lg border border-onyx/15 bg-white px-2.5 py-1.5 font-sans text-sm text-onyx focus:border-gold focus:outline-none";
 
   return (
-    <div className="min-h-screen bg-ivory pt-24 pb-28">
+    <div className="min-h-screen bg-ivory pt-32 pb-28">
       <div className="mx-auto max-w-6xl px-4 sm:px-8">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <p className="eyebrow">Owner dashboard</p>
-            <h1 className="mt-1 font-display text-3xl font-light text-onyx sm:text-4xl">Inventory</h1>
+            <h1 className="mt-1 font-display text-3xl font-light text-onyx sm:text-4xl">Reet Collections</h1>
           </div>
           <div className="flex items-center gap-4">
             <Link href="/admin/import" className="font-sans text-xs uppercase tracking-wide text-rose hover:text-rose-deep">+ Add from photo (AI)</Link>
@@ -113,6 +131,19 @@ export default function AdminPage() {
           </div>
         )}
 
+        {/* tabs */}
+        <div className="mt-6 flex gap-6 border-b border-onyx/10">
+          {[["inventory", "Inventory"], ["orders", "Orders"], ["photos", "Site photos"]].map(([id, label]) => (
+            <button key={id} onClick={() => setTab(id)}
+              className={`-mb-px border-b-2 pb-2.5 font-sans text-[12px] uppercase tracking-[0.14em] transition-colors ${tab === id ? "border-onyx text-onyx" : "border-transparent text-onyx/45 hover:text-onyx"}`}>
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {tab === "photos" && <AdminPhotos />}
+
+        {tab === "orders" && (<>
         <AdminOrders />
 
         {/* live announcements + subscribers */}
@@ -133,7 +164,9 @@ export default function AdminPage() {
             </div>
           )}
         </div>
+        </>)}
 
+        {tab === "inventory" && (<>
         {/* toolbar */}
         <div className="mt-6 flex flex-wrap items-center gap-3">
           <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search name or code…" className={`${fieldCls} max-w-xs flex-1`} />
@@ -149,7 +182,22 @@ export default function AdminPage() {
             <input className={fieldCls} type="number" placeholder="Price $" value={draft.price} onChange={(e) => setDraft({ ...draft, price: e.target.value })} />
             <input className={fieldCls} type="number" placeholder="Sale $ (optional)" value={draft.salePrice} onChange={(e) => setDraft({ ...draft, salePrice: e.target.value })} />
             <input className={fieldCls} placeholder="Sizes (M, L, XL)" value={draft.sizes} onChange={(e) => setDraft({ ...draft, sizes: e.target.value })} />
-            <select className={fieldCls} value={draft.image} onChange={(e) => setDraft({ ...draft, image: e.target.value })}>{IMG_OPTIONS.map((im, i) => <option key={im} value={im}>Photo {i + 1}</option>)}</select>
+            <div className="flex items-center gap-2">
+              <div className="relative h-12 w-10 shrink-0 overflow-hidden bg-ivory ring-1 ring-onyx/10">
+                {draft.image && <Image src={draft.image} alt="Product photo" fill sizes="40px" className="object-cover" />}
+              </div>
+              <label className="btn-outline flex-1 cursor-pointer !py-1.5 text-[11px]">
+                Upload photo
+                <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  const fd = new FormData(); fd.append("file", file);
+                  const r = await fetch("/api/upload", { method: "POST", body: fd });
+                  const d = await r.json().catch(() => ({}));
+                  if (r.ok) setDraft((prev) => ({ ...prev, image: d.url })); else alert(d.error || "Upload failed.");
+                }} />
+              </label>
+            </div>
             <button onClick={addItem} className="btn-gold !py-2 text-xs sm:col-span-2 lg:col-span-1">Add to inventory</button>
           </div>
         )}
@@ -159,8 +207,15 @@ export default function AdminPage() {
           {loading ? <p className="py-10 text-center font-sans text-onyx/50">Loading inventory…</p> :
             filtered.map((i) => (
               <div key={i.id} className="grid grid-cols-[64px_1fr] gap-3 rounded-2xl border border-onyx/8 bg-white p-3 shadow-soft sm:grid-cols-[72px_1fr_auto]">
-                <div className="relative h-20 w-16 overflow-hidden rounded-lg bg-ivory ring-1 ring-onyx/5 sm:h-[88px] sm:w-[72px]">
-                  {i.image && <Image src={i.image} alt={i.name} fill sizes="72px" className="object-cover" />}
+                <div>
+                  <div className="relative h-20 w-16 overflow-hidden rounded-lg bg-ivory ring-1 ring-onyx/5 sm:h-[88px] sm:w-[72px]">
+                    {i.image && <Image src={i.image} alt={i.name} fill sizes="72px" className="object-cover" />}
+                    {uploadingId === i.id && <div className="absolute inset-0 flex items-center justify-center bg-onyx/50 font-sans text-[9px] uppercase text-ivory">…</div>}
+                  </div>
+                  <label className="mt-1 block cursor-pointer text-center font-sans text-[10px] text-onyx/50 underline hover:text-onyx">
+                    Change photo
+                    <input type="file" accept="image/*" className="hidden" onChange={(e) => uploadPhoto(i.id, e.target.files?.[0])} />
+                  </label>
                 </div>
                 <div className="min-w-0">
                   <input className="w-full bg-transparent font-display text-lg text-onyx focus:outline-none" value={i.name} onChange={(e) => patch(i.id, { name: e.target.value })} />
@@ -187,9 +242,11 @@ export default function AdminPage() {
               </div>
             ))}
         </div>
+        </>)}
       </div>
 
       {/* sticky save bar */}
+      {tab === "inventory" && (
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-gold/30 bg-white/95 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-8">
           <p className="font-sans text-xs text-onyx/55">
@@ -198,6 +255,7 @@ export default function AdminPage() {
           <button onClick={save} disabled={!dirty || saving} className="btn-gold !py-2 text-sm disabled:opacity-40">{saving ? "Saving…" : "Save changes"}</button>
         </div>
       </div>
+      )}
     </div>
   );
 }

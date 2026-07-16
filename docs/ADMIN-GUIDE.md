@@ -14,6 +14,14 @@ To leave, click **Sign out** (top right).
 
 ## The dashboard at a glance
 
+The dashboard has three tabs:
+
+- **Inventory** — your products: add, edit, price, photograph, save.
+- **Orders** — customer orders and the "we're live" email blast.
+- **Site photos** — the big pictures around the site (home page hero, the
+  heritage band, your About-page portrait). Upload a new photo and it goes
+  live immediately.
+
 At the top you'll see quick numbers:
 - **In stock** — items available to buy
 - **Low stock** — items running low
@@ -24,7 +32,7 @@ At the top you'll see quick numbers:
 
 1. Click **+ Add product**.
 2. Fill in the name, category, price, and quantity.
-3. Pick a photo from the gallery.
+3. Press **Upload photo** and pick a picture from your phone or computer.
 4. New items automatically get a **"New"** badge on the website.
 5. Click **Save changes** at the bottom — *nothing is saved until you do this.*
 
@@ -39,6 +47,7 @@ Right on the list you can change:
   and a "% off" badge). Clear it to end the sale.
 - **Quantity**
 - **Status** — Available / Claimed / Sold
+- **The photo** — click **Change photo** under any product's picture to upload a new one
 
 Always click **Save changes** when you're done.
 

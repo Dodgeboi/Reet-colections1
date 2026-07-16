@@ -1,21 +1,6 @@
 import { NextResponse } from "next/server";
 import { isAdmin } from "@/lib/adminAuth";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
-
-// Uploaded photos go to public/images/imports locally, and to Vercel Blob in
-// production (the deployed filesystem is read-only).
-async function saveUpload(buffer, name, contentType) {
-  if (process.env.BLOB_READ_WRITE_TOKEN) {
-    const { put } = await import("@vercel/blob");
-    const blob = await put(`images/imports/${name}`, buffer, { access: "public", addRandomSuffix: false, contentType });
-    return blob.url;
-  }
-  const uploadDir = path.join(process.cwd(), "public", "images", "imports");
-  await mkdir(uploadDir, { recursive: true });
-  await writeFile(path.join(uploadDir, name), buffer);
-  return `/images/imports/${name}`;
-}
+import { saveUpload, extFromMime } from "@/lib/uploads";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -28,12 +13,6 @@ function safeJson(text) {
   const end = cleaned.lastIndexOf("]");
   if (start >= 0 && end > start) return JSON.parse(cleaned.slice(start, end + 1));
   return JSON.parse(cleaned);
-}
-
-function extFromMime(mime) {
-  if (mime === "image/png") return "png";
-  if (mime === "image/webp") return "webp";
-  return "jpg";
 }
 
 function fallbackProducts(savedImages, caption) {

@@ -12,11 +12,11 @@ const rise = {
 };
 
 // Full-bleed editorial hero: one photograph, quiet type, two flat actions.
-export default function Hero() {
+export default function Hero({ image = "/images/hero-anarkali.jpg" }) {
   return (
     <section className="relative flex min-h-[88svh] items-end overflow-hidden bg-onyx">
       <Image
-        src="/images/hero-anarkali.jpg"
+        src={image}
         alt="Reet Collections festive wear"
         fill
         priority

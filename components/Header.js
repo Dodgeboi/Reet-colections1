@@ -64,6 +64,7 @@ export default function Header() {
                 <Link key={item.href} href={item.href} className="nav-underline text-[12px] text-onyx/75 hover:text-onyx">{item.label}</Link>
               ))}
               <div className="flex items-center gap-5 border-l border-onyx/15 pl-6">
+                {account?.isOwner && <Link href="/admin" className="whitespace-nowrap font-sans text-[12px] font-medium text-gold-deep transition-colors hover:text-onyx">Admin</Link>}
                 <button onClick={() => setSearchOpen(true)} aria-label="Search" className="text-onyx/70 transition-colors hover:text-onyx"><SearchI /></button>
                 <Link href="/account" className="whitespace-nowrap font-sans text-[12px] text-onyx/70 transition-colors hover:text-onyx">{account ? `Hi, ${account.name.split(" ")[0]}` : "Sign in"}</Link>
                 <Link href="/account" aria-label="Wishlist" className="relative text-onyx/70 transition-colors hover:text-onyx"><HeartI /><Badge n={wishCount} /></Link>
@@ -89,6 +90,7 @@ export default function Header() {
                 <Link key={item.href} href={item.href} onClick={() => setOpen(false)} className="border-b border-onyx/8 py-3 font-display text-2xl text-onyx hover:text-rose-deep">{item.label}</Link>
               ))}
               <Link href="/account" onClick={() => setOpen(false)} className="border-b border-onyx/8 py-3 font-display text-2xl text-onyx hover:text-rose-deep">{account ? `Hi, ${account.name.split(" ")[0]}` : "Sign in"}{wishCount > 0 ? ` · Wishlist (${wishCount})` : ""}</Link>
+              {account?.isOwner && <Link href="/admin" onClick={() => setOpen(false)} className="border-b border-onyx/8 py-3 font-display text-2xl text-gold-deep hover:text-onyx">Owner Dashboard</Link>}
               <a href="https://www.facebook.com/Reetcollections068/" target="_blank" rel="noopener noreferrer" className="btn-rose mt-4 w-full">Watch live</a>
             </nav>
           </div>

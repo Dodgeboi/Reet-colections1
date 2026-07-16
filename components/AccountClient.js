@@ -90,7 +90,10 @@ export default function AccountClient({ googleEnabled }) {
               <h1 className="mt-1 font-display text-4xl font-light text-onyx sm:text-5xl">Welcome back, {firstName}</h1>
             </div>
           </div>
-          <button onClick={signOut} className="btn-outline !py-2 text-xs">Sign out</button>
+          <div className="flex items-center gap-3">
+            {account.isOwner && <Link href="/admin" className="btn-gold !py-2 text-xs">Owner dashboard</Link>}
+            <button onClick={signOut} className="btn-outline !py-2 text-xs">Sign out</button>
+          </div>
         </div>
 
         <div className="mt-8 grid gap-4 sm:grid-cols-3">

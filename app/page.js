@@ -8,6 +8,7 @@ import ProductRow from "@/components/ProductRow";
 import Marquee from "@/components/Marquee";
 import GoldThread from "@/components/GoldThread";
 import { getCatalog } from "@/lib/catalog";
+import { getSiteSettings } from "@/lib/siteSettings";
 import { onSale } from "@/lib/products";
 import { newestThree } from "@/lib/lives";
 import LiveCard from "@/components/LiveCard";
@@ -15,7 +16,7 @@ import LiveCard from "@/components/LiveCard";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const products = await getCatalog();
+  const [products, site] = await Promise.all([getCatalog(), getSiteSettings()]);
   const firstImageFor = (slug) => products.find((p) => p.category === slug)?.image || "/images/products/reet-01.jpg";
   const countFor = (slug) => products.filter((p) => p.category === slug).length;
   const TILE_DEFS = [
@@ -38,7 +39,7 @@ export default async function Home() {
   const saleItems = products.filter((p) => onSale(p)).slice(0, 4);
   return (
     <>
-      <Hero />
+      <Hero image={site.hero} />
       <TrustBar />
       <CategoryTiles tiles={tiles} />
 
@@ -46,7 +47,7 @@ export default async function Home() {
 
       <ProductRow eyebrow="Just arrived" title="New In" viewAllHref="/collections/new-in" products={newIn.slice(0, 4)} />
 
-      <Heritage image="/images/heritage-mustard.jpg" />
+      <Heritage image={site.heritage} />
 
       <ProductRow eyebrow="Limited-time prices" title="On Sale Now" viewAllHref="/collections/sale" products={saleItems} tone="blush" />
 

@@ -9,6 +9,7 @@ Blob store once — see [Deployment](./DEPLOYMENT.md) Step 3).
 | Data | Storage | Persists in production? |
 |---|---|---|
 | Products / inventory | `data/products.json` → Blob | ✅ with Blob connected |
+| Site photos (hero, heritage, about) | `data/site.json` → Blob | ✅ with Blob connected |
 | Orders | `data/orders.json` → Blob | ✅ with Blob connected |
 | Subscribers | `data/subscribers.json` → Blob | ✅ with Blob connected |
 | Customer accounts | Google sign-in (NextAuth, JWT) | ✅ no database needed |
@@ -52,6 +53,15 @@ Each entry in `data/products.json`:
   "New" badge.
 - **Special category slugs** used by filters: `this-week`, `new-in`, `sale`, `clearance`
   (these read the boolean flags above rather than the literal category).
+
+## Site settings (`data/site.json`)
+
+```json
+{ "hero": "https://…/upload-123.jpg", "heritage": "/images/heritage-mustard.jpg", "about": "/images/hero-anarkali.jpg" }
+```
+
+Only the slots the owner has changed are stored; anything missing falls back
+to the built-in defaults (`lib/siteSettings.js`).
 
 ## Subscriber object (`data/subscribers.json`)
 

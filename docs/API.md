@@ -62,6 +62,25 @@ Dashboard health check: `{ writable, google, aiImport }` — whether saves
 persist (Blob connected / local disk), whether Google sign-in is configured,
 and whether the AI importer has an API key.
 
+## Site photos & uploads
+
+### `GET /api/site` — *public*
+The editable site imagery: `{ hero, heritage, about }` (URLs). Defaults are
+built in; the owner's choices override them.
+
+### `POST /api/site` — *admin only*
+Body: any of `{ hero, heritage, about }` as image URLs. Saved immediately.
+
+### `POST /api/upload` — *admin only*
+Multipart form with a `file` image (max 8 MB). Stores it (Vercel Blob in
+production, a local folder in dev) and returns `{ url }` for use as a product
+or site photo.
+
+### `GET /api/uploads/[name]` — *public*
+Serves locally-uploaded photos in development (`next start` doesn't serve
+files added to `/public` after a build). Production photos live on Blob and
+never hit this route.
+
 ## AI photo import — *admin only*
 
 ### `POST /api/import/extract`
@@ -90,4 +109,7 @@ Appends them to the catalog.
 | `/api/admin/login` | POST/DELETE | Public endpoint, guarded by credentials |
 | `/api/admin/status` | GET | Owner |
 | `/api/auth/*` | GET/POST | NextAuth (Google) |
+| `/api/site` | GET | Public |
+| `/api/site` | POST | Owner |
+| `/api/upload` | POST | Owner |
 | `/api/import/*` | POST | Owner |

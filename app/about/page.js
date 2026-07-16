@@ -3,8 +3,12 @@ import Image from "next/image";
 import PageBanner from "@/components/PageBanner";
 import GoldThread from "@/components/GoldThread";
 import { Reveal } from "@/components/Reveal";
+import { getSiteSettings } from "@/lib/siteSettings";
 
-export default function AboutPage() {
+export const dynamic = "force-dynamic";
+
+export default async function AboutPage() {
+  const site = await getSiteSettings();
   return (
     <>
       <PageBanner eyebrow="Our story" title="Selected With Love" />
@@ -14,7 +18,7 @@ export default function AboutPage() {
         <div className="grid items-center gap-12 lg:grid-cols-[0.9fr_1.1fr]">
           <Reveal>
             <div className="relative mx-auto aspect-[4/5] w-full max-w-sm overflow-hidden shadow-card">
-              <Image src="/images/hero-anarkali.jpg" alt="The founder of Reet Collections" fill sizes="(max-width:1024px) 90vw, 40vw" className="object-cover object-[center_18%]" />
+              <Image src={site.about} alt="The founder of Reet Collections" fill sizes="(max-width:1024px) 90vw, 40vw" className="object-cover object-[center_18%]" />
             </div>
           </Reveal>
           <Reveal delay={0.1}>
