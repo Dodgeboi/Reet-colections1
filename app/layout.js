@@ -8,6 +8,7 @@ import { WishlistProvider } from "@/components/WishlistProvider";
 import CartDrawer from "@/components/CartDrawer";
 import BackToTop from "@/components/BackToTop";
 import HideOnAdmin from "@/components/HideOnAdmin";
+import PhotoEditMode from "@/components/PhotoEditMode";
 import { siteUrl } from "@/lib/site";
 
 const cormorant = Cormorant_Garamond({
@@ -80,6 +81,7 @@ export default function RootLayout({ children }) {
               <HideOnAdmin><Footer /></HideOnAdmin>
               <CartDrawer />
               <BackToTop />
+              <HideOnAdmin><PhotoEditMode /></HideOnAdmin>
             </WishlistProvider>
           </AccountProvider>
         </CartProvider>

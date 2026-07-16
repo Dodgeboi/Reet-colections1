@@ -48,7 +48,7 @@ export default function ProductDetail({ product, related = [] }) {
           {/* image */}
           <div className="lg:sticky lg:top-32 lg:self-start">
             <div className="relative aspect-[4/5] overflow-hidden bg-[#F3EDE4]">
-              <Image src={product.image} alt={product.name} fill sizes="(max-width:1024px) 90vw, 45vw" className="object-cover" priority />
+              <Image src={product.image} alt={product.name} fill sizes="(max-width:1024px) 90vw, 45vw" className="object-cover" priority data-edit={`product:${product.id}`} />
               {product.newIn && (
                 <span className="absolute left-0 top-4 bg-onyx px-2.5 py-1 font-sans text-[9px] font-medium uppercase tracking-[0.14em] text-ivory">New arrival</span>
               )}

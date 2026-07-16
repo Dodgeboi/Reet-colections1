@@ -4,6 +4,9 @@ import LiveCard from "@/components/LiveCard";
 import GoldThread from "@/components/GoldThread";
 import { Reveal, RevealGroup, RevealItem } from "@/components/Reveal";
 import { newestThree, restOfLives, formatLiveDate, weekLabel, FACEBOOK_PAGE } from "@/lib/lives";
+import { getSiteSettings } from "@/lib/siteSettings";
+
+export const dynamic = "force-dynamic";
 
 const steps = [
   { n: "01", t: "Join the live", d: "We go live every evening at 8 PM on Facebook. New pieces are revealed one by one." },
@@ -11,7 +14,9 @@ const steps = [
   { n: "03", t: "We hold it for you", d: "We confirm over message, pack it with care, and ship it to your door." },
 ];
 
-export default function LivePage() {
+export default async function LivePage() {
+  const site = await getSiteSettings();
+  const withThumb = (live) => ({ ...live, thumbnail: site.liveThumbs[live.id] || live.thumbnail });
   return (
     <>
       <PageBanner eyebrow="Live" title="Live Every Evening"
@@ -24,7 +29,7 @@ export default function LivePage() {
           <h2 className="mt-2 font-display text-4xl font-light text-onyx">Our 3 Newest Lives</h2>
         </Reveal>
         <RevealGroup className="grid gap-6 md:grid-cols-3" stagger={0.1}>
-          {newestThree.map((live) => <RevealItem key={live.id}><LiveCard live={live} /></RevealItem>)}
+          {newestThree.map((live) => <RevealItem key={live.id}><LiveCard live={withThumb(live)} /></RevealItem>)}
         </RevealGroup>
       </section>
 

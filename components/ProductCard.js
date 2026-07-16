@@ -21,7 +21,8 @@ export default function ProductCard({ product }) {
       <div className={`relative overflow-hidden bg-white ${isSold ? "opacity-70" : ""}`}>
         <div className="relative aspect-[4/5] overflow-hidden bg-[#F3EDE4]">
           <Image src={product.image} alt={product.name} fill sizes="(max-width:768px) 50vw, 25vw"
-            className={`object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04] ${isSold ? "grayscale-[0.35]" : ""}`} />
+            className={`object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04] ${isSold ? "grayscale-[0.35]" : ""}`}
+            data-edit={`product:${product.id}`} />
           <div className="absolute left-0 top-3 flex flex-col items-start gap-1">
             {product.status !== "available" && (
               <span className={`px-2.5 py-1 font-sans text-[9px] font-medium uppercase tracking-[0.14em] ${meta.className}`}>{meta.label}</span>

@@ -4,14 +4,16 @@ A high-level history of what's been built. Newest first.
 
 ## Phase 2 — a real, working shop
 
-**Owner photo management & tabs**
-- The dashboard now has three tabs: **Inventory · Orders · Site photos**.
-- **Site photos** tab: swap the home hero, the heritage-band photo, and the
-  About-page portrait by uploading from any device — changes go live instantly.
-- Product photos: every inventory row has **Change photo**, and new products
-  are added with a direct upload (no more fixed gallery list).
-- Signing in with the owner's Google account now shows an **Admin** link in
-  the site header and an **Owner dashboard** button on the account page.
+**In-place photo editing (owner mode)**
+- Signed-in owners get a floating **Edit photos** button on every page. One
+  tap outlines every editable photo — home hero, heritage band, About
+  portrait, all product photos, live-replay thumbnails, category tiles.
+  Tap a photo → pick a file → drag/zoom to crop → it's live instantly.
+- Dashboard slimmed to two tabs (**Inventory · Orders**); every inventory row
+  still has **Change photo**, and new products are added with a direct upload.
+- Signing in with an owner Google account shows an **Admin** link in the site
+  header and an **Owner dashboard** button on the account page.
+- Multiple owners supported via comma-separated `ADMIN_EMAILS`.
 
 **Luxury redesign**
 - Editorial, fashion-house look: full-bleed photographic hero, flat sharp-cornered

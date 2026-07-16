@@ -56,6 +56,16 @@
   .nav-underline:hover::after, .nav-underline[data-active="true"]::after { width: 100%; }
 }
 
+/* Owner photo-edit mode: every editable image gets an outline + pointer, and
+   rises above its decorative overlays (gradients, badges) so clicks land on it */
+body.photo-edit-mode [data-edit] {
+  outline: 2px dashed #C9A24B;
+  outline-offset: -3px;
+  cursor: pointer;
+  z-index: 35;
+}
+body.photo-edit-mode [data-edit]:hover { outline-color: #A85563; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important; animation-iteration-count: 1 !important;

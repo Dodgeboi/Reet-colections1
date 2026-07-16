@@ -13,7 +13,7 @@ export default function Heritage({ image }) {
     <section className="relative overflow-hidden bg-onyx py-16 text-ivory sm:py-20">
       <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-6 sm:px-8 lg:grid-cols-2">
         <div className="relative mx-auto aspect-[4/5] w-full max-w-sm overflow-hidden">
-          <Image src={image} alt="Reet Collections craftsmanship" fill sizes="(max-width:1024px) 80vw, 40vw" className="object-cover object-top" />
+          <Image src={image} alt="Reet Collections craftsmanship" fill sizes="(max-width:1024px) 80vw, 40vw" className="object-cover object-top" data-edit="site:heritage" />
         </div>
         <div className="text-center lg:text-left">
           <p className="font-deva text-lg text-gold-light">परंपरा</p>

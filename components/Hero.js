@@ -22,6 +22,7 @@ export default function Hero({ image = "/images/hero-anarkali.jpg" }) {
         priority
         sizes="100vw"
         className="object-cover object-[center_22%]"
+        data-edit="site:hero"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-onyx/85 via-onyx/25 to-onyx/10" />
 

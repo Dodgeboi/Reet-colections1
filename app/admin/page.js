@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import AdminOrders from "@/components/AdminOrders";
-import AdminPhotos from "@/components/AdminPhotos";
 
 const CATEGORIES = ["kurtis", "lehengas", "sari", "blouses", "pants", "jewelry", "shoes"];
 const STATUSES = ["available", "claimed", "sold"];
@@ -107,6 +106,7 @@ export default function AdminPage() {
             <h1 className="mt-1 font-display text-3xl font-light text-onyx sm:text-4xl">Reet Collections</h1>
           </div>
           <div className="flex items-center gap-4">
+            <Link href="/" className="font-sans text-xs uppercase tracking-wide text-gold-deep hover:text-onyx">Edit photos on the site →</Link>
             <Link href="/admin/import" className="font-sans text-xs uppercase tracking-wide text-rose hover:text-rose-deep">+ Add from photo (AI)</Link>
             <button onClick={signOut} className="font-sans text-xs uppercase tracking-wide text-onyx/45 hover:text-rose">Sign out</button>
           </div>
@@ -133,15 +133,13 @@ export default function AdminPage() {
 
         {/* tabs */}
         <div className="mt-6 flex gap-6 border-b border-onyx/10">
-          {[["inventory", "Inventory"], ["orders", "Orders"], ["photos", "Site photos"]].map(([id, label]) => (
+          {[["inventory", "Inventory"], ["orders", "Orders"]].map(([id, label]) => (
             <button key={id} onClick={() => setTab(id)}
               className={`-mb-px border-b-2 pb-2.5 font-sans text-[12px] uppercase tracking-[0.14em] transition-colors ${tab === id ? "border-onyx text-onyx" : "border-transparent text-onyx/45 hover:text-onyx"}`}>
               {label}
             </button>
           ))}
         </div>
-
-        {tab === "photos" && <AdminPhotos />}
 
         {tab === "orders" && (<>
         <AdminOrders />

@@ -24,7 +24,11 @@ export default async function Home() {
     ["Sarees", "sari"], ["Blouses", "blouses"], ["New In", "new-in"],
   ];
   const tiles = TILE_DEFS
-    .map(([name, slug]) => ({ name, slug, image: slug === "new-in" ? (products.find((p) => p.newIn)?.image || firstImageFor("kurtis")) : firstImageFor(slug), count: slug === "new-in" ? products.filter((p) => p.newIn).length : countFor(slug) }))
+    .map(([name, slug]) => ({
+      name, slug,
+      image: site.categoryTiles[slug] || (slug === "new-in" ? (products.find((p) => p.newIn)?.image || firstImageFor("kurtis")) : firstImageFor(slug)),
+      count: slug === "new-in" ? products.filter((p) => p.newIn).length : countFor(slug),
+    }))
     .filter((t) => t.count > 0);
   const occasions = [
     { label: "Bridal & Wedding", deva: "विवाह", href: "/collections/lehengas", color: "#5D0F1C" },
@@ -65,7 +69,7 @@ export default async function Home() {
           <div className="mt-4 flex justify-center"><GoldThread width={160} /></div>
         </div>
         <div className="grid gap-4 sm:grid-cols-3">
-          {newestThree.map((live) => <LiveCard key={live.id} live={live} />)}
+          {newestThree.map((live) => <LiveCard key={live.id} live={{ ...live, thumbnail: site.liveThumbs[live.id] || live.thumbnail }} />)}
         </div>
       </section>
 

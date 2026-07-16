@@ -6,7 +6,8 @@ export default function LiveCard({ live }) {
     <a href={live.facebookUrl} target="_blank" rel="noopener noreferrer" className="group block bg-white">
       <div className="relative aspect-video overflow-hidden bg-[#F3EDE4]">
         <Image src={live.thumbnail} alt={live.title} fill sizes="(max-width:768px) 90vw, 30vw"
-          className="object-cover object-top transition-transform duration-700 group-hover:scale-[1.04]" />
+          className="object-cover object-top transition-transform duration-700 group-hover:scale-[1.04]"
+          data-edit={`live:${live.id}`} />
         <div className="absolute inset-0 bg-gradient-to-t from-onyx/50 via-transparent to-transparent" />
         <span className="absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center bg-ivory/95 text-onyx transition-colors duration-300 group-hover:bg-rose-deep group-hover:text-ivory">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>

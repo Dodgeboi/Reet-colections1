@@ -14,19 +14,29 @@ To leave, click **Sign out** (top right).
 
 ## The dashboard at a glance
 
-The dashboard has three tabs:
+The dashboard has two tabs:
 
 - **Inventory** — your products: add, edit, price, photograph, save.
 - **Orders** — customer orders and the "we're live" email blast.
-- **Site photos** — the big pictures around the site (home page hero, the
-  heritage band, your About-page portrait). Upload a new photo and it goes
-  live immediately.
 
 At the top you'll see quick numbers:
 - **In stock** — items available to buy
 - **Low stock** — items running low
 - **Sold** — items that have sold out
 - **Stock value** — the total retail value of what's in stock
+
+## Changing any photo on the site
+
+While you're signed in, browse the shop like a customer — an **Edit photos**
+button floats at the bottom-left of every page.
+
+1. Tap **Edit photos**. Every photo you can change gets a gold outline —
+   the home page hero, the heritage picture, your About-page portrait,
+   every product photo, the live-replay thumbnails, and the category tiles.
+2. Tap any outlined photo. Your phone or computer asks you to pick a picture.
+3. Drag and zoom to crop it just right (or tap **Use full photo**).
+4. Tap **Save photo** — it's live on the site immediately.
+5. Tap **Done editing** when you're finished.
 
 ## Adding a new item
 

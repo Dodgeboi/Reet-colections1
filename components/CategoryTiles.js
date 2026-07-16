@@ -15,7 +15,8 @@ export default function CategoryTiles({ tiles }) {
             className={`group relative overflow-hidden ${idx === 0 ? "col-span-2 lg:col-span-1" : ""}`}>
             <div className="relative aspect-[4/5] sm:aspect-[3/4]">
               <Image src={t.image} alt={t.name} fill sizes="(max-width:640px) 50vw, 33vw"
-                className="object-cover object-top transition-transform duration-700 group-hover:scale-[1.04]" />
+                className="object-cover object-top transition-transform duration-700 group-hover:scale-[1.04]"
+                data-edit={`category:${t.slug}`} />
               <div className="absolute inset-0 bg-gradient-to-t from-onyx/70 via-onyx/5 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-5">
                 <h3 className="font-display text-xl text-ivory sm:text-2xl">{t.name}</h3>

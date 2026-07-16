@@ -14,6 +14,10 @@ Saves the entire catalog. Body: a JSON array of products.
 Requires an owner session; returns **401 Unauthorized** otherwise.
 Used by the admin dashboard's "Save changes" button.
 
+### `PATCH /api/products` — *admin only*
+Body: `{ "id": "RC-1001", "image": "<url>" }`. Replaces one product's photo —
+used by in-place photo editing on the storefront.
+
 ## Orders
 
 ### `POST /api/orders` — *public (checkout)*
@@ -65,11 +69,13 @@ and whether the AI importer has an API key.
 ## Site photos & uploads
 
 ### `GET /api/site` — *public*
-The editable site imagery: `{ hero, heritage, about }` (URLs). Defaults are
-built in; the owner's choices override them.
+The editable site imagery: `{ hero, heritage, about, liveThumbs, categoryTiles }`.
+Defaults are built in; the owner's choices override them.
 
 ### `POST /api/site` — *admin only*
-Body: any of `{ hero, heritage, about }` as image URLs. Saved immediately.
+Body: any of `{ hero, heritage, about }` as image URLs, and/or the maps
+`{ liveThumbs: { <liveId>: url } }` and `{ categoryTiles: { <slug>: url } }`
+(merged into what's stored). Saved immediately.
 
 ### `POST /api/upload` — *admin only*
 Multipart form with a `file` image (max 8 MB). Stores it (Vercel Blob in

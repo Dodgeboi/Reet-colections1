@@ -57,11 +57,18 @@ Each entry in `data/products.json`:
 ## Site settings (`data/site.json`)
 
 ```json
-{ "hero": "https://…/upload-123.jpg", "heritage": "/images/heritage-mustard.jpg", "about": "/images/hero-anarkali.jpg" }
+{
+  "hero": "https://…/upload-123.jpg",
+  "heritage": "/images/heritage-mustard.jpg",
+  "about": "/images/hero-anarkali.jpg",
+  "liveThumbs": { "live-2026-06-16": "https://…/upload-124.jpg" },
+  "categoryTiles": { "kurtis": "https://…/upload-125.jpg" }
+}
 ```
 
-Only the slots the owner has changed are stored; anything missing falls back
-to the built-in defaults (`lib/siteSettings.js`).
+Only what the owner has changed is stored; anything missing falls back to the
+built-in defaults (`lib/siteSettings.js`). All of it is edited in place on
+the storefront (owner-only "Edit photos" mode), never by hand.
 
 ## Subscriber object (`data/subscribers.json`)
 
