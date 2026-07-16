@@ -26,8 +26,12 @@ export default function PhotoEditMode() {
   const targetRef = useRef(null);
 
   // Works for both owner logins: the Google session or the password cookie.
+  // The body must explicitly confirm ownership — a bare 200 isn't enough.
   useEffect(() => {
-    fetch("/api/admin/status").then((r) => { if (r.ok) setIsOwner(true); }).catch(() => {});
+    fetch("/api/admin/status", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (d?.owner === true) setIsOwner(true); })
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
