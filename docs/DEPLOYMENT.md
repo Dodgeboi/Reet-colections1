@@ -93,6 +93,28 @@ dashboard directly, no password needed.
 
 To test locally too, put the same two values into `.env.local`.
 
+## Step 5 — Emails & the "Reet sign-in" (5 min, optional but recommended)
+
+One free key powers three things: the **email-code sign-in** (customers get a
+6-digit code by email — no Google needed), the **"you're subscribed"**
+welcome email, and **order confirmation emails** (customer gets a receipt,
+you get a heads-up for every order).
+
+1. Create a free account at <https://resend.com> → **API Keys** → create one.
+2. In Vercel → Environment Variables add `RESEND_API_KEY` with that key → Redeploy.
+3. (Later, optional) Verify your domain in Resend and set `EMAIL_FROM` to
+   e.g. `Reet Collections <hello@reetcollections.com>` so emails come from
+   your own address.
+
+## Optional — Facebook sign-in
+
+Since your customers live on Facebook: create an app at
+<https://developers.facebook.com> (type **Consumer**, add **Facebook Login**),
+set the OAuth redirect URI to
+`https://YOUR-SITE.vercel.app/api/auth/callback/facebook`, then add
+`FACEBOOK_CLIENT_ID` and `FACEBOOK_CLIENT_SECRET` in Vercel and redeploy.
+"Continue with Facebook" appears automatically.
+
 ## Optional — the AI photo importer
 
 Add `ANTHROPIC_API_KEY` (from <https://console.anthropic.com>) as an

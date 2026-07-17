@@ -9,6 +9,8 @@ import Marquee from "@/components/Marquee";
 import GoldThread from "@/components/GoldThread";
 import { getCatalog } from "@/lib/catalog";
 import { getSiteSettings } from "@/lib/siteSettings";
+import { textOf } from "@/lib/siteText";
+import Editable from "@/components/Editable";
 import { onSale } from "@/lib/products";
 import { newestThree } from "@/lib/lives";
 import LiveCard from "@/components/LiveCard";
@@ -43,15 +45,15 @@ export default async function Home() {
   const saleItems = products.filter((p) => onSale(p)).slice(0, 4);
   return (
     <>
-      <Hero image={site.hero} />
-      <TrustBar />
+      <Hero image={site.hero} title={textOf(site, "hero.title")} subtitle={textOf(site, "hero.subtitle")} />
+      <TrustBar text={site.text} />
       <CategoryTiles tiles={tiles} />
 
       <OccasionTiles tiles={occasions} />
 
       <ProductRow eyebrow="Just arrived" title="New In" viewAllHref="/collections/new-in" products={newIn.slice(0, 4)} />
 
-      <Heritage image={site.heritage} />
+      <Heritage image={site.heritage} text={site.text} />
 
       <ProductRow eyebrow="Limited-time prices" title="On Sale Now" viewAllHref="/collections/sale" products={saleItems} tone="blush" />
 
@@ -77,8 +79,8 @@ export default async function Home() {
       <section className="border-t border-onyx/10 bg-white py-14 text-center sm:py-18">
         <div className="mx-auto max-w-2xl px-5">
           <p className="eyebrow">Live every evening · 8 PM</p>
-          <h2 className="mt-2 font-display text-3xl font-light text-onyx sm:text-4xl">Be the first to shop the newest drops</h2>
-          <p className="mx-auto mt-3 max-w-md font-sans text-sm text-onyx/60">Join us live on Facebook each evening — claim your piece in the comments and we&apos;ll set it aside just for you.</p>
+          <h2 className="mt-2 font-display text-3xl font-light text-onyx sm:text-4xl"><Editable k="home.cta.title" value={textOf(site, "home.cta.title")} /></h2>
+          <p className="mx-auto mt-3 max-w-md font-sans text-sm text-onyx/60"><Editable k="home.cta.body" value={textOf(site, "home.cta.body")} /></p>
           <a href="https://www.facebook.com/Reetcollections068/" target="_blank" rel="noopener noreferrer" className="btn-rose mt-7 inline-block">Watch the live</a>
         </div>
       </section>

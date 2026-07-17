@@ -4,6 +4,8 @@ import PageBanner from "@/components/PageBanner";
 import GoldThread from "@/components/GoldThread";
 import { Reveal } from "@/components/Reveal";
 import { getSiteSettings } from "@/lib/siteSettings";
+import { textOf } from "@/lib/siteText";
+import Editable from "@/components/Editable";
 
 export const dynamic = "force-dynamic";
 
@@ -23,23 +25,17 @@ export default async function AboutPage() {
           </Reveal>
           <Reveal delay={0.1}>
             <h2 className="font-display text-4xl font-light leading-tight text-onyx">
-              Hi, I&apos;m the heart behind Reet Collections
+              <Editable k="about.heading" value={textOf(site, "about.heading")} />
             </h2>
             <div className="my-5"><GoldThread width={180} /></div>
             <p className="font-sans text-base leading-relaxed text-onyx/75">
-              What started as a love for beautiful Indian wear — and a habit of helping friends find
-              the perfect outfit — slowly grew into something I never expected: a little boutique with
-              a big, warm community around it.
+              <Editable k="about.p1" value={textOf(site, "about.p1")} />
             </p>
             <p className="mt-4 font-sans text-base leading-relaxed text-onyx/75">
-              Every evening I go live, hold up the pieces I&apos;ve handpicked, and chat with you about
-              fit, fabric, and which colour suits you best. It&apos;s the part of my day I look forward
-              to most. There are no warehouses here, no endless racks — just pieces I genuinely love and
-              think you&apos;ll love too.
+              <Editable k="about.p2" value={textOf(site, "about.p2")} />
             </p>
             <p className="mt-4 font-sans text-base italic leading-relaxed text-onyx/65">
-              &ldquo;I want every woman who shops with me to feel a little more like herself when she
-              puts the outfit on.&rdquo;
+              <Editable k="about.quote" value={textOf(site, "about.quote")} />
             </p>
           </Reveal>
         </div>
@@ -51,8 +47,7 @@ export default async function AboutPage() {
           <Reveal>
             <p className="eyebrow text-gold-light">Our promise to you</p>
             <p className="mt-6 font-display text-3xl font-light italic leading-relaxed sm:text-4xl">
-              Each piece is selected with love and care, just for you. We&apos;re honored to be a part
-              of your style journey.
+              <Editable k="about.promise" value={textOf(site, "about.promise")} />
             </p>
             <div className="mt-7 flex justify-center"><GoldThread width={200} /></div>
           </Reveal>

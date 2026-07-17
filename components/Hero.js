@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import LiveBadge from "./LiveBadge";
+import Editable from "./Editable";
 
 const easeLux = [0.22, 0.8, 0.2, 1];
 const rise = {
@@ -12,7 +13,7 @@ const rise = {
 };
 
 // Full-bleed editorial hero: one photograph, quiet type, two flat actions.
-export default function Hero({ image = "/images/hero-anarkali.jpg" }) {
+export default function Hero({ image = "/images/hero-anarkali.jpg", title = "Wear the Celebration", subtitle = "" }) {
   return (
     <section className="relative flex min-h-[88svh] items-end overflow-hidden bg-onyx">
       <Image
@@ -36,13 +37,12 @@ export default function Hero({ image = "/images/hero-anarkali.jpg" }) {
 
         <motion.h1 variants={rise} initial="hidden" animate="show" custom={2}
           className="mt-1 max-w-3xl font-display font-light leading-[1.02] text-ivory">
-          <span className="block text-[clamp(2.6rem,7vw,5.5rem)]">Wear the Celebration</span>
+          <span className="block text-[clamp(2.6rem,7vw,5.5rem)]"><Editable k="hero.title" value={title} /></span>
         </motion.h1>
 
         <motion.p variants={rise} initial="hidden" animate="show" custom={3}
           className="mt-4 max-w-lg font-sans text-[15px] leading-relaxed text-ivory/80">
-          Handpicked Indian ethnic &amp; fusion wear, revealed live every evening.
-          Join the live, claim your piece, and we&apos;ll set it aside just for you.
+          <Editable k="hero.subtitle" value={subtitle} />
         </motion.p>
 
         <motion.div variants={rise} initial="hidden" animate="show" custom={4}

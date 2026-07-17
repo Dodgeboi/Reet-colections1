@@ -58,8 +58,15 @@ IP → **429** for 15 minutes.
 Clears the owner session cookie (sign out).
 
 ### `GET/POST /api/auth/*` — NextAuth
-Google sign-in endpoints managed by NextAuth (`signIn`, `callback`,
-`session`, `signOut`…). Configured in `lib/auth.js`.
+Sign-in endpoints managed by NextAuth (`signIn`, `callback`, `session`,
+`signOut`…) for Google, Facebook, and the email-code credential provider.
+Configured in `lib/auth.js`; each method lights up when its env vars exist.
+
+### `POST /api/auth/otp` — *public, rate-limited*
+Body: `{ "email": "person@example.com" }`. Emails a single-use 6-digit
+sign-in code (10-minute expiry, 5 verify attempts, 3 codes per address per
+10 minutes). Step two is `signIn("reet-code", { email, code })` through
+NextAuth. Requires `RESEND_API_KEY`; returns **503** otherwise.
 
 ### `GET /api/admin/status` — *admin only*
 Dashboard health check: `{ writable, google, aiImport }` — whether saves
@@ -114,7 +121,8 @@ Appends them to the catalog.
 | `/api/subscribers` | POST | Public |
 | `/api/admin/login` | POST/DELETE | Public endpoint, guarded by credentials |
 | `/api/admin/status` | GET | Owner |
-| `/api/auth/*` | GET/POST | NextAuth (Google) |
+| `/api/auth/*` | GET/POST | NextAuth (Google/Facebook/email code) |
+| `/api/auth/otp` | POST | Public (rate-limited) |
 | `/api/site` | GET | Public |
 | `/api/site` | POST | Owner |
 | `/api/upload` | POST | Owner |

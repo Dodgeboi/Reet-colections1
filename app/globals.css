@@ -65,6 +65,14 @@ body.photo-edit-mode [data-edit] {
   z-index: 35;
 }
 body.photo-edit-mode [data-edit]:hover { outline-color: #A85563; }
+body.photo-edit-mode [data-edit-text] {
+  position: relative;
+  z-index: 40; /* above raised images, so text stays clickable over photos */
+  outline: 2px dashed #C9737F;
+  outline-offset: 3px;
+  cursor: pointer;
+}
+body.photo-edit-mode [data-edit-text]:hover { outline-color: #B8860B; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

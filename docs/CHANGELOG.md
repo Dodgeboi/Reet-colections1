@@ -4,6 +4,19 @@ A high-level history of what's been built. Newest first.
 
 ## Phase 2 — a real, working shop
 
+**Instant edits, text editing, email & more sign-in options**
+- Fixed the frustrating delay where photo/product edits didn't show up after a
+  refresh (the storage CDN kept serving the old file for up to a minute —
+  reads now bypass that cache entirely).
+- **Edit text in place**: edit mode now outlines copy in rose — tap any
+  headline or paragraph on the home, shop, live, and about pages, type, save,
+  live instantly.
+- **The Reet sign-in**: customers enter their email, receive a 6-digit code,
+  and are signed in — no Google account needed (requires `RESEND_API_KEY`).
+- **Facebook sign-in** (optional, env-gated) alongside Google.
+- **Emails**: a warm "you're subscribed" note on newsletter signup; order
+  confirmations to the customer and a heads-up to the owners on every order.
+
 **Identity separation & ordering fixes**
 - Every customer gets their own bag: carts are stored per signed-in account
   (the guest bag merges in when you sign in, and signing out returns an empty

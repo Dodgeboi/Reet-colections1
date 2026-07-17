@@ -5,6 +5,8 @@ import GoldThread from "@/components/GoldThread";
 import { Reveal, RevealGroup, RevealItem } from "@/components/Reveal";
 import { newestThree, restOfLives, formatLiveDate, weekLabel, FACEBOOK_PAGE } from "@/lib/lives";
 import { getSiteSettings } from "@/lib/siteSettings";
+import { textOf } from "@/lib/siteText";
+import Editable from "@/components/Editable";
 
 export const dynamic = "force-dynamic";
 
@@ -19,8 +21,9 @@ export default async function LivePage() {
   const withThumb = (live) => ({ ...live, thumbnail: site.liveThumbs[live.id] || live.thumbnail });
   return (
     <>
-      <PageBanner eyebrow="Live" title="Live Every Evening"
-        subtitle="The boutique comes alive at 8 PM. Replay the latest lives below and shop straight from the video." />
+      <PageBanner eyebrow="Live"
+        title={<Editable k="banner.live.title" value={textOf(site, "banner.live.title")} />}
+        subtitle={<Editable k="banner.live.subtitle" value={textOf(site, "banner.live.subtitle")} />} />
 
       {/* 3 NEWEST LIVES AT TOP */}
       <section className="mx-auto max-w-6xl px-6 py-16 sm:px-8">

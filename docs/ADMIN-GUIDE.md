@@ -30,13 +30,18 @@ At the top you'll see quick numbers:
 While you're signed in, browse the shop like a customer — an **Edit photos**
 button floats at the bottom-left of every page.
 
-1. Tap **Edit photos**. Every photo you can change gets a gold outline —
-   the home page hero, the heritage picture, your About-page portrait,
-   every product photo, the live-replay thumbnails, and the category tiles.
-2. Tap any outlined photo. Your phone or computer asks you to pick a picture.
-3. Drag and zoom to crop it just right (or tap **Use full photo**).
-4. Tap **Save photo** — it's live on the site immediately.
-5. Tap **Done editing** when you're finished.
+1. Tap **Edit photos**. Everything you can change gets an outline — photos
+   in gold, text in rose. That covers the home page hero, the heritage
+   picture, your About-page portrait, every product photo, the live-replay
+   thumbnails, the category tiles — and the headlines and paragraphs on the
+   home, shop, live, and about pages.
+2. **Photos:** tap one → pick a picture → drag and zoom to crop (or tap
+   **Use full photo**) → **Save photo**.
+3. **Text:** tap it → type your new wording → **Save text**.
+4. Everything is live the moment you save. Tap **Done editing** when finished.
+
+> Product names and prices are edited on the **Inventory** tab, since they're
+> part of the product itself.
 
 ## Adding a new item
 

@@ -4,6 +4,8 @@ import { authOptions } from "@/lib/auth";
 import { isAdmin } from "@/lib/adminAuth";
 import { readJson, writeJson } from "@/lib/store";
 import { effectivePrice, FREE_SHIP, SHIP_FLAT } from "@/lib/products";
+import { sendEmail } from "@/lib/email";
+import { adminEmails } from "@/lib/adminEmails";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -72,6 +74,29 @@ export async function POST(req) {
     orders.unshift(order);
     await writeJson("orders.json", orders);
     await writeJson("products.json", catalog);
+
+    // best-effort emails — the order stands either way
+    const itemsHtml = lines.map((l) => `<li>${l.qty}× ${l.name}${l.size ? ` (${l.size})` : ""} — $${l.price * l.qty}</li>`).join("");
+    sendEmail({
+      to: customer.email,
+      subject: `Order ${order.no} received — Reet Collections`,
+      html: `<p>Thank you, ${customer.name.split(" ")[0]}!</p>
+        <p>We've received your order <strong>${order.no}</strong> and set your pieces aside:</p>
+        <ul>${itemsHtml}</ul>
+        <p>Subtotal $${subtotal} · Shipping ${shipping === 0 ? "free" : `$${shipping}`} · <strong>Total $${order.total}</strong></p>
+        <p>We'll be in touch shortly to confirm everything and arrange payment — just like on our lives.</p>
+        <p>With love,<br/>Reet Collections</p>`,
+    });
+    for (const ownerEmail of adminEmails()) {
+      sendEmail({
+        to: ownerEmail,
+        subject: `New order ${order.no} — $${order.total} from ${customer.name}`,
+        html: `<p><strong>${customer.name}</strong> (${customer.email}${customer.phone ? `, ${customer.phone}` : ""}) just placed order <strong>${order.no}</strong>.</p>
+          <ul>${itemsHtml}</ul>
+          <p>Total <strong>$${order.total}</strong> · ${customer.address}, ${customer.city} ${customer.zip}</p>
+          <p>Confirm it from the Orders tab on your dashboard.</p>`,
+      });
+    }
     return NextResponse.json({ ok: true, no: order.no, total: order.total });
   } catch (e) {
     return NextResponse.json({ error: e.message || "Couldn't place the order — please try again." }, { status: 500 });

@@ -2,13 +2,10 @@
 import { useEffect, useRef, useState } from "react";
 import Cropper from "react-easy-crop";
 
-// Owner-only, in-place photo editing. When edit mode is on, every image
-// tagged with data-edit="type:id" gets an outline; clicking it opens the
-// file picker, then a crop screen, and the new photo goes live in place.
-//   site:hero | site:heritage | site:about   → site settings
-//   product:<id>                              → that product's photo
-//   live:<liveId>                             → that live replay's thumbnail
-//   category:<slug>                           → that home category tile
+// Owner-only, in-place editing. When edit mode is on:
+//   images tagged data-edit="type:id" → file picker → crop → replaced live
+//     (site:hero|heritage|about, product:<id>, live:<id>, category:<slug>)
+//   text tagged data-edit-text="key"  → text editor → saved to site settings
 
 const ASPECTS = { site: 4 / 5, product: 4 / 5, live: 16 / 9, category: 3 / 4 };
 
@@ -22,6 +19,7 @@ export default function PhotoEditMode() {
   const [area, setArea] = useState(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
+  const [textTarget, setTextTarget] = useState(null); // { key, value }
   const fileRef = useRef(null);
   const targetRef = useRef(null);
 
@@ -42,6 +40,14 @@ export default function PhotoEditMode() {
   useEffect(() => {
     if (!editing) return;
     const onClick = (e) => {
+      const textEl = e.target.closest?.("[data-edit-text]");
+      if (textEl) {
+        e.preventDefault();
+        e.stopPropagation();
+        setErr("");
+        setTextTarget({ key: textEl.getAttribute("data-edit-text"), value: textEl.textContent || "" });
+        return;
+      }
       const el = e.target.closest?.("[data-edit]");
       if (!el) return;
       e.preventDefault();
@@ -108,6 +114,23 @@ export default function PhotoEditMode() {
     }
   };
 
+  const saveText = async () => {
+    if (busy || !textTarget) return;
+    setBusy(true); setErr("");
+    try {
+      const r = await fetch("/api/site", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: { [textTarget.key]: textTarget.value.trim() } }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(d.error || "Couldn't save the text.");
+      window.location.reload();
+    } catch (e) {
+      setErr(e.message); setBusy(false);
+    }
+  };
+
   if (!isOwner) return null;
   const aspect = ASPECTS[String(target).split(":")[0]] || 4 / 5;
 
@@ -120,10 +143,32 @@ export default function PhotoEditMode() {
           className={`px-4 py-2.5 font-sans text-[11px] font-medium uppercase tracking-[0.16em] shadow-card transition-colors ${editing ? "bg-gold-deep text-onyx" : "bg-onyx text-ivory hover:bg-gold-deep hover:text-onyx"}`}>
           {editing ? "Done editing" : "Edit photos"}
         </button>
-        {editing && <span className="bg-white/95 px-3 py-2 font-sans text-[11px] text-onyx/70 shadow-soft">Tap any outlined photo to replace it</span>}
+        {editing && <span className="bg-white/95 px-3 py-2 font-sans text-[11px] text-onyx/70 shadow-soft">Tap any outlined photo or text to change it</span>}
       </div>
 
       <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={onFile} />
+
+      {/* text editor */}
+      {textTarget && (
+        <div className="fixed inset-0 z-[90] flex items-center justify-center bg-onyx/80 p-5" onClick={() => !busy && setTextTarget(null)}>
+          <div className="w-full max-w-lg bg-white p-6" onClick={(e) => e.stopPropagation()}>
+            <p className="font-sans text-[12px] uppercase tracking-[0.16em] text-onyx/60">Edit text</p>
+            <textarea
+              autoFocus
+              rows={Math.min(8, Math.max(3, Math.ceil(textTarget.value.length / 60)))}
+              value={textTarget.value}
+              onChange={(e) => setTextTarget((t) => ({ ...t, value: e.target.value }))}
+              className="mt-3 w-full border border-onyx/20 bg-white p-3 font-sans text-[15px] leading-relaxed text-onyx focus:border-gold focus:outline-none"
+            />
+            {err && <p className="mt-2 font-sans text-sm text-rose-deep">{err}</p>}
+            <div className="mt-4 flex gap-3">
+              <button onClick={saveText} disabled={busy || !textTarget.value.trim()} className="btn-gold flex-1 disabled:opacity-50">{busy ? "Saving…" : "Save text"}</button>
+              <button onClick={() => setTextTarget(null)} disabled={busy} className="btn-outline disabled:opacity-50">Cancel</button>
+            </div>
+            <p className="mt-3 font-sans text-xs text-onyx/45">The change goes live the moment you save.</p>
+          </div>
+        </div>
+      )}
 
       {/* crop screen */}
       {imageUrl && (
