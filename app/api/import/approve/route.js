@@ -37,7 +37,7 @@ export async function POST(req) {
       return {
         id: `RC-UP-${now.getTime()}-${idx}`,
         code: `IMP-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}-${idx + 1}`,
-        name: String(p.name || `Imported piece ${idx + 1}`).trim(),
+        name: String(p.name || `Imported product ${idx + 1}`).trim(),
         category,
         color: String(p.color || "").trim(),
         sizes: sizesFromText(p.sizesText),

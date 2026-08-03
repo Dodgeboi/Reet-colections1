@@ -7,7 +7,7 @@ export default function OccasionTiles({ tiles }) {
       <div className="text-center">
         <p className="font-deva text-lg text-gold-deep">अवसर</p>
         <h2 className="mt-1 font-display text-3xl font-light text-onyx sm:text-4xl">Shop by Occasion</h2>
-        <p className="mx-auto mt-2 max-w-md font-sans text-sm text-onyx/55">From the mandap to the everyday — pieces chosen for every celebration.</p>
+        <p className="mx-auto mt-2 max-w-md font-sans text-sm text-onyx/55">From the mandap to the everyday — products chosen for every occasion.</p>
       </div>
       <div className="mt-9 grid grid-cols-2 gap-1 lg:grid-cols-4">
         {tiles.map((t) => (

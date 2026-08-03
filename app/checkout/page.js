@@ -61,7 +61,7 @@ export default function CheckoutPage() {
           Your order <strong className="text-onyx">{orderNo}</strong> has been received. We'll reach out at{" "}
           <strong className="text-onyx">{confirmEmail}</strong> to confirm everything and arrange payment &amp; delivery.
         </p>
-        <p className="mt-3 max-w-md font-sans text-sm text-onyx/50">Your pieces are set aside for you in the meantime — just like on the live.</p>
+        <p className="mt-3 max-w-md font-sans text-sm text-onyx/50">Your products are reserved for you in the meantime — just like on the live.</p>
         <Link href="/collections" className="btn-gold mt-8">Continue shopping</Link>
       </div>
     );
@@ -71,7 +71,7 @@ export default function CheckoutPage() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center px-6 pt-28 text-center">
         <h1 className="font-display text-4xl font-light text-onyx">Your bag is empty</h1>
-        <p className="mt-3 font-sans text-onyx/60">Add a piece or two before checking out.</p>
+        <p className="mt-3 font-sans text-onyx/60">Add a product or two before checking out.</p>
         <Link href="/collections" className="btn-gold mt-6">Browse the collection</Link>
       </div>
     );
@@ -80,7 +80,7 @@ export default function CheckoutPage() {
   return (
     <div className="mx-auto max-w-6xl px-6 pb-20 pt-28 sm:px-8">
       <h1 className="mb-1 font-display text-4xl font-light text-onyx">Checkout</h1>
-      <p className="mb-8 font-sans text-sm text-onyx/50">Reserve your pieces now — we confirm every order personally before payment.</p>
+      <p className="mb-8 font-sans text-sm text-onyx/50">Reserve your products now — we confirm every order personally before payment.</p>
 
       <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr]">
         {/* form */}
@@ -102,7 +102,7 @@ export default function CheckoutPage() {
           <section className="border border-gold/30 bg-gold/5 p-5">
             <h2 className="font-display text-xl text-onyx">How payment works</h2>
             <p className="mt-2 font-sans text-sm leading-relaxed text-onyx/70">
-              Placing this order reserves your pieces — nothing is charged online. We'll message you to
+              Placing this order reserves your products — nothing is charged online. We'll message you to
               confirm your total and arrange payment the way that suits you best, exactly like on our lives.
             </p>
           </section>
@@ -141,7 +141,7 @@ export default function CheckoutPage() {
               <div className="flex justify-between text-onyx/60"><span>Shipping</span><span>{shipping === 0 ? "Free" : `$${shipping}`}</span></div>
               <div className="flex justify-between border-t border-onyx/10 pt-2 font-display text-lg text-onyx"><span>Total</span><span>${total}</span></div>
             </div>
-            <p className="mt-4 font-sans text-[11px] leading-relaxed text-onyx/45">Free shipping on orders over $150 · Every piece checked &amp; packed with care</p>
+            <p className="mt-4 font-sans text-[11px] leading-relaxed text-onyx/45">Free shipping on orders over $150 · Every product checked &amp; packed with care</p>
           </div>
         </div>
       </div>

@@ -23,15 +23,22 @@ that IP for 15 minutes (best-effort, in-memory).
 **What's protected**
 - `/admin/*` pages — `middleware.js` checks every request.
 - `POST /api/products`, `GET /api/subscribers`, `POST /api/import/*`,
-  `GET/PATCH /api/orders` (full list), `GET /api/admin/status` — all return
-  **401** without a valid owner session (or owner Google session).
+  `GET/PATCH /api/orders` (full list), `GET/PATCH /api/inquiries`,
+  `GET /api/accounts`, `GET /api/admin/status` — all return **401** without a
+  valid owner session (or owner Google session).
 
 ## Customer accounts
 
-Customer sign-in is **real Google OAuth** via NextAuth (JWT sessions, no
-database). We receive only name, email, and profile photo. There are no
-site-managed passwords to leak. A signed-in customer can read **only their
-own** orders (`GET /api/orders` filters by session email).
+Customer sign-in goes through NextAuth (JWT sessions, no database): Google,
+Facebook, or a single-use code emailed to the visitor. We receive only name,
+email, and profile photo. There are no site-managed passwords to leak. A
+signed-in customer can read **only their own** orders (`GET /api/orders`
+filters by session email).
+
+Each sign-in also writes a row to `data/accounts.json` (email, name, provider,
+dates) so the dashboard can count customers. That file is owner-only over the
+API, and inquiries (`data/inquiries.json`) hold customer contact details too —
+both deserve the same care as orders.
 
 ## Secrets
 
@@ -45,7 +52,8 @@ own** orders (`GET /api/orders` filters by session email).
 
 ## Data storage notes
 
-In production, shop data (products, orders, subscribers) is stored in Vercel
+In production, shop data (products, orders, subscribers, inquiries, accounts)
+is stored in Vercel
 Blob. Blob URLs are public-but-unguessable; order data includes customer
 contact details, so **don't share those URLs**. Moving to a proper database
 (with row-level access) is on the roadmap and recommended as order volume

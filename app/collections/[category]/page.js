@@ -12,7 +12,7 @@ export default async function CategoryPage({ params }) {
   return (
     <>
       <PageBanner eyebrow="Shop" title={title}
-        subtitle="Hover any category to explore more, or tap to filter the pieces below." />
+        subtitle="Hover any category to explore more, or tap to filter the products below." />
       <Shop initialSlug={params.category} products={products} />
     </>
   );

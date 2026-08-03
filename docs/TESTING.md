@@ -9,7 +9,8 @@ Before each release the site is verified end-to-end so there are no broken pages
 
 **Automated UI checks (headless browser)**
 Key user journeys are exercised on both desktop and mobile viewports:
-- Home, collections, product, about, FAQ, account, live, contact all return 200.
+- Home, collections, product, about, Help (FAQ), Inquiries, account, live all return 200,
+  and `/contact` redirects to `/inquiry`.
 - Shop filters (category, price, color, availability), sort, and the mobile filter drawer.
 - Grid stays multi-column when filtering, opening a category, and pressing back.
 - Search overlay returns results.
@@ -21,6 +22,9 @@ Key user journeys are exercised on both desktop and mobile viewports:
 
 **API checks**
 - Subscribe adds an email.
+- Sending an inquiry stores it and returns a reference; the owner can list it and
+  mark it answered.
+- Signing in records the account once, and `GET /api/accounts` reports the count.
 - Purchase marks an item **sold** and the admin reflects it.
 - Admin is gated: `/admin` redirects without a cookie; `POST /api/products` returns 401
   without auth; correct password logs in; wrong password is rejected.
@@ -36,5 +40,6 @@ Key user journeys are exercised on both desktop and mobile viewports:
 - [ ] Admin login works with your real password
 - [ ] No test data left in `data/products.json` (nothing wrongly marked sold/on-sale)
 - [ ] `data/subscribers.json` is empty (or contains only real subscribers)
+- [ ] `data/inquiries.json` and `data/accounts.json` hold no test entries
 - [ ] Environment variables set in Vercel
 - [ ] Looks right on a real phone

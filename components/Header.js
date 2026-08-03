@@ -13,6 +13,7 @@ const NAV = [
   { href: "/live", label: "Live" },
   { href: "/about", label: "About" },
   { href: "/faq", label: "Help" },
+  { href: "/inquiry", label: "Inquiries" },
 ];
 
 const Icon = ({ d, fill = "none" }) => (
@@ -84,7 +85,7 @@ export default function Header() {
             </div>
           </div>
 
-          <div className={`overflow-hidden bg-ivory transition-all duration-500 md:hidden ${open ? "max-h-[440px] border-t border-onyx/10" : "max-h-0"}`}>
+          <div className={`overflow-hidden bg-ivory transition-all duration-500 md:hidden ${open ? "max-h-[560px] border-t border-onyx/10" : "max-h-0"}`}>
             <nav className="flex flex-col gap-1 px-6 py-5">
               {NAV.map((item) => (
                 <Link key={item.href} href={item.href} onClick={() => setOpen(false)} className="border-b border-onyx/8 py-3 font-display text-2xl text-onyx hover:text-rose-deep">{item.label}</Link>

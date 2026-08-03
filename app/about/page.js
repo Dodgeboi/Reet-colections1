@@ -54,7 +54,7 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* Contact link at the bottom */}
+      {/* Inquiry link at the bottom */}
       <section className="bg-ivory py-16 text-center">
         <Reveal>
           <p className="eyebrow">Come say hello</p>
@@ -62,7 +62,7 @@ export default async function AboutPage() {
           <p className="mx-auto mt-3 max-w-md font-sans text-sm text-onyx/60">
             Whether it&apos;s a question about sizing or you just want to chat — reach out any time.
           </p>
-          <Link href="/contact" className="mt-6 inline-block btn-rose">Contact us</Link>
+          <Link href="/inquiry" className="mt-6 inline-block btn-rose">Send an inquiry</Link>
         </Reveal>
       </section>
     </>

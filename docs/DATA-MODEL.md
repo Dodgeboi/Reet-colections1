@@ -12,7 +12,8 @@ Blob store once — see [Deployment](./DEPLOYMENT.md) Step 3).
 | Site photos (hero, heritage, about) | `data/site.json` → Blob | ✅ with Blob connected |
 | Orders | `data/orders.json` → Blob | ✅ with Blob connected |
 | Subscribers | `data/subscribers.json` → Blob | ✅ with Blob connected |
-| Customer accounts | Google sign-in (NextAuth, JWT) | ✅ no database needed |
+| Inquiries | `data/inquiries.json` → Blob | ✅ with Blob connected |
+| Customer accounts | `data/accounts.json` → Blob (sessions stay JWT) | ✅ with Blob connected |
 | Wishlist / recently viewed / cart | Browser `localStorage` | Device-only by design |
 
 ## Product object
@@ -76,6 +77,51 @@ the storefront (owner-only "Edit photos" mode), never by hand.
 { "email": "person@example.com", "at": "2026-06-21T08:00:00.000Z" }
 ```
 
+## Inquiry object (`data/inquiries.json`)
+
+Created by `POST /api/inquiries` from the Inquiries page (`/inquiry`).
+
+```json
+{
+  "ref": "INQ-874374",
+  "at": "2026-06-21T09:12:00.000Z",
+  "status": "new",
+  "name": "Buyer Name",
+  "email": "buyer@example.com",
+  "phone": "+1 555 0100",
+  "topic": "An order",
+  "orderNo": "RC-845210",
+  "message": "Where is my order?"
+}
+```
+
+`status` is one of `new · answered · closed`, moved along by the owner from
+the Inquiries tab. `topic` is one of the choices on the form; `orderNo` is
+filled in automatically when the visitor arrives from an order on their
+account page.
+
+## Account object (`data/accounts.json`)
+
+One row per person who has ever signed in, written by the NextAuth `signIn`
+callback (`lib/accounts.js`). Sessions themselves stay JWT-only — this file
+exists so the dashboard can count and list customers.
+
+```json
+{
+  "email": "buyer@example.com",
+  "name": "Buyer Name",
+  "image": "https://…/photo.jpg",
+  "provider": "google",
+  "at": "2026-06-01T18:00:00.000Z",
+  "lastSignInAt": "2026-06-21T20:00:00.000Z",
+  "signIns": 4
+}
+```
+
+`at` is the first sign-in (the "account created" date the dashboard counts);
+`provider` is `google`, `facebook` or `reet-code`. Writes are best-effort —
+a storage problem never blocks someone from signing in.
+
 ## Order object (`data/orders.json`)
 
 Created by `POST /api/orders` at checkout; prices are computed server-side.
@@ -104,8 +150,10 @@ along by the owner from the dashboard.
 
 ## Customer accounts & device data
 
-- Accounts are **Google sign-ins** (NextAuth JWT sessions) — nothing stored
-  server-side; the session carries `{ name, email, image, since }`.
+- Sign-in is **NextAuth with JWT sessions** (Google, Facebook, or an emailed
+  code) — the session carries `{ name, email, image, since }`, and each
+  sign-in is also recorded in `data/accounts.json` (above) for the dashboard
+  counter.
 - `reet-wishlist:{email}` — saved product ids for that account (localStorage).
 - `reet-viewed` — recently-viewed product ids (device-level, localStorage).
 - `reet-cart` — the shopping bag (device-level, localStorage).

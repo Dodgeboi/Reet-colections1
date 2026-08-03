@@ -14,16 +14,19 @@ To leave, click **Sign out** (top right).
 
 ## The dashboard at a glance
 
-The dashboard has two tabs:
+The dashboard has three tabs:
 
 - **Inventory** — your products: add, edit, price, photograph, save.
-- **Orders** — customer orders and the "we're live" email blast.
+- **Orders** — customer orders, customer accounts, and the "we're live" email blast.
+- **Inquiries** — questions people have sent from the website.
 
 At the top you'll see quick numbers:
 - **In stock** — items available to buy
 - **Low stock** — items running low
 - **Sold** — items that have sold out
 - **Stock value** — the total retail value of what's in stock
+- **Accounts created** — how many people have made an account on the site,
+  with how many are new this week underneath
 
 ## Changing any photo on the site
 
@@ -73,13 +76,33 @@ When a customer checks out, their order appears at the top of the dashboard in t
 **Sold** when it runs out.
 
 For each order you can:
-1. **Tap it** to see the customer's details, address, and the pieces they chose.
+1. **Tap it** to see the customer's details, address, and the products they chose.
 2. **Email them** (their address is a link) to confirm the total and arrange payment —
    just like on the lives.
 3. Move the status along as you go: **New → Confirmed → Shipped → Delivered**
    (or **Cancelled**). The customer sees the status on their account page.
 
-You can also mark pieces sold by hand any time (set status to **Sold**).
+You can also mark products sold by hand any time (set status to **Sold**).
+
+## Customer accounts
+
+Under the orders on the **Orders** tab, the **Customer accounts** box shows how
+many people have made an account, how many are new this week, and how many
+joined in the last 30 days. Click **View list** to see everyone — their name,
+email, when they joined, and how they signed in.
+
+An account is counted the first time someone signs in, whichever way they sign
+in (Google, Facebook, or an emailed code).
+
+## Inquiries
+
+Anyone can send you a question from the **Inquiries** page on the website — it
+arrives in the **Inquiries** tab and lands in your email at the same time. The
+person who sent it gets a copy too, with a reference number.
+
+1. **Tap an inquiry** to read it in full and see the order number if they gave one.
+2. **Their email address is a link** — tap it to reply from your own email app.
+3. Set it to **Answered** (or **Closed**) so you know what's still waiting.
 
 ## Telling customers you're live (the email blast)
 

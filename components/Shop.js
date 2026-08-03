@@ -12,7 +12,7 @@ const PRICE_BUCKETS = [
   ["125-200", "$125 – $200", (p) => p > 125 && p <= 200],
   ["200-plus", "$200 & above", (p) => p > 200],
 ];
-const CATS = [{ name: "All Pieces", slug: "all" }, ...categories.map((c) => ({ name: c.name, slug: c.slug }))];
+const CATS = [{ name: "All Products", slug: "all" }, ...categories.map((c) => ({ name: c.name, slug: c.slug }))];
 
 export default function Shop({ initialSlug = "all", products = [] }) {
   const [slug, setSlug] = useState(initialSlug);
@@ -38,7 +38,7 @@ export default function Shop({ initialSlug = "all", products = [] }) {
   const toggleSet = (set, setter, val) => { const n = new Set(set); n.has(val) ? n.delete(val) : n.add(val); setter(n); };
   const clearAll = () => { setColors(new Set()); setBuckets(new Set()); setInStock(false); setSlug("all"); };
   const activeCount = colors.size + buckets.size + (inStock ? 1 : 0) + (slug !== "all" ? 1 : 0);
-  const title = slug === "all" ? "All Pieces" : (categoryBySlug[slug]?.name || slug);
+  const title = slug === "all" ? "All Products" : (categoryBySlug[slug]?.name || slug);
 
   const Group = ({ label, children }) => (
     <div className="border-b border-onyx/8 py-5">
@@ -106,7 +106,7 @@ export default function Shop({ initialSlug = "all", products = [] }) {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-baseline gap-3">
               <h2 className="font-display text-3xl font-light text-onyx">{title}</h2>
-              <span className="font-sans text-sm text-onyx/50">{items.length} {items.length === 1 ? "piece" : "pieces"}</span>
+              <span className="font-sans text-sm text-onyx/50">{items.length} {items.length === 1 ? "product" : "products"}</span>
             </div>
             <div className="flex items-center gap-3">
               <button onClick={() => setDrawer(true)} className="flex items-center gap-2 border border-onyx/25 px-4 py-2 font-sans text-sm text-onyx/70 lg:hidden">
@@ -140,7 +140,7 @@ export default function Shop({ initialSlug = "all", products = [] }) {
             </div>
           ) : (
             <div className="mt-6 border border-dashed border-onyx/20 bg-white/60 py-24 text-center">
-              <p className="font-display text-2xl text-onyx/50">No pieces match those filters.</p>
+              <p className="font-display text-2xl text-onyx/50">No products match those filters.</p>
               <button onClick={clearAll} className="btn-rose mt-4 !py-2 text-xs">Clear filters</button>
             </div>
           )}

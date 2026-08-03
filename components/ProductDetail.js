@@ -29,7 +29,7 @@ export default function ProductDetail({ product, related = [] }) {
   const add = () => { if (ensureSize()) addToCart(product, size || product.sizes?.[0] || "", qty); };
   const buyNow = () => { if (ensureSize()) { addToCart(product, size || product.sizes?.[0] || "", qty); router.push("/checkout"); } };
 
-  // Only facts we actually know about this piece — nothing invented.
+  // Only facts we actually know about this product — nothing invented.
   const facts = [
     ["Fabric", product.fabric],
     ["Color", product.color],
@@ -69,7 +69,7 @@ export default function ProductDetail({ product, related = [] }) {
               <p className="mt-3 font-display text-3xl text-onyx">${product.price}</p>
             )}
             <div className="my-5"><GoldThread width={160} /></div>
-            <p className="font-sans text-[15px] leading-relaxed text-onyx/75">{product.note || product.description || "A handpicked piece, selected with love and care."}</p>
+            <p className="font-sans text-[15px] leading-relaxed text-onyx/75">{product.note || product.description || "A handpicked product, selected with love and care."}</p>
 
             {product.code && <p className="mt-4 font-sans text-xs text-onyx/45">Design code: {product.code}</p>}
 
@@ -77,7 +77,7 @@ export default function ProductDetail({ product, related = [] }) {
               <p className="mt-5 font-sans text-[13px] font-medium uppercase tracking-[0.1em] text-rose-deep">Only {product.qty} left</p>
             )}
 
-            {/* sizes — only when the piece comes in more than one */}
+            {/* sizes — only when the product comes in more than one */}
             {(product.sizes || []).length > 0 ? (
               <div className="mt-7">
                 <div className="flex items-center justify-between">
@@ -93,7 +93,7 @@ export default function ProductDetail({ product, related = [] }) {
                 {err && <p className="mt-2 font-sans text-xs text-rose-deep">{err}</p>}
               </div>
             ) : (
-              <p className="mt-7 font-sans text-sm text-onyx/55">One-size piece — message us on the live or the contact page for fit help.</p>
+              <p className="mt-7 font-sans text-sm text-onyx/55">One size only — send us an inquiry or ask on the live if you need fit help.</p>
             )}
 
             {/* qty + actions */}

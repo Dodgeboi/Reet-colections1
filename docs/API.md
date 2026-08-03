@@ -24,7 +24,7 @@ used by in-place photo editing on the storefront.
 Body: `{ "customer": { name, email, phone, address, city, zip, country, note }, "items": [{ id, qty, size }] }`.
 Validates the items against the live catalog, computes prices/shipping
 **server-side**, decrements stock (an item hitting zero becomes `"sold"`),
-stores the order, and returns `{ ok, no, total }`. If a requested piece has
+stores the order, and returns `{ ok, no, total }`. If a requested product has
 already sold, returns **409** with a friendly message.
 
 ### `GET /api/orders`
@@ -36,6 +36,32 @@ already sold, returns **409** with a friendly message.
 ### `PATCH /api/orders` — *admin only*
 Body: `{ "no": "RC-123456", "status": "confirmed" }`.
 Statuses: `new → confirmed → shipped → delivered`, or `cancelled`.
+
+## Inquiries
+
+### `POST /api/inquiries` — *public*
+Body: `{ name, email, phone?, topic, orderNo?, message }`. Saves the inquiry
+(newest first, last 500 kept), emails the owner, and sends the visitor a copy —
+so nothing depends on the visitor's own mail app. Returns `{ ok, ref }` with a
+reference like `INQ-123456`. Missing name/email/message → **400**.
+Used by the Inquiries page (`/inquiry`).
+
+### `GET /api/inquiries` — *admin only*
+Returns every inquiry, newest first. **401** without an owner session.
+
+### `PATCH /api/inquiries` — *admin only*
+Body: `{ "ref": "INQ-123456", "status": "answered" }`.
+Statuses: `new → answered → closed`.
+
+## Accounts
+
+### `GET /api/accounts` — *admin only*
+Returns `{ count, newThisWeek, newThisMonth, accounts: [...] }` — how many
+people have created an account, plus each person's email, name, provider,
+join date and last sign-in. Written to by the NextAuth `signIn` callback
+(`lib/accounts.js`), so it covers Google, Facebook and email-code sign-ins.
+Powers the "Accounts created" counter on the dashboard. **401** without an
+owner session.
 
 ## Subscribers (live-notify list)
 
@@ -117,6 +143,9 @@ Appends them to the catalog.
 | `/api/orders` | POST | Public (checkout) |
 | `/api/orders` | GET | Owner (all) / customer (own) |
 | `/api/orders` | PATCH | Owner |
+| `/api/inquiries` | POST | Public |
+| `/api/inquiries` | GET/PATCH | Owner |
+| `/api/accounts` | GET | Owner |
 | `/api/subscribers` | GET | Owner |
 | `/api/subscribers` | POST | Public |
 | `/api/admin/login` | POST/DELETE | Public endpoint, guarded by credentials |

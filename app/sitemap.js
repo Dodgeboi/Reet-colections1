@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export default async function sitemap() {
   const base = siteUrl();
   const now = new Date();
-  const staticPages = ["", "/collections", "/live", "/about", "/faq", "/contact", "/shipping-returns", "/privacy", "/terms"]
+  const staticPages = ["", "/collections", "/live", "/about", "/faq", "/inquiry", "/shipping-returns", "/privacy", "/terms"]
     .map((p) => ({ url: `${base}${p}`, lastModified: now, changeFrequency: "weekly", priority: p === "" ? 1 : 0.7 }));
   const categoryPages = categories.map((c) => ({
     url: `${base}/collections/${c.slug}`, lastModified: now, changeFrequency: "daily", priority: 0.8,

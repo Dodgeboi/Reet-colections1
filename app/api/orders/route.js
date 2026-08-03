@@ -63,7 +63,7 @@ export async function POST(req) {
       total: subtotal + shipping,
     };
 
-    // decrement stock; a piece with no stock left is marked sold
+    // decrement stock; a product with no stock left is marked sold
     for (const l of lines) {
       const p = byId[l.id];
       p.qty = Math.max(0, (Number(p.qty) || 0) - l.qty);
@@ -81,7 +81,7 @@ export async function POST(req) {
       to: customer.email,
       subject: `Order ${order.no} received — Reet Collections`,
       html: `<p>Thank you, ${customer.name.split(" ")[0]}!</p>
-        <p>We've received your order <strong>${order.no}</strong> and set your pieces aside:</p>
+        <p>We've received your order <strong>${order.no}</strong> and reserved these items for you:</p>
         <ul>${itemsHtml}</ul>
         <p>Subtotal $${subtotal} · Shipping ${shipping === 0 ? "free" : `$${shipping}`} · <strong>Total $${order.total}</strong></p>
         <p>We'll be in touch shortly to confirm everything and arrange payment — just like on our lives.</p>

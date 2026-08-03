@@ -27,7 +27,7 @@ export async function POST(req) {
         subject: "You're on the list — Reet Collections",
         html: `<p>You're subscribed!</p>
           <p>From now on we'll email you the moment we go live on Facebook —
-          new pieces are revealed one by one every evening at 8 PM, and the
+          new products are revealed one by one every evening at 8 PM, and the
           best ones go fast.</p>
           <p><a href="https://www.facebook.com/Reetcollections068/" style="color:#A85563;">Follow us on Facebook</a>
           so you never miss a drop.</p>

@@ -23,7 +23,7 @@ export default async function ProductPage({ params }) {
   if (!product) notFound();
   const related = products.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4);
 
-  // Product schema so the piece can appear as a rich result in search.
+  // Product schema so the product can appear as a rich result in search.
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",

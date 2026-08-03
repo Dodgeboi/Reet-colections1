@@ -11,7 +11,7 @@ import Editable from "@/components/Editable";
 export const dynamic = "force-dynamic";
 
 const steps = [
-  { n: "01", t: "Join the live", d: "We go live every evening at 8 PM on Facebook. New pieces are revealed one by one." },
+  { n: "01", t: "Join the live", d: "We go live every evening at 8 PM on Facebook. New products are revealed one by one." },
   { n: "02", t: "Comment to claim", d: "Love something? Comment the code and your size — we set it aside in your name, no scramble." },
   { n: "03", t: "We hold it for you", d: "We confirm over message, pack it with care, and ship it to your door." },
 ];

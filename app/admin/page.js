@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { signOut as googleSignOut } from "next-auth/react";
 import AdminOrders from "@/components/AdminOrders";
+import AdminInquiries from "@/components/AdminInquiries";
 
 const CATEGORIES = ["kurtis", "lehengas", "sari", "blouses", "pants", "jewelry", "shoes"];
 const STATUSES = ["available", "claimed", "sold"];
@@ -22,6 +23,8 @@ export default function AdminPage() {
   const [draft, setDraft] = useState(blankDraft);
   const [subs, setSubs] = useState([]);
   const [showSubs, setShowSubs] = useState(false);
+  const [accounts, setAccounts] = useState({ count: 0, newThisWeek: 0, newThisMonth: 0, accounts: [] });
+  const [showAccounts, setShowAccounts] = useState(false);
   const [health, setHealth] = useState(null);
   const [tab, setTab] = useState("inventory");
   const [uploadingId, setUploadingId] = useState("");
@@ -29,6 +32,7 @@ export default function AdminPage() {
   useEffect(() => {
     fetch("/api/products").then((r) => r.json()).then((d) => { setItems(Array.isArray(d) ? d : []); setLoading(false); }).catch(() => setLoading(false));
     fetch("/api/subscribers").then((r) => r.json()).then((d) => setSubs(Array.isArray(d) ? d : [])).catch(() => {});
+    fetch("/api/accounts").then((r) => (r.ok ? r.json() : null)).then((d) => { if (d) setAccounts({ ...d, accounts: Array.isArray(d.accounts) ? d.accounts : [] }); }).catch(() => {});
     fetch("/api/admin/status").then((r) => (r.ok ? r.json() : null)).then(setHealth).catch(() => {});
   }, []);
 
@@ -41,7 +45,7 @@ export default function AdminPage() {
     if (!subs.length) { alert("No subscribers yet \u2014 share the site so people can sign up!"); return; }
     const bcc = subs.map((x) => x.email).join(",");
     const subject = encodeURIComponent("We're LIVE now! Reet Collections");
-    const body = encodeURIComponent("Hi lovely!\n\nWe just went live on Facebook with brand-new arrivals \u2014 come join us and claim your favorites before they're gone:\n\nhttps://www.facebook.com/Reetcollections068/\n\nSee you there!\nReet Collections");
+    const body = encodeURIComponent("Hello!\n\nWe just went live on Facebook with brand-new arrivals \u2014 come join us and claim your favorites before they're gone:\n\nhttps://www.facebook.com/Reetcollections068/\n\nSee you there!\nReet Collections");
     window.location.href = `mailto:?bcc=${bcc}&subject=${subject}&body=${body}`;
   };
 
@@ -118,11 +122,18 @@ export default function AdminPage() {
         </div>
 
         {/* stats */}
-        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {[["In stock", stats.available], ["Low stock", stats.low], ["Sold", stats.sold], ["Stock value", "$" + stats.value]].map(([l, v]) => (
+        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-5">
+          {[
+            ["In stock", stats.available],
+            ["Low stock", stats.low],
+            ["Sold", stats.sold],
+            ["Stock value", "$" + stats.value],
+            ["Accounts created", accounts.count, accounts.newThisWeek > 0 ? `+${accounts.newThisWeek} this week` : "people signed up"],
+          ].map(([l, v, hint]) => (
             <div key={l} className="rounded-2xl border border-onyx/8 bg-white p-4 shadow-soft">
               <p className="font-sans text-[10px] uppercase tracking-label text-onyx/45">{l}</p>
               <p className="mt-1 font-display text-2xl text-onyx">{v}</p>
+              {hint && <p className="mt-0.5 font-sans text-[10px] text-onyx/40">{hint}</p>}
             </div>
           ))}
         </div>
@@ -138,7 +149,7 @@ export default function AdminPage() {
 
         {/* tabs */}
         <div className="mt-6 flex gap-6 border-b border-onyx/10">
-          {[["inventory", "Inventory"], ["orders", "Orders"]].map(([id, label]) => (
+          {[["inventory", "Inventory"], ["orders", "Orders"], ["inquiries", "Inquiries"]].map(([id, label]) => (
             <button key={id} onClick={() => setTab(id)}
               className={`-mb-px border-b-2 pb-2.5 font-sans text-[12px] uppercase tracking-[0.14em] transition-colors ${tab === id ? "border-onyx text-onyx" : "border-transparent text-onyx/45 hover:text-onyx"}`}>
               {label}
@@ -167,7 +178,35 @@ export default function AdminPage() {
             </div>
           )}
         </div>
+
+        {/* customer accounts */}
+        <div className="mt-4 rounded-2xl border border-onyx/10 bg-white p-4 shadow-soft">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="font-sans text-[11px] uppercase tracking-label text-onyx/45">Customer accounts</p>
+              <p className="mt-0.5 font-display text-xl text-onyx">
+                {accounts.count} {accounts.count === 1 ? "person has" : "people have"} made an account
+              </p>
+              <p className="mt-0.5 font-sans text-xs text-onyx/50">
+                {accounts.newThisWeek} new this week · {accounts.newThisMonth} in the last 30 days
+              </p>
+            </div>
+            <button onClick={() => setShowAccounts((v) => !v)} className="btn-outline !py-2 text-xs">{showAccounts ? "Hide list" : "View list"}</button>
+          </div>
+          {showAccounts && (
+            <div className="mt-3 max-h-56 overflow-y-auto rounded-lg bg-ivory p-3 font-sans text-xs text-onyx/70">
+              {accounts.accounts.length ? accounts.accounts.map((a, i) => (
+                <div key={i} className="flex flex-wrap items-baseline justify-between gap-2 border-b border-onyx/5 py-1.5 last:border-0">
+                  <span>{a.name ? `${a.name} · ` : ""}{a.email}</span>
+                  <span className="text-onyx/40">joined {a.at ? new Date(a.at).toLocaleDateString() : "—"}{a.provider ? ` · ${a.provider}` : ""}</span>
+                </div>
+              )) : "No accounts yet — they appear here the first time someone signs in."}
+            </div>
+          )}
+        </div>
         </>)}
+
+        {tab === "inquiries" && <AdminInquiries />}
 
         {tab === "inventory" && (<>
         {/* toolbar */}

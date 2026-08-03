@@ -4,6 +4,24 @@ A high-level history of what's been built. Newest first.
 
 ## Phase 2 — a real, working shop
 
+**Clearer wording, an Inquiries page & customer numbers**
+- Everything the shop sells is now called a **product** across the site
+  (nav, filters, wishlist, checkout, emails and legal pages) instead of the
+  vaguer "piece".
+- **Help and Inquiries are separate pages.** The Help page (`/faq`) is purely
+  answers — the "Contact us" button below it is gone. Inquiries have their own
+  page (`/inquiry`, in the main menu) where a question is sent **directly**
+  from the page: it's saved to the dashboard, emailed to the owners, and the
+  sender gets a copy with a reference number. `/contact` redirects there.
+- The dashboard gained an **Inquiries** tab (read, reply by email, mark
+  answered/closed).
+- **"Accounts created" counter** on the dashboard — how many people have made
+  an account, how many are new this week, and the full list of who they are.
+- **Orders explained in plain English** on the account page: what the order
+  contains (with sizes, quantities and prices), what its status actually means,
+  the payment breakdown, where it's being delivered, and a link to ask about
+  that specific order.
+
 **Instant edits, text editing, email & more sign-in options**
 - Fixed the frustrating delay where photo/product edits didn't show up after a
   refresh (the storage CDN kept serving the old file for up to a minute —

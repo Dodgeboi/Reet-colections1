@@ -18,7 +18,7 @@ function safeJson(text) {
 function fallbackProducts(savedImages, caption) {
   if (savedImages.length) {
     return savedImages.map((image, index) => ({
-      name: `Imported piece ${index + 1}`,
+      name: `Imported product ${index + 1}`,
       category: "kurtis",
       color: "",
       fabric: "",
@@ -30,7 +30,7 @@ function fallbackProducts(savedImages, caption) {
     }));
   }
   return [{
-    name: "Imported piece",
+    name: "Imported product",
     category: "kurtis",
     color: "",
     fabric: "",
@@ -104,7 +104,7 @@ Caption/notes:\n${caption || ""}`;
   return list.map((p, idx) => {
     const imageIndex = Number.isInteger(p.imageIndex) ? p.imageIndex : idx;
     return {
-      name: p.name || `Imported piece ${idx + 1}`,
+      name: p.name || `Imported product ${idx + 1}`,
       category: p.category || "kurtis",
       color: p.color || "",
       fabric: p.fabric || "",

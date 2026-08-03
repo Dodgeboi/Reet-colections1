@@ -39,7 +39,8 @@ reet-collections/
 │   ├── product/[id]/         # Product detail
 │   ├── checkout/             # Checkout flow
 │   ├── account/              # Customer account (Google sign-in + dashboard)
-│   ├── about/ contact/ faq/ live/
+│   ├── about/ faq/ inquiry/ live/     # faq = Help · inquiry = Inquiries form
+│   ├── contact/              # legacy path, redirects to /inquiry
 │   ├── privacy/ terms/ shipping-returns/   # Legal pages
 │   ├── admin/                # Owner dashboard (protected)
 │   │   ├── login/            # Owner login page
@@ -48,13 +49,16 @@ reet-collections/
 │       ├── products/         # GET catalog (public) · POST save (owner)
 │       ├── orders/           # POST place order · GET list · PATCH status
 │       ├── subscribers/      # POST subscribe (public) · GET list (owner)
+│       ├── inquiries/        # POST send (public) · GET list · PATCH status (owner)
+│       ├── accounts/         # GET account count + list (owner)
 │       ├── auth/[...nextauth]/ # Google sign-in (NextAuth)
 │       ├── admin/login/      # POST login · DELETE logout
 │       ├── admin/status/     # GET dashboard health (owner)
 │       └── import/           # AI import (owner)
 ├── components/               # Reusable UI + context providers
 ├── lib/                      # Helpers (catalog, products, categories, lives, adminAuth)
-├── data/                     # products.json, orders.json, subscribers.json (dev seeds)
+├── data/                     # products.json, orders.json, subscribers.json,
+│                             # inquiries.json, accounts.json (dev seeds)
 ├── public/images/            # Logos, hero images, product photos
 ├── middleware.js             # Gatekeeper for /admin
 ├── docs/                     # ← you are here

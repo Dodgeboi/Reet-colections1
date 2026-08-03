@@ -16,6 +16,14 @@ const STATUS_CLASS = {
   delivered: "bg-gold/25 text-gold-deep",
   cancelled: "bg-onyx/5 text-onyx/40",
 };
+// Plain-English explanation of where an order stands, for the customer.
+const STATUS_NOTE = {
+  new: "We've received your order and reserved these items for you. Nothing has been charged — we'll message you to confirm the details and arrange payment.",
+  confirmed: "Your order is confirmed. We're packing it by hand and will let you know as soon as it's on the way.",
+  shipped: "Your order is on its way to the address below. Delivery usually takes a few days.",
+  delivered: "This order was delivered. If anything isn't right, send us an inquiry within 7 days of delivery and we'll sort it out.",
+  cancelled: "This order was cancelled, so nothing is owed. If that looks wrong to you, send us an inquiry and we'll check.",
+};
 
 export default function AccountClient({ googleEnabled, facebookEnabled, codeEnabled }) {
   const { account, ready, signInWithGoogle, signOut } = useAccount();
@@ -58,7 +66,7 @@ export default function AccountClient({ googleEnabled, facebookEnabled, codeEnab
             )}
           </div>
           <p className="mt-6 text-center font-sans text-xs text-onyx/40">
-            Questions? <Link href="/contact" className="underline hover:text-rose">We're happy to help.</Link>
+            Questions? <Link href="/inquiry" className="underline hover:text-rose">Send us an inquiry.</Link>
           </p>
         </div>
       </div>
@@ -101,7 +109,7 @@ export default function AccountClient({ googleEnabled, facebookEnabled, codeEnab
           </div>
           <div className="flex flex-col items-center justify-center border border-onyx/10 bg-white p-5 text-center">
             <p className="font-display text-3xl text-onyx">{wished.length}</p>
-            <p className="font-sans text-xs uppercase tracking-label text-onyx/45">Saved pieces</p>
+            <p className="font-sans text-xs uppercase tracking-label text-onyx/45">Saved products</p>
           </div>
           <div className="flex flex-col items-center justify-center border border-onyx/10 bg-white p-5 text-center">
             <p className="font-display text-3xl text-onyx">{orders.length}</p>
@@ -115,29 +123,17 @@ export default function AccountClient({ googleEnabled, facebookEnabled, codeEnab
             <div className="grid grid-cols-2 gap-x-2 gap-y-7 sm:gap-x-3 lg:grid-cols-4">{wished.map((p) => <ProductCard key={p.id} product={p} />)}</div>
           ) : (
             <Empty>
-              <p className="font-sans text-sm text-onyx/50">No saved pieces yet — tap the heart on anything you love.</p>
+              <p className="font-sans text-sm text-onyx/50">No saved products yet — tap the heart on anything you love.</p>
               <Link href="/collections" className="btn-rose mt-4 inline-block !py-2 text-xs">Browse the collection</Link>
             </Empty>
           )}
         </section>
 
         <section className="mt-12">
-          <h2 className="mb-5 font-display text-3xl font-light text-onyx">Order History</h2>
+          <h2 className="mb-2 font-display text-3xl font-light text-onyx">Order History</h2>
+          <p className="mb-5 font-sans text-sm text-onyx/55">Every order you&apos;ve placed, what it contains, and exactly where it is right now.</p>
           {orders.length ? (
-            <div className="space-y-3">{orders.map((o) => (
-              <div key={o.no} className="border border-onyx/10 bg-white p-4">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex items-center gap-3">
-                    <p className="font-display text-lg text-onyx">{o.no}</p>
-                    <span className={`rounded-full px-2.5 py-0.5 font-sans text-[10px] uppercase tracking-wide ${STATUS_CLASS[o.status] || STATUS_CLASS.new}`}>{STATUS_LABEL[o.status] || o.status}</span>
-                  </div>
-                  <p className="font-sans text-sm text-onyx/55">{new Date(o.at).toLocaleDateString()} · ${o.total} · {o.items.reduce((a, i) => a + i.qty, 0)} item(s)</p>
-                </div>
-                <div className="mt-3 flex gap-2 overflow-x-auto">{o.items.map((i, idx) => (
-                  <div key={idx} className="relative h-16 w-12 shrink-0 overflow-hidden rounded bg-ivory ring-1 ring-onyx/5"><img src={i.image} alt={i.name} className="h-full w-full object-cover" /></div>
-                ))}</div>
-              </div>
-            ))}</div>
+            <div className="space-y-3">{orders.map((o) => <OrderCard key={o.no} order={o} />)}</div>
           ) : (
             <Empty><p className="font-sans text-sm text-onyx/50">No orders yet — when you place one, it'll appear here.</p></Empty>
           )}
@@ -154,6 +150,83 @@ export default function AccountClient({ googleEnabled, facebookEnabled, codeEnab
   );
 }
 
+
+// One order, written the way a customer would want it explained: what it is,
+// where it stands, what's in it, and what it cost.
+function OrderCard({ order: o }) {
+  const [open, setOpen] = useState(false);
+  const units = o.items.reduce((a, i) => a + i.qty, 0);
+  const placed = new Date(o.at);
+  const subtotal = o.subtotal ?? o.items.reduce((a, i) => a + i.price * i.qty, 0);
+  const shipping = o.shipping ?? Math.max(0, (o.total || 0) - subtotal);
+
+  return (
+    <div className="border border-onyx/10 bg-white p-4">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex items-center gap-3">
+          <p className="font-display text-lg text-onyx">{o.no}</p>
+          <span className={`rounded-full px-2.5 py-0.5 font-sans text-[10px] uppercase tracking-wide ${STATUS_CLASS[o.status] || STATUS_CLASS.new}`}>{STATUS_LABEL[o.status] || o.status}</span>
+        </div>
+        <p className="font-sans text-sm text-onyx/55">
+          {placed.toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" })} · {units} item{units === 1 ? "" : "s"} · ${o.total}
+        </p>
+      </div>
+
+      {/* what this order is, in plain English */}
+      <p className="mt-3 border-l-2 border-gold/50 pl-3 font-sans text-[13px] leading-relaxed text-onyx/70">
+        You ordered {units} item{units === 1 ? "" : "s"} on {placed.toLocaleDateString()} for ${o.total}, including {shipping === 0 ? "free shipping" : `$${shipping} shipping`}.{" "}
+        {STATUS_NOTE[o.status] || STATUS_NOTE.new}
+      </p>
+
+      {/* what's in it */}
+      <div className="mt-3 space-y-2">
+        {o.items.map((i, idx) => (
+          <div key={idx} className="flex items-center gap-3">
+            <div className="relative h-16 w-12 shrink-0 overflow-hidden rounded bg-ivory ring-1 ring-onyx/5">
+              <img src={i.image} alt={i.name} className="h-full w-full object-cover" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate font-sans text-sm text-onyx">{i.name}</p>
+              <p className="font-sans text-xs text-onyx/50">
+                {[i.color, i.size ? `Size ${i.size}` : "", `Qty ${i.qty}`].filter(Boolean).join(" · ")}
+              </p>
+            </div>
+            <p className="shrink-0 font-sans text-sm text-onyx/70">${i.price * i.qty}</p>
+          </div>
+        ))}
+      </div>
+
+      <button onClick={() => setOpen((v) => !v)} className="mt-3 font-sans text-xs text-onyx/45 underline hover:text-onyx">
+        {open ? "Hide order details" : "Show order details"}
+      </button>
+
+      {open && (
+        <div className="mt-3 grid gap-4 border-t border-onyx/8 pt-3 font-sans text-xs leading-relaxed text-onyx/65 sm:grid-cols-2">
+          <div>
+            <p className="font-medium uppercase tracking-label text-onyx/45">Payment</p>
+            <p className="mt-1">Subtotal ${subtotal}</p>
+            <p>Shipping {shipping === 0 ? "free" : `$${shipping}`}</p>
+            <p className="mt-1 text-onyx">Total <strong>${o.total}</strong></p>
+            <p className="mt-1 text-onyx/45">Nothing is charged online — we arrange payment with you personally.</p>
+          </div>
+          <div>
+            <p className="font-medium uppercase tracking-label text-onyx/45">Delivering to</p>
+            <p className="mt-1">{o.customer?.name}</p>
+            <p>{o.customer?.address}</p>
+            <p>{[o.customer?.city, o.customer?.zip].filter(Boolean).join(" ")}{o.customer?.country ? `, ${o.customer.country}` : ""}</p>
+            {o.customer?.phone && <p>{o.customer.phone}</p>}
+            {o.customer?.note && <p className="mt-1 italic text-onyx/50">Your note: &ldquo;{o.customer.note}&rdquo;</p>}
+          </div>
+        </div>
+      )}
+
+      <p className="mt-3 font-sans text-xs text-onyx/45">
+        Something to ask about this order?{" "}
+        <Link href={`/inquiry?order=${encodeURIComponent(o.no)}`} className="underline hover:text-rose">Send an inquiry</Link> — quote {o.no}.
+      </p>
+    </div>
+  );
+}
 
 const field = "w-full border border-onyx/20 bg-white px-3.5 py-2.5 font-sans text-sm text-onyx placeholder:text-onyx/35 focus:border-gold focus:outline-none";
 
