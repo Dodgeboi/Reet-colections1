@@ -11,6 +11,7 @@ import GoldThread from "./GoldThread";
 import SizeGuide from "./SizeGuide";
 import Editable from "./Editable";
 import { useSiteText } from "./SiteTextProvider";
+import { categoryBySlug } from "@/lib/categories";
 
 export default function ProductDetail({ product, related = [] }) {
   const { addToCart } = useCart();
@@ -40,11 +41,16 @@ export default function ProductDetail({ product, related = [] }) {
   const [size, setSize] = useState(product.sizes?.length === 1 ? product.sizes[0] : "");
   const [qty, setQty] = useState(1);
   const [err, setErr] = useState("");
+  const [activeImage, setActiveImage] = useState(0);
   const sold = product.status === "sold";
   const wishlist = useWishlist();
   const wished = wishlist?.has(product.id);
+  const images = [product.image, ...(Array.isArray(product.images) ? product.images : [])]
+    .filter((src, index, list) => src && list.indexOf(src) === index)
+    .slice(0, 3);
   useEffect(() => { wishlist?.addViewed(product.id); // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product.id]);
+  useEffect(() => { setActiveImage(0); }, [product.id]);
 
   const ensureSize = () => {
     if (product.sizes?.length > 1 && !size) { setErr("Please select a size."); return false; }
@@ -58,24 +64,56 @@ export default function ProductDetail({ product, related = [] }) {
     ["product.fabric", t.fabric, product.fabric],
     ["product.color", t.color, product.color],
     ["product.designCode", t.designCode, product.code],
-    ["product.category", t.category, (product.category || "").replace(/^\w/, (c) => c.toUpperCase())],
+    ["product.category", t.category, categoryBySlug[product.category]?.name || (product.category || "").replace(/^\w/, (c) => c.toUpperCase())],
   ].filter(([, , v]) => v);
 
   return (
     <div className="pt-32">
       <div className="mx-auto max-w-6xl px-6 sm:px-8">
         <nav className="mb-6 font-sans text-xs text-onyx/45">
-          <Link href="/collections" className="hover:text-onyx">Shop</Link> / <Link href={`/collections/${product.category}`} className="capitalize hover:text-onyx">{product.category}</Link> / <span className="text-onyx/70">{product.name}</span>
+          <Link href="/collections" className="hover:text-onyx">Shop</Link> / <Link href={`/collections/${product.category}`} className="hover:text-onyx">{categoryBySlug[product.category]?.name || product.category}</Link> / <span className="text-onyx/70">{product.name}</span>
         </nav>
 
         <div className="grid gap-10 lg:grid-cols-2">
-          {/* image */}
+          {/* three-angle product gallery */}
           <div className="lg:sticky lg:top-32 lg:self-start">
-            <div className="relative aspect-[4/5] overflow-hidden bg-[#F3EDE4]">
-              <Image src={product.image} alt={product.name} fill sizes="(max-width:1024px) 90vw, 45vw" className="object-cover" priority data-edit={`product:${product.id}`} />
-              {product.newIn && (
-                <span className="absolute left-0 top-4 bg-onyx px-2.5 py-1 font-sans text-[9px] font-medium uppercase tracking-[0.14em] text-ivory"><Editable k="product.newArrival" value={t.newArrival} /></span>
+            <div className={`grid gap-3 ${images.length > 1 ? "sm:grid-cols-[76px_minmax(0,1fr)]" : ""}`}>
+              {images.length > 1 && (
+                <div className="order-2 flex gap-2 overflow-x-auto sm:order-1 sm:flex-col sm:overflow-visible">
+                  {images.map((src, index) => (
+                    <button
+                      key={src}
+                      type="button"
+                      onClick={() => setActiveImage(index)}
+                      aria-label={`Show ${product.name} view ${index + 1}`}
+                      aria-pressed={activeImage === index}
+                      className={`relative aspect-[2/3] w-[64px] shrink-0 overflow-hidden border transition-colors sm:w-full ${activeImage === index ? "border-onyx" : "border-transparent opacity-65 hover:opacity-100"}`}
+                    >
+                      <Image src={src} alt="" fill sizes="76px" className="object-cover object-top" />
+                    </button>
+                  ))}
+                </div>
               )}
+              <div className="order-1 sm:order-2">
+                <div className="relative aspect-[2/3] overflow-hidden bg-[#F3EDE4]" data-edit={`product:${product.id}`}>
+                  <Image
+                    src={images[activeImage] || product.image}
+                    alt={`${product.name}${activeImage ? `, view ${activeImage + 1}` : ""}`}
+                    fill
+                    sizes="(max-width:1024px) 90vw, 42vw"
+                    className="object-cover object-top"
+                    priority
+                  />
+                  {product.newIn && (
+                    <span className="absolute left-0 top-4 bg-onyx px-2.5 py-1 font-sans text-[9px] font-medium uppercase tracking-[0.14em] text-ivory"><Editable k="product.newArrival" value={t.newArrival} /></span>
+                  )}
+                  {images.length > 1 && (
+                    <span className="absolute bottom-3 right-3 bg-white/90 px-2.5 py-1 font-sans text-[9px] uppercase tracking-[0.14em] text-onyx/65">
+                      {activeImage + 1} / {images.length}
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
 

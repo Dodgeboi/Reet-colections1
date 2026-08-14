@@ -5,7 +5,7 @@ import { readJson, writeJson } from "@/lib/store";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const allowedCategories = new Set(["kurtis", "lehengas", "sari", "blouses", "pants", "jewelry", "shoes"]);
+const allowedCategories = new Set(["suits", "anarkalis", "kurtis", "lehengas", "sari", "blouses", "pants", "jewelry", "shoes"]);
 
 function sizesFromText(text) {
   return String(text || "")
@@ -32,7 +32,7 @@ export async function POST(req) {
     const now = new Date();
 
     const additions = incoming.map((p, idx) => {
-      const category = allowedCategories.has(p.category) ? p.category : "kurtis";
+      const category = allowedCategories.has(p.category) ? p.category : "suits";
       const price = money(p.price);
       return {
         id: `RC-UP-${now.getTime()}-${idx}`,
@@ -50,7 +50,7 @@ export async function POST(req) {
         thisWeek: true,
         newIn: true,
         clearance: false,
-        image: p.image || "/images/fusion-mustard.png",
+        image: p.image || "/images/products/pink-ombre-suit-front.png",
         note: String(p.note || "").trim(),
         addedBy: "admin-upload",
         source: { type: "admin-import", importedAt: now.toISOString() },
