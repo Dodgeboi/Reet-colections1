@@ -27,12 +27,14 @@ A template lives in `.env.example`.
 
 | Variable | Purpose |
 |---|---|
-| `ADMIN_EMAILS` | Owner emails, comma-separated — each works for `/admin` login and unlocks admin via their own Google account |
+| `ADMIN_EMAILS` | Owner emails, comma-separated — each works for `/admin` login (password or their own Google account), both followed by an emailed 2FA code |
 | `ADMIN_PASSWORD_HASH` | SHA-256 hash of the owner password (never the password itself) |
-| `ADMIN_SESSION_SECRET` | Long random secret that signs the owner session cookie |
+| `ADMIN_SESSION_SECRET` | Long random secret that signs the owner session cookie and the 2FA pending-cookie |
 | `NEXTAUTH_SECRET` | Long random secret for NextAuth (Google sign-in) sessions |
 | `NEXTAUTH_URL` | The site's URL — `http://localhost:3000` in dev |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Google OAuth credentials ([Deployment](./DEPLOYMENT.md) Step 4) |
+| `RESEND_API_KEY` | Free key from [resend.com](https://resend.com) — powers customer sign-in codes, order/subscribe emails, **and admin 2FA**. Without it, admin login is single-factor (see [Security](./SECURITY.md)) |
+| `ADMIN_IP_ALLOWLIST` | Optional — comma-separated IPs allowed to reach `/admin` at all. Leave unset to keep remote access working |
 | `ANTHROPIC_API_KEY` | Optional — enables the admin AI photo importer |
 | `BLOB_READ_WRITE_TOKEN` | Injected by Vercel in production; leave empty locally |
 

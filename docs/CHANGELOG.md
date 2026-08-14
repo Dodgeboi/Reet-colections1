@@ -2,6 +2,23 @@
 
 A high-level history of what's been built. Newest first.
 
+## Security hardening
+
+- **Admin 2FA**: password and Google sign-in are now just the first factor —
+  a 6-digit code emailed via Resend is required before the owner dashboard
+  unlocks (falls back to single-factor if `RESEND_API_KEY` isn't set).
+- Removed the direct "Google email is an owner → in" bypass in middleware and
+  `isAdmin()`; the signed `reet_admin` session cookie (only issued after 2FA)
+  is now the single source of truth for admin access, everywhere.
+- Owner session shortened from 30 to 14 days.
+- Optional `ADMIN_IP_ALLOWLIST` — off by default, so remote/phone access to
+  `/admin` keeps working; opt in for an extra defense-in-depth layer.
+- Login/2FA-code throttling split into separate per-step budgets.
+- Added `.github/workflows/secret-scan.yml` (gitleaks) so a committed secret
+  gets caught in CI. Confirmed via full git history search that no real
+  secret has ever actually been committed — `.env*` was already git-ignored.
+- See [Security](./SECURITY.md) for the full picture.
+
 ## Phase 2 — a real, working shop
 
 **Clearer wording, an Inquiries page & customer numbers**

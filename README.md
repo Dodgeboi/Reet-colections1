@@ -43,7 +43,9 @@ npm run dev
 Open <http://localhost:3000>. The owner dashboard is at `/admin` — sign in with
 the owner email + password (configured in `.env.local`; see
 [Development](./docs/DEVELOPMENT.md)), or with the owner's Google account once
-Google sign-in is connected.
+Google sign-in is connected. Either way, if `RESEND_API_KEY` is set, a 6-digit
+code is emailed as a second factor before the dashboard unlocks — see
+[Security](./docs/SECURITY.md).
 
 **Want it on your phone without a computer?** Deploy it once — see
 [Deployment](./docs/DEPLOYMENT.md). You'll get a real `https://` link that works

@@ -1,26 +1,24 @@
 import { NextResponse } from "next/server";
 import crypto from "node:crypto";
-import { ADMIN_COOKIE, SESSION_MAX_AGE, createSessionToken } from "@/lib/adminSession";
+import { ADMIN_COOKIE, SESSION_MAX_AGE, PENDING_COOKIE, PENDING_MAX_AGE, createSessionToken, createPendingToken } from "@/lib/adminSession";
 import { adminEmails, isAdminEmail } from "@/lib/adminEmails";
+import { adminTwoFactorEnabled, issueCode } from "@/lib/adminOtp";
+import { requestIp, tooManyTries, recordMiss, clearTries } from "@/lib/loginThrottle";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-// Best-effort throttle: after 5 wrong tries, an IP waits 15 minutes.
-const attempts = new Map();
-const MAX_TRIES = 5;
-const WINDOW_MS = 15 * 60 * 1000;
-
-function tooManyTries(ip) {
-  const a = attempts.get(ip);
-  if (!a) return false;
-  if (Date.now() - a.first > WINDOW_MS) { attempts.delete(ip); return false; }
-  return a.count >= MAX_TRIES;
-}
-function recordMiss(ip) {
-  const a = attempts.get(ip);
-  if (!a || Date.now() - a.first > WINDOW_MS) attempts.set(ip, { first: Date.now(), count: 1 });
-  else a.count += 1;
+function sessionCookie(res, secret) {
+  return createSessionToken(secret).then((token) => {
+    res.cookies.set(ADMIN_COOKIE, token, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: SESSION_MAX_AGE,
+    });
+    return res;
+  });
 }
 
 export async function POST(req) {
@@ -32,30 +30,38 @@ export async function POST(req) {
       return NextResponse.json({ error: "Admin login isn't configured on the server yet." }, { status: 500 });
     }
 
-    const ip = (req.headers.get("x-forwarded-for") || "local").split(",")[0].trim();
-    if (tooManyTries(ip)) {
+    const ip = requestIp(req);
+    if (tooManyTries(`${ip}:password`)) {
       return NextResponse.json({ error: "Too many attempts — please wait 15 minutes and try again." }, { status: 429 });
     }
 
     const hash = crypto.createHash("sha256").update(String(password || ""), "utf8").digest("hex");
-    const emailOk = isAdminEmail(email);
+    const normalizedEmail = String(email || "").trim().toLowerCase();
+    const emailOk = isAdminEmail(normalizedEmail);
     const passOk = hash.length === expectedHash.length &&
       crypto.timingSafeEqual(Buffer.from(hash), Buffer.from(expectedHash));
     if (!emailOk || !passOk) {
-      recordMiss(ip);
+      recordMiss(`${ip}:password`);
       return NextResponse.json({ error: "That email or password isn't right." }, { status: 401 });
     }
+    clearTries(`${ip}:password`);
 
-    attempts.delete(ip);
-    const res = NextResponse.json({ ok: true });
-    res.cookies.set(ADMIN_COOKIE, await createSessionToken(secret), {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-      maxAge: SESSION_MAX_AGE,
-    });
-    return res;
+    // Password alone is the first factor. If email delivery is configured,
+    // a second factor (emailed code) is required before a session is issued.
+    if (adminTwoFactorEnabled()) {
+      await issueCode(normalizedEmail);
+      const res = NextResponse.json({ ok: true, stage: "code" });
+      res.cookies.set(PENDING_COOKIE, await createPendingToken(secret, normalizedEmail), {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+        maxAge: PENDING_MAX_AGE,
+      });
+      return res;
+    }
+
+    return sessionCookie(NextResponse.json({ ok: true }), secret);
   } catch {
     return NextResponse.json({ error: "Something went wrong — please try again." }, { status: 500 });
   }
@@ -64,5 +70,6 @@ export async function POST(req) {
 export async function DELETE() {
   const res = NextResponse.json({ ok: true });
   res.cookies.set(ADMIN_COOKIE, "", { path: "/", maxAge: 0 });
+  res.cookies.set(PENDING_COOKIE, "", { path: "/", maxAge: 0 });
   return res;
 }

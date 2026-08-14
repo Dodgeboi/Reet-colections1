@@ -1,23 +1,24 @@
 import { NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
 import { ADMIN_COOKIE, verifySessionToken } from "@/lib/adminSession";
-import { adminEmails, isAdminEmail } from "@/lib/adminEmails";
+import { ipAllowed } from "@/lib/adminAccess";
+import { requestIp } from "@/lib/loginThrottle";
 
 export async function middleware(req) {
   const { pathname } = req.nextUrl;
+
+  // Optional defense-in-depth layer (ADMIN_IP_ALLOWLIST) — off by default.
+  if (!ipAllowed(requestIp(req))) {
+    return new NextResponse("Not found", { status: 404 });
+  }
+
   if (pathname === "/admin/login") return NextResponse.next();
 
-  // Owner password session
+  // The ADMIN_COOKIE is the only session that grants /admin access, and it's
+  // only ever issued after 2FA (see app/api/admin/login/*). A Google sign-in
+  // that's an owner email still has to complete the emailed-code step first —
+  // there is no direct Google bypass here.
   const token = req.cookies.get(ADMIN_COOKIE)?.value;
   if (await verifySessionToken(process.env.ADMIN_SESSION_SECRET, token)) return NextResponse.next();
-
-  // Or signed in with Google as an owner
-  if (adminEmails().length && process.env.NEXTAUTH_SECRET) {
-    try {
-      const jwt = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-      if (isAdminEmail(jwt?.email)) return NextResponse.next();
-    } catch {}
-  }
 
   const url = req.nextUrl.clone();
   url.pathname = "/admin/login";
