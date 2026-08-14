@@ -10,6 +10,16 @@ import BackToTop from "@/components/BackToTop";
 import HideOnAdmin from "@/components/HideOnAdmin";
 import PhotoEditMode from "@/components/PhotoEditMode";
 import { siteUrl } from "@/lib/site";
+import { getSiteSettings } from "@/lib/siteSettings";
+import { SiteTextProvider } from "@/components/SiteTextProvider";
+
+// Header/Footer/CartDrawer now render owner-edited text fetched here. A
+// layout's `dynamic` export cascades to every page under it (unless a page
+// overrides it), so this one line guarantees every page — including ones
+// that don't declare their own force-dynamic (checkout, legal pages) —
+// re-reads site text on every request instead of risking a build-time-frozen
+// copy in Header/Footer on statically-generated pages.
+export const dynamic = "force-dynamic";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"], weight: ["300", "400", "500", "600"], style: ["normal", "italic"],
@@ -68,23 +78,28 @@ const orgJsonLd = {
   sameAs: ["https://www.facebook.com/Reetcollections068/"],
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  // Fetched once here (not per-component) so header/footer copy — seen on
+  // every page — can be owner-editable too, same as the rest of the site.
+  const site = await getSiteSettings();
   return (
     <html lang="en" className={`${cormorant.variable} ${jost.variable} ${devanagari.variable}`}>
       <body>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
-        <AccountProvider>
-          <CartProvider>
-            <WishlistProvider>
-              <Header />
-              <main>{children}</main>
-              <HideOnAdmin><Footer /></HideOnAdmin>
-              <CartDrawer />
-              <BackToTop />
-              <HideOnAdmin><PhotoEditMode /></HideOnAdmin>
-            </WishlistProvider>
-          </CartProvider>
-        </AccountProvider>
+        <SiteTextProvider site={site}>
+          <AccountProvider>
+            <CartProvider>
+              <WishlistProvider>
+                <Header site={site} />
+                <main>{children}</main>
+                <HideOnAdmin><Footer site={site} /></HideOnAdmin>
+                <CartDrawer />
+                <BackToTop />
+                <HideOnAdmin><PhotoEditMode /></HideOnAdmin>
+              </WishlistProvider>
+            </CartProvider>
+          </AccountProvider>
+        </SiteTextProvider>
       </body>
     </html>
   );

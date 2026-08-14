@@ -2,7 +2,11 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useSiteText } from "./SiteTextProvider";
+import Editable from "./Editable";
 export default function SearchOverlay({ open, onClose }) {
+  const placeholder = useSiteText("search.placeholder");
+  const emptyHint = useSiteText("search.emptyHint");
   const [q, setQ] = useState("");
   const [products, setProducts] = useState([]);
   useEffect(() => {
@@ -22,11 +26,11 @@ export default function SearchOverlay({ open, onClose }) {
         <div className="overflow-hidden bg-white shadow-card">
           <div className="flex items-center gap-3 border-b border-onyx/10 px-4">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className="text-onyx/40"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
-            <input autoFocus value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search kurtis, lehengas, colors…" className="w-full bg-transparent py-4 font-sans text-base text-onyx focus:outline-none" />
+            <input autoFocus value={q} onChange={(e) => setQ(e.target.value)} placeholder={placeholder} className="w-full bg-transparent py-4 font-sans text-base text-onyx focus:outline-none" />
             <button onClick={onClose} aria-label="Close" className="text-2xl leading-none text-onyx/40 hover:text-onyx">×</button>
           </div>
           <div className="max-h-[60vh] overflow-y-auto">
-            {!ql && <p className="p-6 text-center font-sans text-sm text-onyx/40">Start typing to search the collection.</p>}
+            {!ql && <p className="p-6 text-center font-sans text-sm text-onyx/40"><Editable k="search.emptyHint" value={emptyHint} /></p>}
             {ql && results.length === 0 && <p className="p-6 text-center font-sans text-sm text-onyx/50">No matches for “{q}”.</p>}
             {results.map((p) => (
               <Link key={p.id} href={`/product/${p.id}`} onClick={onClose} className="flex items-center gap-3 border-b border-onyx/5 px-4 py-3 last:border-0 hover:bg-blush/30">

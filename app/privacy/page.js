@@ -1,30 +1,38 @@
 import Link from "next/link";
 import LegalPage, { LegalSection } from "@/components/LegalPage";
+import Editable from "@/components/Editable";
+import { textOf } from "@/lib/siteText";
+import { getSiteSettings } from "@/lib/siteSettings";
 
 export const metadata = {
   title: "Privacy Policy",
   description: "What information Reet Collections collects and how it's used.",
 };
 
-export default function PrivacyPage() {
+export const dynamic = "force-dynamic";
+
+export default async function PrivacyPage() {
+  const site = await getSiteSettings();
+  const t = (k) => textOf(site, k);
   return (
-    <LegalPage eyebrow="Legal" title="Privacy Policy" updated="July 2026">
-      <LegalSection title="What we collect">
-        <p>When you place an order, we collect your name, email, phone number, and delivery address — the details needed to get your order to you.</p>
-        <p>If you sign in with Google, we receive your name, email address, and profile photo from Google. We never see your Google password, and we never post anything on your behalf.</p>
-        <p>If you join our live-notification list, we store your email address.</p>
+    <LegalPage
+      eyebrow={<Editable k="legal.privacy.eyebrow" value={t("legal.privacy.eyebrow")} />}
+      title={<Editable k="legal.privacy.title" value={t("legal.privacy.title")} />}
+      updated={t("legal.privacy.updated")} updatedKey="legal.privacy.updated">
+      <LegalSection title={<Editable k="legal.privacy.section.collect" value={t("legal.privacy.section.collect")} />}>
+        <p style={{ whiteSpace: "pre-line" }}><Editable k="legal.privacy.whatWeCollect" value={t("legal.privacy.whatWeCollect")} /></p>
       </LegalSection>
-      <LegalSection title="How we use it">
-        <p>Only to run the shop: confirming and delivering your orders, answering your messages, and — if you've joined the list — letting you know when we go live. We don't sell or share your information with anyone, and we don't send marketing you didn't ask for.</p>
+      <LegalSection title={<Editable k="legal.privacy.section.use" value={t("legal.privacy.section.use")} />}>
+        <p><Editable k="legal.privacy.howWeUse" value={t("legal.privacy.howWeUse")} /></p>
       </LegalSection>
-      <LegalSection title="Payments">
-        <p>We don't collect card details on this site. Payment is arranged personally with you after your order is confirmed.</p>
+      <LegalSection title={<Editable k="legal.privacy.section.payments" value={t("legal.privacy.section.payments")} />}>
+        <p><Editable k="legal.privacy.payments" value={t("legal.privacy.payments")} /></p>
       </LegalSection>
-      <LegalSection title="On your device">
-        <p>Your shopping bag, wishlist, and recently-viewed products are stored in your own browser so they're waiting for you when you come back. Signing in uses a session cookie to keep you signed in.</p>
+      <LegalSection title={<Editable k="legal.privacy.section.device" value={t("legal.privacy.section.device")} />}>
+        <p><Editable k="legal.privacy.onYourDevice" value={t("legal.privacy.onYourDevice")} /></p>
       </LegalSection>
-      <LegalSection title="Your choices">
-        <p>Want your details or your email removed from our list? Just ask through the <Link href="/inquiry" className="text-rose underline hover:text-rose-deep">Inquiries page</Link> and we'll take care of it.</p>
+      <LegalSection title={<Editable k="legal.privacy.section.choices" value={t("legal.privacy.section.choices")} />}>
+        <p><Editable k="legal.privacy.yourChoices.pre" value={t("legal.privacy.yourChoices.pre")} /> <Link href="/inquiry" className="text-rose underline hover:text-rose-deep"><Editable k="legal.privacy.yourChoices.link" value={t("legal.privacy.yourChoices.link")} /></Link> <Editable k="legal.privacy.yourChoices.post" value={t("legal.privacy.yourChoices.post")} /></p>
       </LegalSection>
     </LegalPage>
   );

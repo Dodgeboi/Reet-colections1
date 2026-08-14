@@ -7,8 +7,10 @@ import { useWishlist } from "@/components/WishlistProvider";
 import ProductCard from "@/components/ProductCard";
 import GoldThread from "@/components/GoldThread";
 import GoogleButton from "@/components/GoogleButton";
+import Editable from "@/components/Editable";
+import { useSiteText } from "@/components/SiteTextProvider";
 
-const STATUS_LABEL = { new: "Received", confirmed: "Confirmed", shipped: "Shipped", delivered: "Delivered", cancelled: "Cancelled" };
+const STATUS_KEYS = { new: "new", confirmed: "confirmed", shipped: "shipped", delivered: "delivered", cancelled: "cancelled" };
 const STATUS_CLASS = {
   new: "bg-gold/15 text-gold-deep",
   confirmed: "bg-blush/60 text-rose-deep",
@@ -16,20 +18,33 @@ const STATUS_CLASS = {
   delivered: "bg-gold/25 text-gold-deep",
   cancelled: "bg-onyx/5 text-onyx/40",
 };
-// Plain-English explanation of where an order stands, for the customer.
-const STATUS_NOTE = {
-  new: "We've received your order and reserved these items for you. Nothing has been charged — we'll message you to confirm the details and arrange payment.",
-  confirmed: "Your order is confirmed. We're packing it by hand and will let you know as soon as it's on the way.",
-  shipped: "Your order is on its way to the address below. Delivery usually takes a few days.",
-  delivered: "This order was delivered. If anything isn't right, send us an inquiry within 7 days of delivery and we'll sort it out.",
-  cancelled: "This order was cancelled, so nothing is owed. If that looks wrong to you, send us an inquiry and we'll check.",
-};
 
 export default function AccountClient({ googleEnabled, facebookEnabled, codeEnabled }) {
   const { account, ready, signInWithGoogle, signOut } = useAccount();
   const wishlist = useWishlist();
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
+  const t = {
+    welcomeTitle: useSiteText("account.welcomeTitle"),
+    welcomeBody: useSiteText("account.welcomeBody"),
+    comingSoon: useSiteText("account.comingSoon"),
+    questionsPre: useSiteText("account.questionsPre"),
+    questionsLink: useSiteText("account.questionsLink"),
+    welcomeBackPre: useSiteText("account.welcomeBackPre"),
+    ownerDashboard: useSiteText("account.ownerDashboard"),
+    signOut: useSiteText("account.signOut"),
+    profile: useSiteText("account.profile"),
+    memberSince: useSiteText("account.memberSince"),
+    savedProducts: useSiteText("account.savedProducts"),
+    ordersLabel: useSiteText("account.ordersLabel"),
+    yourWishlist: useSiteText("account.yourWishlist"),
+    noSaved: useSiteText("account.noSaved"),
+    browseCollection: useSiteText("account.browseCollection"),
+    orderHistory: useSiteText("account.orderHistory"),
+    orderHistorySub: useSiteText("account.orderHistorySub"),
+    noOrders: useSiteText("account.noOrders"),
+    recentlyViewed: useSiteText("account.recentlyViewed"),
+  };
 
   useEffect(() => {
     fetch("/api/products").then((r) => r.json()).then((d) => setProducts(Array.isArray(d) ? d : [])).catch(() => {});
@@ -50,10 +65,10 @@ export default function AccountClient({ googleEnabled, facebookEnabled, codeEnab
         <div className="mx-auto max-w-md px-5">
           <div className="text-center">
             <p className="eyebrow">Your account</p>
-            <h1 className="mt-2 font-display text-4xl font-light text-onyx">Welcome to Reet</h1>
+            <h1 className="mt-2 font-display text-4xl font-light text-onyx"><Editable k="account.welcomeTitle" value={t.welcomeTitle} /></h1>
             <div className="mt-4 flex justify-center"><GoldThread width={140} /></div>
             <p className="mx-auto mt-5 max-w-sm font-sans text-sm leading-relaxed text-onyx/60">
-              Sign in to keep your wishlist and orders together, on any device.
+              <Editable k="account.welcomeBody" value={t.welcomeBody} />
             </p>
           </div>
           <div className="mt-8 border border-onyx/10 bg-white p-6 shadow-card">
@@ -61,12 +76,12 @@ export default function AccountClient({ googleEnabled, facebookEnabled, codeEnab
               <SignInMethods googleEnabled={googleEnabled} facebookEnabled={facebookEnabled} codeEnabled={codeEnabled} signInWithGoogle={signInWithGoogle} />
             ) : (
               <p className="text-center font-sans text-sm leading-relaxed text-onyx/55">
-                Sign-in is opening soon. You can still browse, add to your bag and place orders as a guest.
+                <Editable k="account.comingSoon" value={t.comingSoon} />
               </p>
             )}
           </div>
           <p className="mt-6 text-center font-sans text-xs text-onyx/40">
-            Questions? <Link href="/inquiry" className="underline hover:text-rose">Send us an inquiry.</Link>
+            <Editable k="account.questionsPre" value={t.questionsPre} /> <Link href="/inquiry" className="underline hover:text-rose"><Editable k="account.questionsLink" value={t.questionsLink} /></Link>
           </p>
         </div>
       </div>
@@ -91,57 +106,57 @@ export default function AccountClient({ googleEnabled, facebookEnabled, codeEnab
             )}
             <div>
               <p className="eyebrow">Your account</p>
-              <h1 className="mt-1 font-display text-4xl font-light text-onyx sm:text-5xl">Welcome back, {firstName}</h1>
+              <h1 className="mt-1 font-display text-4xl font-light text-onyx sm:text-5xl"><Editable k="account.welcomeBackPre" value={t.welcomeBackPre} /> {firstName}</h1>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            {account.isOwner && <Link href="/admin" className="btn-gold !py-2 text-xs">Owner dashboard</Link>}
-            <button onClick={signOut} className="btn-outline !py-2 text-xs">Sign out</button>
+            {account.isOwner && <Link href="/admin" className="btn-gold !py-2 text-xs"><Editable k="account.ownerDashboard" value={t.ownerDashboard} /></Link>}
+            <button onClick={signOut} className="btn-outline !py-2 text-xs"><Editable k="account.signOut" value={t.signOut} /></button>
           </div>
         </div>
 
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
           <div className="border border-onyx/10 bg-white p-5">
-            <p className="eyebrow">Profile</p>
+            <p className="eyebrow"><Editable k="account.profile" value={t.profile} /></p>
             <p className="mt-2 font-display text-xl text-onyx">{account.name}</p>
             <p className="font-sans text-sm text-onyx/55">{account.email}</p>
-            {account.since && <p className="mt-1 font-sans text-xs text-onyx/40">Member since {new Date(account.since).toLocaleDateString()}</p>}
+            {account.since && <p className="mt-1 font-sans text-xs text-onyx/40"><Editable k="account.memberSince" value={t.memberSince} /> {new Date(account.since).toLocaleDateString()}</p>}
           </div>
           <div className="flex flex-col items-center justify-center border border-onyx/10 bg-white p-5 text-center">
             <p className="font-display text-3xl text-onyx">{wished.length}</p>
-            <p className="font-sans text-xs uppercase tracking-label text-onyx/45">Saved products</p>
+            <p className="font-sans text-xs uppercase tracking-label text-onyx/45"><Editable k="account.savedProducts" value={t.savedProducts} /></p>
           </div>
           <div className="flex flex-col items-center justify-center border border-onyx/10 bg-white p-5 text-center">
             <p className="font-display text-3xl text-onyx">{orders.length}</p>
-            <p className="font-sans text-xs uppercase tracking-label text-onyx/45">Orders</p>
+            <p className="font-sans text-xs uppercase tracking-label text-onyx/45"><Editable k="account.ordersLabel" value={t.ordersLabel} /></p>
           </div>
         </div>
 
         <section className="mt-12">
-          <h2 className="mb-5 font-display text-3xl font-light text-onyx">Your Wishlist{wished.length ? ` (${wished.length})` : ""}</h2>
+          <h2 className="mb-5 font-display text-3xl font-light text-onyx"><Editable k="account.yourWishlist" value={t.yourWishlist} />{wished.length ? ` (${wished.length})` : ""}</h2>
           {wished.length ? (
             <div className="grid grid-cols-2 gap-x-2 gap-y-7 sm:gap-x-3 lg:grid-cols-4">{wished.map((p) => <ProductCard key={p.id} product={p} />)}</div>
           ) : (
             <Empty>
-              <p className="font-sans text-sm text-onyx/50">No saved products yet — tap the heart on anything you love.</p>
-              <Link href="/collections" className="btn-rose mt-4 inline-block !py-2 text-xs">Browse the collection</Link>
+              <p className="font-sans text-sm text-onyx/50"><Editable k="account.noSaved" value={t.noSaved} /></p>
+              <Link href="/collections" className="btn-rose mt-4 inline-block !py-2 text-xs"><Editable k="account.browseCollection" value={t.browseCollection} /></Link>
             </Empty>
           )}
         </section>
 
         <section className="mt-12">
-          <h2 className="mb-2 font-display text-3xl font-light text-onyx">Order History</h2>
-          <p className="mb-5 font-sans text-sm text-onyx/55">Every order you&apos;ve placed, what it contains, and exactly where it is right now.</p>
+          <h2 className="mb-2 font-display text-3xl font-light text-onyx"><Editable k="account.orderHistory" value={t.orderHistory} /></h2>
+          <p className="mb-5 font-sans text-sm text-onyx/55"><Editable k="account.orderHistorySub" value={t.orderHistorySub} /></p>
           {orders.length ? (
             <div className="space-y-3">{orders.map((o) => <OrderCard key={o.no} order={o} />)}</div>
           ) : (
-            <Empty><p className="font-sans text-sm text-onyx/50">No orders yet — when you place one, it'll appear here.</p></Empty>
+            <Empty><p className="font-sans text-sm text-onyx/50"><Editable k="account.noOrders" value={t.noOrders} /></p></Empty>
           )}
         </section>
 
         {viewed.length > 0 && (
           <section className="mt-12">
-            <h2 className="mb-5 font-display text-3xl font-light text-onyx">Recently Viewed</h2>
+            <h2 className="mb-5 font-display text-3xl font-light text-onyx"><Editable k="account.recentlyViewed" value={t.recentlyViewed} /></h2>
             <div className="grid grid-cols-2 gap-x-2 gap-y-7 sm:gap-x-3 lg:grid-cols-4">{viewed.slice(0, 4).map((p) => <ProductCard key={p.id} product={p} />)}</div>
           </section>
         )}
@@ -159,13 +174,25 @@ function OrderCard({ order: o }) {
   const placed = new Date(o.at);
   const subtotal = o.subtotal ?? o.items.reduce((a, i) => a + i.price * i.qty, 0);
   const shipping = o.shipping ?? Math.max(0, (o.total || 0) - subtotal);
+  const statusKey = STATUS_KEYS[o.status] || "new";
+  const statusLabel = useSiteText(`order.status.${statusKey}`);
+  const statusNote = useSiteText(`order.note.${statusKey}`);
+  const t = {
+    detailsShow: useSiteText("order.showDetails"), detailsHide: useSiteText("order.hideDetails"),
+    paymentLabel: useSiteText("order.payment.label"), subtotalLabel: useSiteText("order.payment.subtotalLabel"),
+    shippingLabel: useSiteText("order.payment.shippingLabel"), totalLabel: useSiteText("order.payment.totalLabel"),
+    paymentNote: useSiteText("order.payment.note"), deliveryLabel: useSiteText("order.delivery.label"),
+    yourNote: useSiteText("order.yourNoteLabel"), askPre: useSiteText("order.askPre"),
+    askLink: useSiteText("order.askLink"), askQuote: useSiteText("order.askQuote"),
+    freeShipping: useSiteText("order.freeShipping"), freeShippingWord: useSiteText("order.freeShippingWord"),
+  };
 
   return (
     <div className="border border-onyx/10 bg-white p-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-3">
           <p className="font-display text-lg text-onyx">{o.no}</p>
-          <span className={`rounded-full px-2.5 py-0.5 font-sans text-[10px] uppercase tracking-wide ${STATUS_CLASS[o.status] || STATUS_CLASS.new}`}>{STATUS_LABEL[o.status] || o.status}</span>
+          <span className={`rounded-full px-2.5 py-0.5 font-sans text-[10px] uppercase tracking-wide ${STATUS_CLASS[o.status] || STATUS_CLASS.new}`}><Editable k={`order.status.${statusKey}`} value={statusLabel} /></span>
         </div>
         <p className="font-sans text-sm text-onyx/55">
           {placed.toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" })} · {units} item{units === 1 ? "" : "s"} · ${o.total}
@@ -174,8 +201,8 @@ function OrderCard({ order: o }) {
 
       {/* what this order is, in plain English */}
       <p className="mt-3 border-l-2 border-gold/50 pl-3 font-sans text-[13px] leading-relaxed text-onyx/70">
-        You ordered {units} item{units === 1 ? "" : "s"} on {placed.toLocaleDateString()} for ${o.total}, including {shipping === 0 ? "free shipping" : `$${shipping} shipping`}.{" "}
-        {STATUS_NOTE[o.status] || STATUS_NOTE.new}
+        You ordered {units} item{units === 1 ? "" : "s"} on {placed.toLocaleDateString()} for ${o.total}, including {shipping === 0 ? <Editable k="order.freeShipping" value={t.freeShipping} /> : `$${shipping} shipping`}.{" "}
+        <Editable k={`order.note.${statusKey}`} value={statusNote} />
       </p>
 
       {/* what's in it */}
@@ -197,32 +224,32 @@ function OrderCard({ order: o }) {
       </div>
 
       <button onClick={() => setOpen((v) => !v)} className="mt-3 font-sans text-xs text-onyx/45 underline hover:text-onyx">
-        {open ? "Hide order details" : "Show order details"}
+        {open ? <Editable k="order.hideDetails" value={t.detailsHide} /> : <Editable k="order.showDetails" value={t.detailsShow} />}
       </button>
 
       {open && (
         <div className="mt-3 grid gap-4 border-t border-onyx/8 pt-3 font-sans text-xs leading-relaxed text-onyx/65 sm:grid-cols-2">
           <div>
-            <p className="font-medium uppercase tracking-label text-onyx/45">Payment</p>
-            <p className="mt-1">Subtotal ${subtotal}</p>
-            <p>Shipping {shipping === 0 ? "free" : `$${shipping}`}</p>
-            <p className="mt-1 text-onyx">Total <strong>${o.total}</strong></p>
-            <p className="mt-1 text-onyx/45">Nothing is charged online — we arrange payment with you personally.</p>
+            <p className="font-medium uppercase tracking-label text-onyx/45"><Editable k="order.payment.label" value={t.paymentLabel} /></p>
+            <p className="mt-1"><Editable k="order.payment.subtotalLabel" value={t.subtotalLabel} /> ${subtotal}</p>
+            <p><Editable k="order.payment.shippingLabel" value={t.shippingLabel} /> {shipping === 0 ? <Editable k="order.freeShippingWord" value={t.freeShippingWord} /> : `$${shipping}`}</p>
+            <p className="mt-1 text-onyx"><Editable k="order.payment.totalLabel" value={t.totalLabel} /> <strong>${o.total}</strong></p>
+            <p className="mt-1 text-onyx/45"><Editable k="order.payment.note" value={t.paymentNote} /></p>
           </div>
           <div>
-            <p className="font-medium uppercase tracking-label text-onyx/45">Delivering to</p>
+            <p className="font-medium uppercase tracking-label text-onyx/45"><Editable k="order.delivery.label" value={t.deliveryLabel} /></p>
             <p className="mt-1">{o.customer?.name}</p>
             <p>{o.customer?.address}</p>
             <p>{[o.customer?.city, o.customer?.zip].filter(Boolean).join(" ")}{o.customer?.country ? `, ${o.customer.country}` : ""}</p>
             {o.customer?.phone && <p>{o.customer.phone}</p>}
-            {o.customer?.note && <p className="mt-1 italic text-onyx/50">Your note: &ldquo;{o.customer.note}&rdquo;</p>}
+            {o.customer?.note && <p className="mt-1 italic text-onyx/50"><Editable k="order.yourNoteLabel" value={t.yourNote} /> &ldquo;{o.customer.note}&rdquo;</p>}
           </div>
         </div>
       )}
 
       <p className="mt-3 font-sans text-xs text-onyx/45">
-        Something to ask about this order?{" "}
-        <Link href={`/inquiry?order=${encodeURIComponent(o.no)}`} className="underline hover:text-rose">Send an inquiry</Link> — quote {o.no}.
+        <Editable k="order.askPre" value={t.askPre} />{" "}
+        <Link href={`/inquiry?order=${encodeURIComponent(o.no)}`} className="underline hover:text-rose"><Editable k="order.askLink" value={t.askLink} /></Link> <Editable k="order.askQuote" value={t.askQuote} /> {o.no}.
       </p>
     </div>
   );
@@ -237,6 +264,18 @@ function SignInMethods({ googleEnabled, facebookEnabled, codeEnabled, signInWith
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
   const [note, setNote] = useState("");
+  const t = {
+    continueFacebook: useSiteText("account.continueFacebook"),
+    orReetSignIn: useSiteText("account.orReetSignIn"),
+    emailPlaceholder: useSiteText("account.emailPlaceholder"),
+    sendCode: useSiteText("account.sendCode"),
+    sending: useSiteText("account.sending"),
+    codeSentPre: useSiteText("account.codeSentPre"),
+    signInCta: useSiteText("account.signInCta"),
+    checking: useSiteText("account.checking"),
+    differentEmail: useSiteText("account.differentEmail"),
+    privacyNote: useSiteText("account.privacyNote"),
+  };
 
   const requestCode = async () => {
     if (busy) return;
@@ -246,7 +285,7 @@ function SignInMethods({ googleEnabled, facebookEnabled, codeEnabled, signInWith
       const d = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error(d.error || "Couldn't send the code.");
       setStep("code");
-      setNote(`We emailed a 6-digit code to ${email.trim()}.`);
+      setNote(`${t.codeSentPre} ${email.trim()}.`);
     } catch (e) { setErr(e.message); }
     finally { setBusy(false); }
   };
@@ -267,7 +306,7 @@ function SignInMethods({ googleEnabled, facebookEnabled, codeEnabled, signInWith
         <button onClick={() => signIn("facebook", { callbackUrl: "/account" })}
           className="mt-3 flex w-full items-center justify-center gap-3 rounded-full border border-onyx/15 bg-[#1877F2] px-5 py-3 font-sans text-sm font-medium text-white shadow-soft transition hover:bg-[#0f66d6]">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h2.7l.4-3H13V9c0-.9.2-1.5 1.5-1.5H16V5c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.4-4 4.1V11H7v3h2.6v8H13z" /></svg>
-          Continue with Facebook
+          <Editable k="account.continueFacebook" value={t.continueFacebook} />
         </button>
       )}
 
@@ -276,17 +315,17 @@ function SignInMethods({ googleEnabled, facebookEnabled, codeEnabled, signInWith
           {(googleEnabled || facebookEnabled) && (
             <div className="my-5 flex items-center gap-3">
               <span className="h-px flex-1 bg-onyx/10" />
-              <span className="font-sans text-[11px] uppercase tracking-label text-onyx/40">or the Reet sign-in</span>
+              <span className="font-sans text-[11px] uppercase tracking-label text-onyx/40"><Editable k="account.orReetSignIn" value={t.orReetSignIn} /></span>
               <span className="h-px flex-1 bg-onyx/10" />
             </div>
           )}
           {step === "start" ? (
             <div className="space-y-3">
-              <input className={field} type="email" placeholder="Your email address" value={email}
+              <input className={field} type="email" placeholder={t.emailPlaceholder} value={email}
                 onChange={(e) => { setEmail(e.target.value); setErr(""); }}
                 onKeyDown={(e) => e.key === "Enter" && requestCode()} />
               <button onClick={requestCode} disabled={busy || !email.trim()} className="btn-gold w-full disabled:opacity-40">
-                {busy ? "Sending…" : "Email me a sign-in code"}
+                {busy ? t.sending : <Editable k="account.sendCode" value={t.sendCode} />}
               </button>
             </div>
           ) : (
@@ -297,10 +336,10 @@ function SignInMethods({ googleEnabled, facebookEnabled, codeEnabled, signInWith
                 onChange={(e) => { setCode(e.target.value.replace(/\D/g, "")); setErr(""); }}
                 onKeyDown={(e) => e.key === "Enter" && verifyCode()} autoFocus />
               <button onClick={verifyCode} disabled={busy || code.length !== 6} className="btn-gold w-full disabled:opacity-40">
-                {busy ? "Checking…" : "Sign in"}
+                {busy ? t.checking : <Editable k="account.signInCta" value={t.signInCta} />}
               </button>
               <button onClick={() => { setStep("start"); setCode(""); setErr(""); }} className="w-full text-center font-sans text-xs text-onyx/45 underline hover:text-onyx">
-                Use a different email
+                <Editable k="account.differentEmail" value={t.differentEmail} />
               </button>
             </div>
           )}
@@ -308,7 +347,7 @@ function SignInMethods({ googleEnabled, facebookEnabled, codeEnabled, signInWith
       )}
       {err && <p className="mt-3 font-sans text-xs text-rose-deep">{err}</p>}
       <p className="mt-4 text-center font-sans text-xs leading-relaxed text-onyx/45">
-        We use your sign-in only to keep your wishlist and orders together — nothing is ever posted on your behalf.
+        <Editable k="account.privacyNote" value={t.privacyNote} />
       </p>
     </div>
   );

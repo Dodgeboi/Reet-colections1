@@ -1,31 +1,41 @@
 import Link from "next/link";
 import LegalPage, { LegalSection } from "@/components/LegalPage";
+import Editable from "@/components/Editable";
+import { textOf } from "@/lib/siteText";
+import { getSiteSettings } from "@/lib/siteSettings";
 
 export const metadata = {
   title: "Terms of Service",
   description: "The simple terms for shopping with Reet Collections.",
 };
 
-export default function TermsPage() {
+export const dynamic = "force-dynamic";
+
+export default async function TermsPage() {
+  const site = await getSiteSettings();
+  const t = (k) => textOf(site, k);
   return (
-    <LegalPage eyebrow="Legal" title="Terms of Service" updated="July 2026">
-      <LegalSection title="Orders">
-        <p>Placing an order reserves your products — it isn't a charge. We confirm every order personally (total, sizes, delivery) before payment is arranged. If we can't reach you within a few days, we may release reserved products back to the shop.</p>
+    <LegalPage
+      eyebrow={<Editable k="legal.terms.eyebrow" value={t("legal.terms.eyebrow")} />}
+      title={<Editable k="legal.terms.title" value={t("legal.terms.title")} />}
+      updated={t("legal.terms.updated")} updatedKey="legal.terms.updated">
+      <LegalSection title={<Editable k="legal.terms.section.orders" value={t("legal.terms.section.orders")} />}>
+        <p><Editable k="legal.terms.orders" value={t("legal.terms.orders")} /></p>
       </LegalSection>
-      <LegalSection title="Pricing & availability">
-        <p>Most of our products are one-of-a-kind or in very limited quantities, sourced one at a time. Occasionally something sells on a live and online at the same moment — if that happens with your order, we'll let you know right away and make it right.</p>
+      <LegalSection title={<Editable k="legal.terms.section.pricing" value={t("legal.terms.section.pricing")} />}>
+        <p><Editable k="legal.terms.pricing" value={t("legal.terms.pricing")} /></p>
       </LegalSection>
-      <LegalSection title="Product photos & colors">
-        <p>We photograph every product ourselves and describe it as honestly as we can. Screens vary, so colors — especially jewel tones and gold work — can look slightly different in person.</p>
+      <LegalSection title={<Editable k="legal.terms.section.photos" value={t("legal.terms.section.photos")} />}>
+        <p><Editable k="legal.terms.photos" value={t("legal.terms.photos")} /></p>
       </LegalSection>
-      <LegalSection title="Returns">
-        <p>Our full policy lives on the <Link href="/shipping-returns" className="text-rose underline hover:text-rose-deep">Shipping &amp; Returns</Link> page.</p>
+      <LegalSection title={<Editable k="legal.terms.section.returns" value={t("legal.terms.section.returns")} />}>
+        <p><Editable k="legal.terms.returns.pre" value={t("legal.terms.returns.pre")} /> <Link href="/shipping-returns" className="text-rose underline hover:text-rose-deep"><Editable k="legal.terms.returns.link" value={t("legal.terms.returns.link")} /></Link> <Editable k="legal.terms.returns.post" value={t("legal.terms.returns.post")} /></p>
       </LegalSection>
-      <LegalSection title="Your account">
-        <p>Signing in with Google is optional — it keeps your wishlist and order history in one place. Please use your own account and real contact details so we can reach you about your orders.</p>
+      <LegalSection title={<Editable k="legal.terms.section.account" value={t("legal.terms.section.account")} />}>
+        <p><Editable k="legal.terms.account" value={t("legal.terms.account")} /></p>
       </LegalSection>
-      <LegalSection title="Getting in touch">
-        <p>Anything unclear? We're a small family shop and a real person reads every message — reach us through the <Link href="/inquiry" className="text-rose underline hover:text-rose-deep">Inquiries page</Link>.</p>
+      <LegalSection title={<Editable k="legal.terms.section.contact" value={t("legal.terms.section.contact")} />}>
+        <p><Editable k="legal.terms.contact.pre" value={t("legal.terms.contact.pre")} /> <Link href="/inquiry" className="text-rose underline hover:text-rose-deep"><Editable k="legal.terms.contact.link" value={t("legal.terms.contact.link")} /></Link>.</p>
       </LegalSection>
     </LegalPage>
   );

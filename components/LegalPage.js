@@ -1,12 +1,15 @@
 import PageBanner from "@/components/PageBanner";
+import Editable from "@/components/Editable";
 
 // Shared shell for the plain-English policy pages.
-export default function LegalPage({ eyebrow, title, updated, children }) {
+export default function LegalPage({ eyebrow, title, updated, updatedKey, children }) {
   return (
     <>
       <PageBanner eyebrow={eyebrow} title={title} />
       <div className="mx-auto max-w-3xl px-6 pb-24 pt-12 sm:px-8">
-        <p className="font-sans text-xs uppercase tracking-label text-onyx/40">Last updated {updated}</p>
+        <p className="font-sans text-xs uppercase tracking-label text-onyx/40">
+          Last updated {updatedKey ? <Editable k={updatedKey} value={updated} /> : updated}
+        </p>
         <div className="legal mt-8 space-y-8">{children}</div>
       </div>
     </>

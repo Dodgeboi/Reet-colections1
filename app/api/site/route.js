@@ -30,7 +30,7 @@ export async function POST(req) {
     if (body.text !== undefined) {
       if (!body.text || typeof body.text !== "object") return NextResponse.json({ error: "Invalid text payload." }, { status: 400 });
       for (const [key, value] of Object.entries(body.text)) {
-        if (!/^[\w.:-]{1,80}$/.test(key) || typeof value !== "string" || value.length > 1200) {
+        if (!/^[\w.:-]{1,80}$/.test(key) || typeof value !== "string" || value.length > 20000) {
           return NextResponse.json({ error: `Invalid text for "${key}".` }, { status: 400 });
         }
       }

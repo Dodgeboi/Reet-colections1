@@ -47,41 +47,41 @@ export default async function Home() {
     <>
       <Hero image={site.hero} title={textOf(site, "hero.title")} subtitle={textOf(site, "hero.subtitle")} />
       <TrustBar text={site.text} />
-      <CategoryTiles tiles={tiles} />
+      <CategoryTiles tiles={tiles} site={site} />
 
-      <OccasionTiles tiles={occasions} />
+      <OccasionTiles tiles={occasions} site={site} />
 
-      <ProductRow eyebrow="Just arrived" title="New In" viewAllHref="/collections/new-in" products={newIn.slice(0, 4)} />
+      <ProductRow eyebrow={<Editable k="home.newIn.eyebrow" value={textOf(site, "home.newIn.eyebrow")} />} title={<Editable k="home.newIn.title" value={textOf(site, "home.newIn.title")} />} viewAllHref="/collections/new-in" products={newIn.slice(0, 4)} />
 
       <Heritage image={site.heritage} text={site.text} />
 
-      <ProductRow eyebrow="Limited-time prices" title="On Sale Now" viewAllHref="/collections/sale" products={saleItems} tone="blush" />
+      <ProductRow eyebrow={<Editable k="home.sale.eyebrow" value={textOf(site, "home.sale.eyebrow")} />} title={<Editable k="home.sale.title" value={textOf(site, "home.sale.title")} />} viewAllHref="/collections/sale" products={saleItems} tone="blush" />
 
       <Marquee items={["New Arrivals", "Banarasi Sarees", "Bridal Lehengas", "Diwali Edit", "Wedding Guest", "Kurtis", "Sangeet Nights", "Live Tonight"]} variant="onyx" />
 
-      <ProductRow eyebrow="Featured this week" title="This Week's Collection" viewAllHref="/collections/this-week" products={thisWeek} tone="blush" />
+      <ProductRow eyebrow={<Editable k="home.thisWeek.eyebrow" value={textOf(site, "home.thisWeek.eyebrow")} />} title={<Editable k="home.thisWeek.title" value={textOf(site, "home.thisWeek.title")} />} viewAllHref="/collections/this-week" products={thisWeek} tone="blush" />
 
-      <ProductRow eyebrow="Wallet-friendly" title="Under $60" viewAllHref="/collections" products={under50.length ? under50 : featured} />
+      <ProductRow eyebrow={<Editable k="home.under60.eyebrow" value={textOf(site, "home.under60.eyebrow")} />} title={<Editable k="home.under60.title" value={textOf(site, "home.under60.title")} />} viewAllHref="/collections" products={under50.length ? under50 : featured} />
 
       {/* Recent lives — social proof */}
       <section className="mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-14">
         <div className="mb-8 text-center">
-          <p className="eyebrow">Catch up</p>
-          <h2 className="mt-2 font-display text-3xl font-light text-onyx sm:text-4xl">Our Newest Lives</h2>
+          <p className="eyebrow"><Editable k="home.lives.eyebrow" value={textOf(site, "home.lives.eyebrow")} /></p>
+          <h2 className="mt-2 font-display text-3xl font-light text-onyx sm:text-4xl"><Editable k="home.lives.title" value={textOf(site, "home.lives.title")} /></h2>
           <div className="mt-4 flex justify-center"><GoldThread width={160} /></div>
         </div>
         <div className="grid gap-4 sm:grid-cols-3">
-          {newestThree.map((live) => <LiveCard key={live.id} live={{ ...live, thumbnail: site.liveThumbs[live.id] || live.thumbnail }} />)}
+          {newestThree.map((live) => <LiveCard key={live.id} live={{ ...live, thumbnail: site.liveThumbs[live.id] || live.thumbnail }} site={site} />)}
         </div>
       </section>
 
       {/* Closing live CTA — light, so the footer is the single dark anchor */}
       <section className="border-t border-onyx/10 bg-white py-14 text-center sm:py-18">
         <div className="mx-auto max-w-2xl px-5">
-          <p className="eyebrow">Live every evening · 8 PM</p>
+          <p className="eyebrow"><Editable k="home.cta.eyebrow" value={textOf(site, "home.cta.eyebrow")} /></p>
           <h2 className="mt-2 font-display text-3xl font-light text-onyx sm:text-4xl"><Editable k="home.cta.title" value={textOf(site, "home.cta.title")} /></h2>
           <p className="mx-auto mt-3 max-w-md font-sans text-sm text-onyx/60"><Editable k="home.cta.body" value={textOf(site, "home.cta.body")} /></p>
-          <a href="https://www.facebook.com/Reetcollections068/" target="_blank" rel="noopener noreferrer" className="btn-rose mt-7 inline-block">Watch the live</a>
+          <a href="https://www.facebook.com/Reetcollections068/" target="_blank" rel="noopener noreferrer" className="btn-rose mt-7 inline-block"><Editable k="home.cta.watchLive" value={textOf(site, "home.cta.watchLive")} /></a>
         </div>
       </section>
     </>

@@ -4,8 +4,13 @@ import Link from "next/link";
 import { statusMeta, onSale, effectivePrice, discountPct } from "@/lib/products";
 import { useCart } from "./CartProvider";
 import { useWishlist } from "./WishlistProvider";
+import Editable from "./Editable";
+import { useSiteText } from "./SiteTextProvider";
 
 export default function ProductCard({ product }) {
+  const off = useSiteText("product.off");
+  const newLabel = useSiteText("productCard.new");
+  const addToBag = useSiteText("productCard.addToBag");
   const meta = statusMeta[product.status] || statusMeta.available;
   const isSold = product.status === "sold";
   const sale = onSale(product);
@@ -28,9 +33,9 @@ export default function ProductCard({ product }) {
               <span className={`px-2.5 py-1 font-sans text-[9px] font-medium uppercase tracking-[0.14em] ${meta.className}`}>{meta.label}</span>
             )}
             {sale ? (
-              <span className="bg-rose-deep px-2.5 py-1 font-sans text-[9px] font-medium uppercase tracking-[0.14em] text-white">{discountPct(product)}% off</span>
+              <span className="bg-rose-deep px-2.5 py-1 font-sans text-[9px] font-medium uppercase tracking-[0.14em] text-white">{discountPct(product)}% <Editable k="product.off" value={off} /></span>
             ) : product.newIn ? (
-              <span className="bg-onyx px-2.5 py-1 font-sans text-[9px] font-medium uppercase tracking-[0.14em] text-ivory">New</span>
+              <span className="bg-onyx px-2.5 py-1 font-sans text-[9px] font-medium uppercase tracking-[0.14em] text-ivory"><Editable k="productCard.new" value={newLabel} /></span>
             ) : null}
           </div>
           <button onClick={toggleWish} aria-label={wished ? "Remove from wishlist" : "Save to wishlist"}
@@ -40,7 +45,7 @@ export default function ProductCard({ product }) {
           {!isSold && (
             <button onClick={quickAdd}
               className="absolute inset-x-0 bottom-0 translate-y-full bg-onyx py-3 font-sans text-[11px] font-medium uppercase tracking-[0.16em] text-ivory transition-transform duration-300 hover:bg-gold-deep hover:text-onyx group-hover:translate-y-0">
-              Add to bag
+              <Editable k="productCard.addToBag" value={addToBag} />
             </button>
           )}
         </div>

@@ -11,7 +11,7 @@ export default async function CollectionsPage() {
   const [products, site] = await Promise.all([getCatalog(), getSiteSettings()]);
   return (
     <>
-      <PageBanner eyebrow="Shop"
+      <PageBanner eyebrow={<Editable k="banner.collections.eyebrow" value={textOf(site, "banner.collections.eyebrow")} />}
         title={<Editable k="banner.collections.title" value={textOf(site, "banner.collections.title")} />}
         subtitle={<Editable k="banner.collections.subtitle" value={textOf(site, "banner.collections.subtitle")} />} />
       <Shop initialSlug="all" products={products} />

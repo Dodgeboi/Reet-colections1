@@ -1,8 +1,16 @@
 "use client";
 import { useState } from "react";
+import { useSiteText } from "./SiteTextProvider";
+import Editable from "./Editable";
 export default function Newsletter({ dark = false, compact = false }) {
   const [email, setEmail] = useState("");
   const [state, setState] = useState("idle");
+  const placeholder = useSiteText("newsletter.placeholder");
+  const cta = useSiteText("newsletter.cta");
+  const done = useSiteText("newsletter.done");
+  const invalid = useSiteText("newsletter.invalid");
+  const error = useSiteText("newsletter.error");
+  const hint = useSiteText("newsletter.hint");
   const submit = async () => {
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { setState("invalid"); return; }
     setState("loading");
@@ -12,20 +20,20 @@ export default function Newsletter({ dark = false, compact = false }) {
       setState("done"); setEmail("");
     } catch { setState("error"); }
   };
-  if (state === "done") return <p className={`font-sans text-sm ${dark ? "text-gold-light" : "text-rose-deep"}`}>You're on the list — we'll email you the moment we go live.</p>;
+  if (state === "done") return <p className={`font-sans text-sm ${dark ? "text-gold-light" : "text-rose-deep"}`}><Editable k="newsletter.done" value={done} /></p>;
   return (
     <div>
       <div className={`flex overflow-hidden border ${dark ? "border-ivory/30 bg-white/5" : "border-onyx/20 bg-white"}`}>
         <input type="email" value={email} onChange={(e) => { setEmail(e.target.value); setState("idle"); }} onKeyDown={(e) => e.key === "Enter" && submit()}
-          placeholder="Your email address"
+          placeholder={placeholder}
           className={`w-full bg-transparent px-4 py-2.5 font-sans text-sm focus:outline-none ${dark ? "text-ivory placeholder:text-ivory/40" : "text-onyx placeholder:text-onyx/40"}`} />
         <button onClick={submit} disabled={state === "loading"} className={`shrink-0 px-5 font-sans text-[11px] font-medium uppercase tracking-[0.14em] transition-colors disabled:opacity-60 ${dark ? "bg-ivory text-onyx hover:bg-gold-light" : "bg-onyx text-ivory hover:bg-gold-deep hover:text-onyx"}`}>
-          {state === "loading" ? "…" : "Notify me"}
+          {state === "loading" ? "…" : <Editable k="newsletter.cta" value={cta} />}
         </button>
       </div>
-      {state === "invalid" && <p className="mt-1.5 font-sans text-xs text-rose-deep">Please enter a valid email.</p>}
-      {state === "error" && <p className="mt-1.5 font-sans text-xs text-rose-deep">Something went wrong — please try again.</p>}
-      {!compact && state === "idle" && <p className={`mt-1.5 font-sans text-xs ${dark ? "text-ivory/40" : "text-onyx/40"}`}>Get an email every time we go live. No spam, ever.</p>}
+      {state === "invalid" && <p className="mt-1.5 font-sans text-xs text-rose-deep"><Editable k="newsletter.invalid" value={invalid} /></p>}
+      {state === "error" && <p className="mt-1.5 font-sans text-xs text-rose-deep"><Editable k="newsletter.error" value={error} /></p>}
+      {!compact && state === "idle" && <p className={`mt-1.5 font-sans text-xs ${dark ? "text-ivory/40" : "text-onyx/40"}`}><Editable k="newsletter.hint" value={hint} /></p>}
     </div>
   );
 }

@@ -1,7 +1,10 @@
 import Image from "next/image";
 import { formatLiveDate, weekLabel } from "@/lib/lives";
+import Editable from "./Editable";
+import { textOf } from "@/lib/siteText";
 
-export default function LiveCard({ live }) {
+export default function LiveCard({ live, site }) {
+  const watchOnFacebook = textOf(site, "live.watchOnFacebook");
   return (
     <a href={live.facebookUrl} target="_blank" rel="noopener noreferrer" className="group block bg-white">
       <div className="relative aspect-video overflow-hidden bg-[#F3EDE4]">
@@ -18,7 +21,7 @@ export default function LiveCard({ live }) {
         <h3 className="font-display text-xl text-onyx">{live.title}</h3>
         <p className="mt-1 flex items-center justify-between font-sans text-xs text-onyx/55">
           <span>{formatLiveDate(live.date)}</span>
-          <span className="border-b border-transparent uppercase tracking-[0.12em] text-[10px] transition-colors group-hover:border-onyx/40 group-hover:text-onyx">Watch on Facebook</span>
+          <span className="border-b border-transparent uppercase tracking-[0.12em] text-[10px] transition-colors group-hover:border-onyx/40 group-hover:text-onyx"><Editable k="live.watchOnFacebook" value={watchOnFacebook} /></span>
         </p>
       </div>
     </a>

@@ -4,6 +4,8 @@ import { useState, useMemo } from "react";
 import ProductCard from "./ProductCard";
 import { filterCategory, effectivePrice } from "@/lib/products";
 import { categories, categoryBySlug } from "@/lib/categories";
+import Editable from "./Editable";
+import { useSiteText } from "./SiteTextProvider";
 
 const SORTS = [["featured", "Featured"], ["newest", "Newest"], ["price-asc", "Price: Low to High"], ["price-desc", "Price: High to Low"]];
 const PRICE_BUCKETS = [
@@ -21,6 +23,19 @@ export default function Shop({ initialSlug = "all", products = [] }) {
   const [inStock, setInStock] = useState(false);
   const [sort, setSort] = useState("featured");
   const [drawer, setDrawer] = useState(false);
+  const t = {
+    filters: useSiteText("shop.filters"),
+    clearAll: useSiteText("shop.clearAll"),
+    noMatches: useSiteText("shop.noMatches"),
+    clearFilters: useSiteText("shop.clearFilters"),
+    sort: useSiteText("shop.sort"),
+    filtersBtn: useSiteText("shop.filtersBtn"),
+    inStockOnly: useSiteText("shop.inStockOnly"),
+    inStockChip: useSiteText("shop.inStockChip"),
+    product: useSiteText("shop.product"),
+    products: useSiteText("shop.products"),
+    showResults: useSiteText("shop.showResults"),
+  };
 
   const colorOptions = useMemo(() => Array.from(new Set(products.map((p) => p.color).filter(Boolean))).sort(), [products]);
 
@@ -81,7 +96,7 @@ export default function Shop({ initialSlug = "all", products = [] }) {
       <Group label="Availability">
         <label className="flex cursor-pointer items-center gap-2.5 font-sans text-sm text-onyx/70">
           <input type="checkbox" checked={inStock} onChange={() => setInStock((v) => !v)} className="h-4 w-4 accent-[#1A130D]" />
-          In stock only
+          <Editable k="shop.inStockOnly" value={t.inStockOnly} />
         </label>
       </Group>
     </div>
@@ -94,8 +109,8 @@ export default function Shop({ initialSlug = "all", products = [] }) {
         <aside className="hidden lg:block">
           <div className="sticky top-32">
             <div className="flex items-center justify-between">
-              <h3 className="font-display text-2xl text-onyx">Filters</h3>
-              {activeCount > 0 && <button onClick={clearAll} className="font-sans text-xs text-onyx/50 underline hover:text-onyx">Clear all</button>}
+              <h3 className="font-display text-2xl text-onyx"><Editable k="shop.filters" value={t.filters} /></h3>
+              {activeCount > 0 && <button onClick={clearAll} className="font-sans text-xs text-onyx/50 underline hover:text-onyx"><Editable k="shop.clearAll" value={t.clearAll} /></button>}
             </div>
             <div className="mt-2">{filters}</div>
           </div>
@@ -106,15 +121,15 @@ export default function Shop({ initialSlug = "all", products = [] }) {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-baseline gap-3">
               <h2 className="font-display text-3xl font-light text-onyx">{title}</h2>
-              <span className="font-sans text-sm text-onyx/50">{items.length} {items.length === 1 ? "product" : "products"}</span>
+              <span className="font-sans text-sm text-onyx/50">{items.length} {items.length === 1 ? t.product : t.products}</span>
             </div>
             <div className="flex items-center gap-3">
               <button onClick={() => setDrawer(true)} className="flex items-center gap-2 border border-onyx/25 px-4 py-2 font-sans text-sm text-onyx/70 lg:hidden">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M3 6h18M6 12h12M10 18h4" /></svg>
-                Filters{activeCount > 0 ? ` (${activeCount})` : ""}
+                <Editable k="shop.filtersBtn" value={t.filtersBtn} />{activeCount > 0 ? ` (${activeCount})` : ""}
               </button>
               <label className="flex items-center gap-2 font-sans text-sm text-onyx/60">
-                <span className="hidden sm:inline">Sort</span>
+                <span className="hidden sm:inline"><Editable k="shop.sort" value={t.sort} /></span>
                 <select value={sort} onChange={(e) => setSort(e.target.value)} className="border border-onyx/20 bg-white px-3 py-1.5 text-onyx focus:border-onyx focus:outline-none">
                   {SORTS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
                 </select>
@@ -128,8 +143,8 @@ export default function Shop({ initialSlug = "all", products = [] }) {
               {slug !== "all" && <Chip onClear={() => setSlug("all")}>{categoryBySlug[slug]?.name || slug}</Chip>}
               {[...buckets].map((b) => <Chip key={b} onClear={() => toggleSet(buckets, setBuckets, b)}>{PRICE_BUCKETS.find((x) => x[0] === b)?.[1]}</Chip>)}
               {[...colors].map((c) => <Chip key={c} onClear={() => toggleSet(colors, setColors, c)}>{c}</Chip>)}
-              {inStock && <Chip onClear={() => setInStock(false)}>In stock</Chip>}
-              <button onClick={clearAll} className="font-sans text-xs text-onyx/45 hover:text-rose">Clear all</button>
+              {inStock && <Chip onClear={() => setInStock(false)}><Editable k="shop.inStockChip" value={t.inStockChip} /></Chip>}
+              <button onClick={clearAll} className="font-sans text-xs text-onyx/45 hover:text-rose"><Editable k="shop.clearAll" value={t.clearAll} /></button>
             </div>
           )}
 
@@ -140,8 +155,8 @@ export default function Shop({ initialSlug = "all", products = [] }) {
             </div>
           ) : (
             <div className="mt-6 border border-dashed border-onyx/20 bg-white/60 py-24 text-center">
-              <p className="font-display text-2xl text-onyx/50">No products match those filters.</p>
-              <button onClick={clearAll} className="btn-rose mt-4 !py-2 text-xs">Clear filters</button>
+              <p className="font-display text-2xl text-onyx/50"><Editable k="shop.noMatches" value={t.noMatches} /></p>
+              <button onClick={clearAll} className="btn-rose mt-4 !py-2 text-xs"><Editable k="shop.clearFilters" value={t.clearFilters} /></button>
             </div>
           )}
         </div>
@@ -153,13 +168,13 @@ export default function Shop({ initialSlug = "all", products = [] }) {
           <div className="absolute inset-0 bg-onyx/40 backdrop-blur-sm" />
           <div className="absolute inset-y-0 left-0 w-[85%] max-w-sm overflow-y-auto bg-ivory p-6 shadow-card" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between">
-              <h3 className="font-display text-2xl text-onyx">Filters</h3>
+              <h3 className="font-display text-2xl text-onyx"><Editable k="shop.filters" value={t.filters} /></h3>
               <button onClick={() => setDrawer(false)} className="text-2xl leading-none text-onyx/40">×</button>
             </div>
             <div className="mt-2">{filters}</div>
             <div className="sticky bottom-0 mt-4 flex gap-2 bg-ivory pt-3">
-              <button onClick={clearAll} className="btn-outline flex-1 !py-2.5 text-xs">Clear all</button>
-              <button onClick={() => setDrawer(false)} className="btn-gold flex-1 !py-2.5 text-xs">Show {items.length} results</button>
+              <button onClick={clearAll} className="btn-outline flex-1 !py-2.5 text-xs"><Editable k="shop.clearAll" value={t.clearAll} /></button>
+              <button onClick={() => setDrawer(false)} className="btn-gold flex-1 !py-2.5 text-xs"><Editable k="shop.showResults" value={t.showResults} /> {items.length}</button>
             </div>
           </div>
         </div>

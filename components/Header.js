@@ -7,13 +7,15 @@ import { useCart } from "./CartProvider";
 import { useWishlist } from "./WishlistProvider";
 import { useAccount } from "./AccountProvider";
 import SearchOverlay from "./SearchOverlay";
+import Editable from "./Editable";
+import { textOf } from "@/lib/siteText";
 
 const NAV = [
-  { href: "/collections", label: "Shop" },
-  { href: "/live", label: "Live" },
-  { href: "/about", label: "About" },
-  { href: "/faq", label: "Help" },
-  { href: "/inquiry", label: "Inquiries" },
+  { href: "/collections", key: "nav.shop" },
+  { href: "/live", key: "nav.live" },
+  { href: "/about", key: "nav.about" },
+  { href: "/faq", key: "nav.help" },
+  { href: "/inquiry", key: "nav.inquiries" },
 ];
 
 const Icon = ({ d, fill = "none" }) => (
@@ -23,7 +25,8 @@ const SearchI = () => <Icon d={<><circle cx="11" cy="11" r="7" /><path d="m21 21
 const HeartI = () => <Icon d={<path d="M12 20s-7-4.3-9.3-8.5C1 8 3 4.7 6.3 4.7c2 0 3.2 1.1 3.7 2 .5-.9 1.7-2 3.7-2 3.3 0 5.3 3.3 3.6 6.8C19 15.7 12 20 12 20Z" />} />;
 const BagI = () => <Icon d={<><path d="M6 8h12l-1 12H7L6 8Z" /><path d="M9 8a3 3 0 0 1 6 0" /></>} />;
 
-export default function Header() {
+export default function Header({ site }) {
+  const t = (k) => textOf(site, k);
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -48,7 +51,7 @@ export default function Header() {
       <header className="fixed inset-x-0 top-0 z-50">
         {/* announcement bar */}
         <Link href="/live" className="block bg-onyx py-1.5 text-center font-sans text-[10.5px] uppercase tracking-[0.16em] text-ivory/85 transition-colors hover:text-gold-light">
-          Live on Facebook every evening at 8 PM &nbsp;·&nbsp; Free shipping over $150
+          <Editable k="nav.announcement" value={t("nav.announcement")} />
         </Link>
 
         <div className={`border-b transition-all duration-300 ${scrolled ? "border-onyx/10 bg-ivory shadow-soft" : "border-onyx/5 bg-ivory"}`}>
@@ -62,16 +65,16 @@ export default function Header() {
 
             <nav className="hidden items-center gap-7 md:flex">
               {NAV.map((item) => (
-                <Link key={item.href} href={item.href} className="nav-underline text-[12px] text-onyx/75 hover:text-onyx">{item.label}</Link>
+                <Link key={item.href} href={item.href} className="nav-underline text-[12px] text-onyx/75 hover:text-onyx"><Editable k={item.key} value={t(item.key)} /></Link>
               ))}
               <div className="flex items-center gap-5 border-l border-onyx/15 pl-6">
                 {account?.isOwner && <Link href="/admin" className="whitespace-nowrap font-sans text-[12px] font-medium text-gold-deep transition-colors hover:text-onyx">Admin</Link>}
                 <button onClick={() => setSearchOpen(true)} aria-label="Search" className="text-onyx/70 transition-colors hover:text-onyx"><SearchI /></button>
-                <Link href="/account" className="whitespace-nowrap font-sans text-[12px] text-onyx/70 transition-colors hover:text-onyx">{account ? `Hi, ${account.name.split(" ")[0]}` : "Sign in"}</Link>
+                <Link href="/account" className="whitespace-nowrap font-sans text-[12px] text-onyx/70 transition-colors hover:text-onyx">{account ? `Hi, ${account.name.split(" ")[0]}` : <Editable k="nav.signIn" value={t("nav.signIn")} />}</Link>
                 <Link href="/account" aria-label="Wishlist" className="relative text-onyx/70 transition-colors hover:text-onyx"><HeartI /><Badge n={wishCount} /></Link>
                 <button onClick={() => setCartOpen(true)} aria-label="Open cart" className="relative text-onyx/70 transition-colors hover:text-onyx"><BagI /><Badge n={count} /></button>
               </div>
-              <a href="https://www.facebook.com/Reetcollections068/" target="_blank" rel="noopener noreferrer" className="btn-rose !px-5 !py-2 !text-[11px]">Watch live</a>
+              <a href="https://www.facebook.com/Reetcollections068/" target="_blank" rel="noopener noreferrer" className="btn-rose !px-5 !py-2 !text-[11px]"><Editable k="nav.watchLive" value={t("nav.watchLive")} /></a>
             </nav>
 
             <div className="flex items-center gap-4 md:hidden">
@@ -88,11 +91,11 @@ export default function Header() {
           <div className={`overflow-hidden bg-ivory transition-all duration-500 md:hidden ${open ? "max-h-[560px] border-t border-onyx/10" : "max-h-0"}`}>
             <nav className="flex flex-col gap-1 px-6 py-5">
               {NAV.map((item) => (
-                <Link key={item.href} href={item.href} onClick={() => setOpen(false)} className="border-b border-onyx/8 py-3 font-display text-2xl text-onyx hover:text-rose-deep">{item.label}</Link>
+                <Link key={item.href} href={item.href} onClick={() => setOpen(false)} className="border-b border-onyx/8 py-3 font-display text-2xl text-onyx hover:text-rose-deep"><Editable k={item.key} value={t(item.key)} /></Link>
               ))}
-              <Link href="/account" onClick={() => setOpen(false)} className="border-b border-onyx/8 py-3 font-display text-2xl text-onyx hover:text-rose-deep">{account ? `Hi, ${account.name.split(" ")[0]}` : "Sign in"}{wishCount > 0 ? ` · Wishlist (${wishCount})` : ""}</Link>
+              <Link href="/account" onClick={() => setOpen(false)} className="border-b border-onyx/8 py-3 font-display text-2xl text-onyx hover:text-rose-deep">{account ? `Hi, ${account.name.split(" ")[0]}` : <Editable k="nav.signIn" value={t("nav.signIn")} />}{wishCount > 0 ? ` · Wishlist (${wishCount})` : ""}</Link>
               {account?.isOwner && <Link href="/admin" onClick={() => setOpen(false)} className="border-b border-onyx/8 py-3 font-display text-2xl text-gold-deep hover:text-onyx">Owner Dashboard</Link>}
-              <a href="https://www.facebook.com/Reetcollections068/" target="_blank" rel="noopener noreferrer" className="btn-rose mt-4 w-full">Watch live</a>
+              <a href="https://www.facebook.com/Reetcollections068/" target="_blank" rel="noopener noreferrer" className="btn-rose mt-4 w-full"><Editable k="nav.watchLive" value={t("nav.watchLive")} /></a>
             </nav>
           </div>
         </div>

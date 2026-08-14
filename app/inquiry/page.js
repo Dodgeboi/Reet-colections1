@@ -4,18 +4,21 @@ import Link from "next/link";
 import PageBanner from "@/components/PageBanner";
 import { Reveal } from "@/components/Reveal";
 import { FACEBOOK_PAGE } from "@/lib/lives";
+import Editable from "@/components/Editable";
+import { useSiteText } from "@/components/SiteTextProvider";
 
 const CONTACT_EMAIL = "reetunaren@gmail.com";
 const MESSENGER = "https://m.me/Reetcollections068";
 
-// Kept in step with INQUIRY_TOPICS in /api/inquiries.
+// Kept in step with INQUIRY_TOPICS in /api/inquiries — not owner-editable
+// text, since the exact strings are matched against that server-side list.
 const TOPICS = ["An order", "Sizing & fit", "A product", "Shipping & returns", "Something else"];
 
-const channels = [
-  { t: "Facebook Messenger", d: "Fastest for orders & sizing — we're on every evening", v: "Message us", href: MESSENGER },
-  { t: "Facebook", d: "Watch the lives & browse new arrivals", v: "Reet Collections", href: FACEBOOK_PAGE },
-  { t: "Email", d: "Prefer your own inbox? Write to us directly", v: CONTACT_EMAIL, href: `mailto:${CONTACT_EMAIL}` },
-];
+// t/d (title/description) are owner-editable copy; v (the contact value —
+// email address, handle) is real contact data, not copy, so it isn't.
+const CHANNEL_KEYS = ["inquiry.channel.messenger", "inquiry.channel.facebook", "inquiry.channel.email"];
+const channelValues = { "inquiry.channel.messenger": "Message us", "inquiry.channel.facebook": "Reet Collections", "inquiry.channel.email": CONTACT_EMAIL };
+const channelHrefs = { "inquiry.channel.messenger": MESSENGER, "inquiry.channel.facebook": FACEBOOK_PAGE, "inquiry.channel.email": `mailto:${CONTACT_EMAIL}` };
 
 const field = "w-full border border-onyx/15 bg-ivory/40 px-4 py-3 font-sans text-sm focus:border-gold focus:outline-none";
 
@@ -24,6 +27,35 @@ export default function InquiryPage() {
   const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState(null);
   const [err, setErr] = useState("");
+  const t = {
+    bannerEyebrow: useSiteText("inquiry.banner.eyebrow"),
+    bannerTitle: useSiteText("inquiry.banner.title"),
+    bannerSubtitle: useSiteText("inquiry.banner.subtitle"),
+    quickAnswersTitle: useSiteText("inquiry.quickAnswers.title"),
+    quickAnswersPre: useSiteText("inquiry.quickAnswers.pre"),
+    quickAnswersLink: useSiteText("inquiry.quickAnswers.link"),
+    sentEyebrow: useSiteText("inquiry.sent.eyebrow"),
+    sentTitle: useSiteText("inquiry.sent.title"),
+    sentRefPre: useSiteText("inquiry.sent.refPre"),
+    sentEmailedPre: useSiteText("inquiry.sent.emailedPre"),
+    sentEmailedPost: useSiteText("inquiry.sent.emailedPost"),
+    sendAnother: useSiteText("inquiry.sendAnother"),
+    formTitle: useSiteText("inquiry.form.title"),
+    formSubtitle: useSiteText("inquiry.form.subtitle"),
+    namePlaceholder: useSiteText("inquiry.form.namePlaceholder"),
+    emailPlaceholder: useSiteText("inquiry.form.emailPlaceholder"),
+    phonePlaceholder: useSiteText("inquiry.form.phonePlaceholder"),
+    orderPlaceholder: useSiteText("inquiry.form.orderPlaceholder"),
+    messagePlaceholder: useSiteText("inquiry.form.messagePlaceholder"),
+    sendInquiry: useSiteText("inquiry.form.sendInquiry"),
+    sending: useSiteText("inquiry.form.sending"),
+    privacyNote: useSiteText("inquiry.form.privacyNote"),
+  };
+  const channelText = {
+    "inquiry.channel.messenger": { title: useSiteText("inquiry.channel.messenger.title"), desc: useSiteText("inquiry.channel.messenger.desc") },
+    "inquiry.channel.facebook": { title: useSiteText("inquiry.channel.facebook.title"), desc: useSiteText("inquiry.channel.facebook.desc") },
+    "inquiry.channel.email": { title: useSiteText("inquiry.channel.email.title"), desc: useSiteText("inquiry.channel.email.desc") },
+  };
 
   // Arriving from "Send an inquiry" on an order? Start with that order filled in.
   useEffect(() => {
@@ -54,33 +86,33 @@ export default function InquiryPage() {
   return (
     <>
       <PageBanner
-        eyebrow="Inquiries"
-        title="Send an Inquiry"
-        subtitle="Questions about a product, your size, or an order? Send it here and a real person will reply — usually within a day."
+        eyebrow={<Editable k="inquiry.banner.eyebrow" value={t.bannerEyebrow} />}
+        title={<Editable k="inquiry.banner.title" value={t.bannerTitle} />}
+        subtitle={<Editable k="inquiry.banner.subtitle" value={t.bannerSubtitle} />}
       />
 
       <section className="mx-auto max-w-5xl px-6 py-20 sm:px-8">
         <div className="grid gap-12 lg:grid-cols-2">
           <Reveal>
             <div className="space-y-4">
-              {channels.map((c) => (
+              {CHANNEL_KEYS.map((key) => (
                 <a
-                  key={c.t}
-                  href={c.href}
-                  target={c.href.startsWith("http") ? "_blank" : undefined}
-                  rel={c.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                  key={key}
+                  href={channelHrefs[key]}
+                  target={channelHrefs[key].startsWith("http") ? "_blank" : undefined}
+                  rel={channelHrefs[key].startsWith("http") ? "noopener noreferrer" : undefined}
                   className="group block border border-onyx/10 bg-white p-6 shadow-card transition-all duration-300 hover:border-gold/50"
                 >
-                  <p className="eyebrow">{c.t}</p>
-                  <p className="mt-2 font-display text-2xl text-onyx">{c.v}</p>
-                  <p className="font-sans text-sm text-onyx/50">{c.d}</p>
+                  <p className="eyebrow"><Editable k={`${key}.title`} value={channelText[key].title} /></p>
+                  <p className="mt-2 font-display text-2xl text-onyx">{channelValues[key]}</p>
+                  <p className="font-sans text-sm text-onyx/50"><Editable k={`${key}.desc`} value={channelText[key].desc} /></p>
                 </a>
               ))}
               <div className="border border-onyx/10 bg-ivory/60 p-6">
-                <p className="eyebrow">Looking for quick answers?</p>
+                <p className="eyebrow"><Editable k="inquiry.quickAnswers.title" value={t.quickAnswersTitle} /></p>
                 <p className="mt-2 font-sans text-sm leading-relaxed text-onyx/60">
-                  Shipping times, sizing, returns and payment are all covered on our{" "}
-                  <Link href="/faq" className="text-rose underline hover:text-rose-deep">Help page</Link>.
+                  <Editable k="inquiry.quickAnswers.pre" value={t.quickAnswersPre} />{" "}
+                  <Link href="/faq" className="text-rose underline hover:text-rose-deep"><Editable k="inquiry.quickAnswers.link" value={t.quickAnswersLink} /></Link>.
                 </p>
               </div>
             </div>
@@ -90,40 +122,40 @@ export default function InquiryPage() {
             <div className="border border-onyx/10 bg-white p-7 shadow-card">
               {sent ? (
                 <div className="py-6 text-center">
-                  <p className="eyebrow">Inquiry sent</p>
-                  <h2 className="mt-2 font-display text-3xl font-light text-onyx">Thank you — we have it</h2>
+                  <p className="eyebrow"><Editable k="inquiry.sent.eyebrow" value={t.sentEyebrow} /></p>
+                  <h2 className="mt-2 font-display text-3xl font-light text-onyx"><Editable k="inquiry.sent.title" value={t.sentTitle} /></h2>
                   <p className="mt-3 font-sans text-sm leading-relaxed text-onyx/60">
-                    Your reference is <strong className="text-onyx">{sent}</strong>. We&apos;ve emailed a copy to{" "}
-                    {form.email.trim()} and we&apos;ll reply there, usually within a day.
+                    <Editable k="inquiry.sent.refPre" value={t.sentRefPre} /> <strong className="text-onyx">{sent}</strong>. <Editable k="inquiry.sent.emailedPre" value={t.sentEmailedPre} />{" "}
+                    {form.email.trim()} <Editable k="inquiry.sent.emailedPost" value={t.sentEmailedPost} />
                   </p>
                   <button
                     onClick={() => { setSent(null); setForm({ name: "", email: "", phone: "", topic: TOPICS[0], orderNo: "", message: "" }); }}
                     className="btn-outline mt-6 !py-2 text-xs"
                   >
-                    Send another inquiry
+                    <Editable k="inquiry.sendAnother" value={t.sendAnother} />
                   </button>
                 </div>
               ) : (
                 <>
-                  <h2 className="font-display text-3xl font-light text-onyx">Your inquiry</h2>
-                  <p className="mt-2 font-sans text-sm text-onyx/50">Sent straight to us from this page — you&apos;ll get a copy by email.</p>
+                  <h2 className="font-display text-3xl font-light text-onyx"><Editable k="inquiry.form.title" value={t.formTitle} /></h2>
+                  <p className="mt-2 font-sans text-sm text-onyx/50"><Editable k="inquiry.form.subtitle" value={t.formSubtitle} /></p>
                   <div className="mt-6 space-y-4">
-                    <input type="text" placeholder="Your name" value={form.name} onChange={set("name")} className={field} />
-                    <input type="email" placeholder="Your email (so we can reply)" value={form.email} onChange={set("email")} className={field} />
-                    <input type="tel" placeholder="Phone (optional)" value={form.phone} onChange={set("phone")} className={field} />
+                    <input type="text" placeholder={t.namePlaceholder} value={form.name} onChange={set("name")} className={field} />
+                    <input type="email" placeholder={t.emailPlaceholder} value={form.email} onChange={set("email")} className={field} />
+                    <input type="tel" placeholder={t.phonePlaceholder} value={form.phone} onChange={set("phone")} className={field} />
                     <select value={form.topic} onChange={set("topic")} className={field}>
-                      {TOPICS.map((t) => <option key={t} value={t}>{t}</option>)}
+                      {TOPICS.map((topic) => <option key={topic} value={topic}>{topic}</option>)}
                     </select>
                     {form.topic === "An order" && (
-                      <input type="text" placeholder="Order number (e.g. RC-123456)" value={form.orderNo} onChange={set("orderNo")} className={field} />
+                      <input type="text" placeholder={t.orderPlaceholder} value={form.orderNo} onChange={set("orderNo")} className={field} />
                     )}
-                    <textarea rows={5} placeholder="How can we help?" value={form.message} onChange={set("message")} className={field} />
+                    <textarea rows={5} placeholder={t.messagePlaceholder} value={form.message} onChange={set("message")} className={field} />
                     <button onClick={submit} disabled={!ready || busy} className="btn-gold w-full disabled:opacity-40">
-                      {busy ? "Sending…" : "Send inquiry"}
+                      {busy ? t.sending : <Editable k="inquiry.form.sendInquiry" value={t.sendInquiry} />}
                     </button>
                     {err && <p className="font-sans text-xs text-rose-deep">{err}</p>}
                     <p className="font-sans text-[11px] leading-relaxed text-onyx/45">
-                      We use your details only to answer this inquiry — never for anything else.
+                      <Editable k="inquiry.form.privacyNote" value={t.privacyNote} />
                     </p>
                   </div>
                 </>
