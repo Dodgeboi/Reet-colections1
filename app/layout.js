@@ -41,13 +41,13 @@ export const metadata = {
     type: "website",
     locale: "en_US",
     siteName: "Reet Collections",
-    images: [{ url: "/images/hero-anarkali.jpg", width: 1200, height: 1500, alt: "Reet Collections festive wear" }],
+    images: [{ url: "/images/products/pink-ombre-suit-front.png", width: 1024, height: 1536, alt: "Reet Collections pink ombre embroidered suit" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Reet Collections — Indian Ethnic Wear, Live Every Evening",
     description: "Handpicked Indian ethnic & fusion wear, selected with love & care.",
-    images: ["/images/hero-anarkali.jpg"],
+    images: ["/images/products/pink-ombre-suit-front.png"],
   },
 };
 

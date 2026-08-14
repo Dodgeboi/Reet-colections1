@@ -7,10 +7,15 @@ import { signOut as googleSignOut } from "next-auth/react";
 import AdminOrders from "@/components/AdminOrders";
 import AdminInquiries from "@/components/AdminInquiries";
 
-const CATEGORIES = ["kurtis", "lehengas", "sari", "blouses", "pants", "jewelry", "shoes"];
+const CATEGORIES = ["suits", "anarkalis", "kurtis", "lehengas", "sari", "blouses", "pants", "jewelry", "shoes"];
 const STATUSES = ["available", "claimed", "sold"];
-const IMG_OPTIONS = Array.from({ length: 29 }, (_, i) => `/images/products/reet-${String(i + 1).padStart(2, "0")}.jpg`);
-const blankDraft = { name: "", code: "", category: "kurtis", color: "", price: "", salePrice: "", qty: "1", sizes: "M, L, XL", image: IMG_OPTIONS[0], status: "available" };
+const IMG_OPTIONS = [
+  "/images/products/pink-ombre-suit-front.png",
+  "/images/products/purple-embroidered-suit-front.png",
+  "/images/products/brown-floral-anarkali-front.png",
+  "/images/products/mint-green-embroidered-suit-front.png",
+];
+const blankDraft = { name: "", code: "", category: "suits", color: "", price: "", salePrice: "", qty: "1", sizes: "M, L, XL", image: IMG_OPTIONS[0], status: "available" };
 
 export default function AdminPage() {
   const [items, setItems] = useState([]);

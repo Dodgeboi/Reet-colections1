@@ -5,7 +5,7 @@ import { saveUpload, extFromMime } from "@/lib/uploads";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const CATEGORY_HINT = "Use one category slug only: kurtis, lehengas, sari, blouses, pants, jewelry, shoes.";
+const CATEGORY_HINT = "Use one category slug only: suits, anarkalis, kurtis, lehengas, sari, blouses, pants, jewelry, shoes.";
 
 function safeJson(text) {
   const cleaned = String(text || "").trim().replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/```$/i, "").trim();
@@ -19,7 +19,7 @@ function fallbackProducts(savedImages, caption) {
   if (savedImages.length) {
     return savedImages.map((image, index) => ({
       name: `Imported product ${index + 1}`,
-      category: "kurtis",
+      category: "suits",
       color: "",
       fabric: "",
       sizesText: "",
@@ -31,14 +31,14 @@ function fallbackProducts(savedImages, caption) {
   }
   return [{
     name: "Imported product",
-    category: "kurtis",
+    category: "suits",
     color: "",
     fabric: "",
     sizesText: "",
     price: "",
     qty: 1,
     note: caption?.trim() || "Imported from pasted caption. Edit details before approving.",
-    image: "/images/fusion-mustard.png",
+    image: "/images/products/pink-ombre-suit-front.png",
   }];
 }
 
@@ -105,14 +105,14 @@ Caption/notes:\n${caption || ""}`;
     const imageIndex = Number.isInteger(p.imageIndex) ? p.imageIndex : idx;
     return {
       name: p.name || `Imported product ${idx + 1}`,
-      category: p.category || "kurtis",
+      category: p.category || "suits",
       color: p.color || "",
       fabric: p.fabric || "",
       sizesText: p.sizesText || "",
       price: p.price ?? "",
       qty: p.qty || 1,
       note: p.note || "",
-      image: savedImages[imageIndex] || savedImages[idx] || "/images/fusion-mustard.png",
+      image: savedImages[imageIndex] || savedImages[idx] || "/images/products/pink-ombre-suit-front.png",
     };
   });
 }

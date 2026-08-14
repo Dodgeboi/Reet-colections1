@@ -12,8 +12,6 @@ const PRICE_BUCKETS = [
   ["125-200", "$125 – $200", (p) => p > 125 && p <= 200],
   ["200-plus", "$200 & above", (p) => p > 200],
 ];
-const CATS = [{ name: "All Products", slug: "all" }, ...categories.map((c) => ({ name: c.name, slug: c.slug }))];
-
 export default function Shop({ initialSlug = "all", products = [] }) {
   const [slug, setSlug] = useState(initialSlug);
   const [colors, setColors] = useState(() => new Set());
@@ -23,6 +21,12 @@ export default function Shop({ initialSlug = "all", products = [] }) {
   const [drawer, setDrawer] = useState(false);
 
   const colorOptions = useMemo(() => Array.from(new Set(products.map((p) => p.color).filter(Boolean))).sort(), [products]);
+  const categoryOptions = useMemo(() => [
+    { name: "All Products", slug: "all" },
+    ...categories
+      .filter((category) => filterCategory(products, category.slug).length > 0)
+      .map((category) => ({ name: category.name, slug: category.slug })),
+  ], [products]);
 
   const items = useMemo(() => {
     let list = filterCategory(products, slug);
@@ -51,7 +55,7 @@ export default function Shop({ initialSlug = "all", products = [] }) {
     <div>
       <Group label="Category">
         <ul className="space-y-1">
-          {CATS.map((c) => (
+          {categoryOptions.map((c) => (
             <li key={c.slug}>
               <button onClick={() => { setSlug(c.slug); }} className={`w-full text-left font-sans text-sm transition ${slug === c.slug ? "font-medium text-rose-deep" : "text-onyx/65 hover:text-onyx"}`}>{c.name}</button>
             </li>

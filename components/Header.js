@@ -51,30 +51,33 @@ export default function Header() {
           Live on Facebook every evening at 8 PM &nbsp;·&nbsp; Free shipping over $150
         </Link>
 
-        <div className={`border-b transition-all duration-300 ${scrolled ? "border-onyx/10 bg-ivory shadow-soft" : "border-onyx/5 bg-ivory"}`}>
-          <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3 sm:px-8">
-            <Link href="/" className="group flex items-center gap-2.5" aria-label="Reet Collections home">
-              <span className="relative inline-block h-10 w-10 shrink-0 sm:h-11 sm:w-11">
-                <Image src="/images/logo-gold.png" alt="" fill sizes="44px" className="object-contain" priority />
+        <div className={`border-b transition-all duration-300 ${scrolled ? "border-onyx/10 bg-ivory/95 shadow-soft backdrop-blur-md" : "border-onyx/5 bg-ivory"}`}>
+          <div className="mx-auto grid min-h-[76px] w-full max-w-[1600px] grid-cols-[1fr_auto] items-center gap-6 px-5 sm:px-8 xl:grid-cols-[minmax(250px,1fr)_auto_minmax(390px,1fr)] xl:px-10 2xl:px-14">
+            <Link href="/" className="group flex w-fit items-center gap-3" aria-label="Reet Collections home">
+              <span className="relative inline-block h-11 w-11 shrink-0 sm:h-12 sm:w-12">
+                <Image src="/images/logo-gold.png" alt="" fill sizes="48px" className="object-contain transition-transform duration-500 group-hover:rotate-6" priority />
               </span>
-              <span className="font-display text-lg font-medium leading-none tracking-wide text-onyx sm:text-xl">Reet Collections</span>
+              <span className="whitespace-nowrap font-display text-xl font-medium leading-none tracking-wide text-onyx sm:text-[22px]">Reet Collections</span>
             </Link>
 
-            <nav className="hidden items-center gap-7 md:flex">
+            <nav className="hidden items-center justify-center gap-8 xl:flex 2xl:gap-10">
               {NAV.map((item) => (
                 <Link key={item.href} href={item.href} className="nav-underline text-[12px] text-onyx/75 hover:text-onyx">{item.label}</Link>
               ))}
-              <div className="flex items-center gap-5 border-l border-onyx/15 pl-6">
-                {account?.isOwner && <Link href="/admin" className="whitespace-nowrap font-sans text-[12px] font-medium text-gold-deep transition-colors hover:text-onyx">Admin</Link>}
-                <button onClick={() => setSearchOpen(true)} aria-label="Search" className="text-onyx/70 transition-colors hover:text-onyx"><SearchI /></button>
-                <Link href="/account" className="whitespace-nowrap font-sans text-[12px] text-onyx/70 transition-colors hover:text-onyx">{account ? `Hi, ${account.name.split(" ")[0]}` : "Sign in"}</Link>
-                <Link href="/account" aria-label="Wishlist" className="relative text-onyx/70 transition-colors hover:text-onyx"><HeartI /><Badge n={wishCount} /></Link>
-                <button onClick={() => setCartOpen(true)} aria-label="Open cart" className="relative text-onyx/70 transition-colors hover:text-onyx"><BagI /><Badge n={count} /></button>
-              </div>
-              <a href="https://www.facebook.com/Reetcollections068/" target="_blank" rel="noopener noreferrer" className="btn-rose !px-5 !py-2 !text-[11px]">Watch live</a>
             </nav>
 
-            <div className="flex items-center gap-4 md:hidden">
+            <div className="hidden items-center justify-self-end xl:flex">
+              <div className="flex items-center gap-5 border-l border-onyx/12 pl-6 2xl:gap-6 2xl:pl-8">
+                {account?.isOwner && <Link href="/admin" className="whitespace-nowrap font-sans text-[12px] font-medium text-gold-deep transition-colors hover:text-onyx">Admin</Link>}
+                <button onClick={() => setSearchOpen(true)} aria-label="Search" className="text-onyx/70 transition-colors hover:text-onyx"><SearchI /></button>
+                <Link href="/account" className="max-w-[112px] truncate whitespace-nowrap font-sans text-[12px] text-onyx/70 transition-colors hover:text-onyx">{account ? `Hi, ${account.name.split(" ")[0]}` : "Sign in"}</Link>
+                <Link href="/account" aria-label="Wishlist" className="relative text-onyx/70 transition-colors hover:text-onyx"><HeartI /><Badge n={wishCount} /></Link>
+                <button onClick={() => setCartOpen(true)} aria-label="Open cart" className="relative text-onyx/70 transition-colors hover:text-onyx"><BagI /><Badge n={count} /></button>
+                <a href="https://www.facebook.com/Reetcollections068/" target="_blank" rel="noopener noreferrer" className="btn-rose ml-1 !px-6 !py-2.5 !text-[10px]">Watch live</a>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4 xl:hidden">
               <button onClick={() => setSearchOpen(true)} aria-label="Search" className="text-onyx/75"><SearchI /></button>
               <button onClick={() => setCartOpen(true)} aria-label="Open cart" className="relative text-onyx/75"><BagI /><Badge n={count} /></button>
               <button onClick={() => setOpen((v) => !v)} className="flex flex-col gap-1.5 p-1" aria-label="Toggle menu" aria-expanded={open}>
@@ -85,7 +88,7 @@ export default function Header() {
             </div>
           </div>
 
-          <div className={`overflow-hidden bg-ivory transition-all duration-500 md:hidden ${open ? "max-h-[560px] border-t border-onyx/10" : "max-h-0"}`}>
+          <div className={`overflow-hidden bg-ivory transition-all duration-500 xl:hidden ${open ? "max-h-[560px] border-t border-onyx/10" : "max-h-0"}`}>
             <nav className="flex flex-col gap-1 px-6 py-5">
               {NAV.map((item) => (
                 <Link key={item.href} href={item.href} onClick={() => setOpen(false)} className="border-b border-onyx/8 py-3 font-display text-2xl text-onyx hover:text-rose-deep">{item.label}</Link>
