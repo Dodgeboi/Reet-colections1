@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
 import { isAdmin } from "@/lib/adminAuth";
-import { readJson, writeJson } from "@/lib/store";
+import { writeJson } from "@/lib/store";
+import { getCatalog } from "@/lib/catalog";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const data = await readJson("products.json", []);
-  return NextResponse.json(Array.isArray(data) ? data : []);
+  return NextResponse.json(await getCatalog());
 }
 
 // Owner replaces a single product's photo (used by in-place editing).
@@ -17,10 +17,11 @@ export async function PATCH(req) {
     const { id, image } = await req.json();
     const ok = typeof image === "string" && (image.startsWith("/images/") || image.startsWith("/api/uploads/") || image.startsWith("https://"));
     if (!id || !ok) return NextResponse.json({ error: "Invalid product or image." }, { status: 400 });
-    const catalog = await readJson("products.json", []);
+    const catalog = await getCatalog();
     const product = catalog.find((x) => x.id === id);
     if (!product) return NextResponse.json({ error: "Product not found." }, { status: 404 });
     product.image = image;
+    product.images = [image, ...(Array.isArray(product.images) ? product.images.slice(1) : [])].slice(0, 3);
     await writeJson("products.json", catalog);
     return NextResponse.json({ ok: true });
   } catch (e) {

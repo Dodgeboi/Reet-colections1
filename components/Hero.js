@@ -38,16 +38,10 @@ export default function Hero({ image = "/images/products/pink-ombre-suit-angle.p
 
             <motion.div variants={rise} initial="hidden" animate="show" custom={4}
               className="mt-9 flex flex-wrap items-center gap-3">
-              <Link href="/collections" className="btn-gold">Shop the four-piece edit</Link>
+              <Link href="/collections" className="btn-gold">Shop the collection</Link>
               <a href="https://www.facebook.com/Reetcollections068/" target="_blank" rel="noopener noreferrer" className="btn-outline">Watch live</a>
             </motion.div>
 
-            <motion.div variants={rise} initial="hidden" animate="show" custom={5}
-              className="mt-10 flex items-center gap-5 border-t border-onyx/10 pt-5 font-sans text-[10px] uppercase tracking-[0.17em] text-onyx/45">
-              <span>4 handpicked outfits</span>
-              <span className="h-3 w-px bg-onyx/15" />
-              <span>3 views each</span>
-            </motion.div>
           </div>
         </div>
 

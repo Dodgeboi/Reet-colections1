@@ -41,8 +41,8 @@ export default async function Home() {
       <TrustBar text={site.text} />
 
       <ProductRow
-        eyebrow={<Editable k="home.complete.eyebrow" value={textOf(site, "home.complete.eyebrow")} />}
-        title={<Editable k="home.complete.title" value={textOf(site, "home.complete.title")} />}
+        eyebrow={<Editable k="home.newIn.eyebrow" value={textOf(site, "home.newIn.eyebrow")} />}
+        title={<Editable k="home.newIn.title" value={textOf(site, "home.newIn.title")} />}
         viewAllHref="/collections"
         products={products.slice(0, 4)}
       />
